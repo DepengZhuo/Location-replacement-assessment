@@ -9,7 +9,7 @@ function renderStep1(p) {
   const pays = ['coin', 'bill', 'card', 'mobile'];
   const diagQs = [
     { k: 'q1', dim: 'offense', t: 's1.q1t', q: 's1.q1', opts: ['s1.q1a', 's1.q1b', 's1.q1c'] },
-    { k: 'q2', dim: 'offense', t: 's1.q2t', q: 's1.q2', opts: ['s1.q2a', 's1.q2b', 's1.q2c'] },
+    { k: 'q2', dim: 'offense', t: 's1.q2t', q: 's1.q2', opts: ['s1.q2a', 's1.q2b', 's1.q2c'], hint: 's1.q2Hint' },
     { k: 'q3', dim: 'offense', t: 's1.q3t', q: 's1.q3', opts: ['s1.q3a', 's1.q3b', 's1.q3c'] },
     { k: 'q4', dim: 'defense', t: 's1.q4t', q: 's1.q4', opts: ['s1.q4a', 's1.q4b', 's1.q4c'] },
     { k: 'q5', dim: 'defense', t: 's1.q5t', q: 's1.q5', opts: ['s1.q5a', 's1.q5b', 's1.q5c'] },
@@ -118,6 +118,7 @@ function renderStep1(p) {
                     <button type="button" class="choice-btn ${cur === 5 ? 'on-5' : ''}" data-set="diag.${q.k}" data-value="5">${esc(t(q.opts[1]))}</button>
                     <button type="button" class="choice-btn ${cur === 0 ? 'on-0' : ''}" data-set="diag.${q.k}" data-value="0">${esc(t(q.opts[2]))}</button>
                   </div>
+                  ${q.hint ? `<p class="criterion-hint">${esc(t(q.hint))}</p>` : ''}
                 </div>
               `;
             }).join('')}

@@ -7,9 +7,9 @@ function renderDashboard() {
   const list = app.projects;
   const computed = list.map(p => ({ p, m: compute(p) }));
   const viableList = computed.filter(x => x.m.viable);
-  const validPayback = computed.filter(x => x.m.hasData && isFinite(x.m.invest.payback));
-  const avgPayback = validPayback.length
-    ? validPayback.reduce((s, x) => s + x.m.invest.payback, 0) / validPayback.length
+  const validMachinePayback = computed.filter(x => x.m.hasData && isFinite(x.m.invest.standalonePayback));
+  const avgMachinePayback = validMachinePayback.length
+    ? validMachinePayback.reduce((s, x) => s + x.m.invest.standalonePayback, 0) / validMachinePayback.length
     : Infinity;
   const assessed = computed.filter(x => x.m.hasData);
   const avgGain = assessed.length
@@ -52,7 +52,7 @@ function renderDashboard() {
     <div class="stats-grid">
       <div class="stat-card"><span>${esc(t('dash.stat1'))}</span><strong>${list.length}</strong><small>${esc(t('dash.stat1Sub'))}</small></div>
       <div class="stat-card"><span>${esc(t('dash.stat2'))}</span><strong>${viableList.length}</strong><small>${esc(t('dash.stat2Sub'))}</small></div>
-      <div class="stat-card"><span>${esc(t('dash.stat3'))}</span><strong>${isFinite(avgPayback) ? nf(avgPayback, 1) + ' ' + esc(t('common.mo')) : '—'}</strong><small>${esc(t('dash.stat3Sub'))}</small></div>
+      <div class="stat-card"><span>${esc(t('dash.stat3'))}</span><strong>${isFinite(avgMachinePayback) ? nf(avgMachinePayback, 1) + ' ' + esc(t('common.mo')) : '—'}</strong><small>${esc(t('dash.stat3Sub'))}</small></div>
       <div class="stat-card"><span>${esc(t('dash.stat4'))}</span><strong>${assessed.length ? signedMoney(avgGain, 0) : '—'}</strong><small>${esc(t('dash.stat4Sub'))}</small></div>
     </div>
 
@@ -111,7 +111,7 @@ function projectCardsHtml() {
         <h3>${esc(p.meta.locationName || t('top.untitled'))}</h3>
         <p>${esc([p.meta.city, p.meta.state].filter(Boolean).join(', ') || '—')} · ${esc(m.invest.model.name)}</p>
         <div style="font-size:13px;font-weight:800;color:${m.hasData && m.invest.delta >= 0 ? 'var(--green)' : 'var(--muted)'}">
-          ${m.hasData ? signedMoney(m.invest.delta, 0) + '/mo · ' + esc(monthsFmt(m.invest.payback)) : '—'}
+          ${m.hasData ? signedMoney(m.invest.delta, 0) + t('common.perMonth') + ' · ' + esc(t('common.machineOnly')) + ' ' + esc(monthsFmt(m.invest.standalonePayback)) : '—'}
         </div>
         <div class="project-card-bottom">
           <button type="button" class="button button-dark button-small" data-action="openProj" data-id="${p.id}">${esc(t('common.open'))}</button>

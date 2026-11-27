@@ -19,6 +19,7 @@
 @media (max-width: 640px) {
   .form-grid, .form-grid-3, .form-grid-4, .uplift-grid, .derived-bar, .kpi-row-4, .rep-two, .rep-stat-row { grid-template-columns: 1fr; }
   .choices-3 { margin-left: 0; }
+  .criterion-hint { margin-left: 0; }
   .stats-grid { grid-template-columns: 1fr; }
   .proposal-paper { padding: 22px 18px; }
   .storage-warning { flex-wrap: wrap; }

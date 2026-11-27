@@ -151,9 +151,7 @@ function askDeleteModal(id) {
   showModal(`
     <h3>${esc(t('proj.delTitle'))}</h3>
     <p>${esc(t('proj.delMsg', { name: p.meta.locationName || t('top.untitled') }))}</p>
-    <p style="font-size:12px;color:var(--muted)">${esc(t('modal.deleteBackupHint'))}</p>
     <div class="modal-actions">
-      <button type="button" class="button button-outline modal-action-left" data-action="backupProject" data-id="${id}">${esc(t('common.backupProject'))}</button>
       <button type="button" class="button button-outline" data-action="closeModal">${esc(t('common.cancel'))}</button>
       <button type="button" class="button button-danger" data-action="confirmDelete" data-id="${id}">${esc(t('common.delete'))}</button>
     </div>
