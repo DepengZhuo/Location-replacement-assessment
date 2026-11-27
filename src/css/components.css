@@ -1,0 +1,40 @@
+/* ================= MODAL & TOAST ================= */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .55);
+  display: grid;
+  place-items: center;
+  z-index: 900;
+  padding: 16px;
+}
+.modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px 26px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, .25);
+}
+.modal h3 { margin: 0 0 6px; font-size: 18px; font-weight: 800; }
+.modal p { margin: 0 0 14px; font-size: 13px; color: #555; line-height: 1.5; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #111;
+  color: #fff;
+  padding: 11px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: all .2s ease;
+}
+.toast.show { opacity: 1; transform: translateY(0); }

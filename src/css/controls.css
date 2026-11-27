@@ -1,0 +1,94 @@
+/* ================= BUTTONS & SEGMENTS ================= */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  border: 1px solid transparent;
+  transition: all .15s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.button-dark { background: #111; color: #fff; }
+.button-dark:hover:not(:disabled) { background: #333; }
+.button-white { background: #fff; color: #111; }
+.button-white:hover:not(:disabled) { background: #eaeae6; }
+.button-outline { background: #fff; border: 1px solid var(--line-2); color: #111; }
+.button-outline:hover:not(:disabled) { background: var(--soft); border-color: #111; }
+.button-ghost { background: transparent; color: var(--muted); }
+.button-ghost:hover:not(:disabled) { background: var(--soft); color: #111; }
+.button-danger { background: #fff; border: 1px solid var(--red-line); color: var(--red); }
+.button-danger:hover:not(:disabled) { background: var(--red-soft); border-color: var(--red); }
+.button-small { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+.button-wide { width: 100%; }
+.button:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+}
+
+.seg {
+  display: inline-flex;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 3px;
+  gap: 2px;
+}
+.seg button {
+  border: 0;
+  background: transparent;
+  padding: 6px 11px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  transition: all .13s;
+  white-space: nowrap;
+}
+.seg button:hover { color: var(--black); }
+.seg button.on { background: #111; color: #fff; }
+.seg.block { display: flex; width: 100%; }
+.seg.block button { flex: 1; }
+
+/* ================= PAGE CONTENT ================= */
+.page-content {
+  padding: 28px 32px 64px;
+  max-width: 1420px;
+  width: 100%;
+  margin: 0 auto;
+}
+.page-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #666;
+  font-weight: 800;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+.page-heading h1 {
+  font-size: 28px;
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  color: var(--black);
+  line-height: 1.15;
+}
+.page-heading p {
+  margin: 7px 0 0;
+  color: #444;
+  font-size: 14px;
+  line-height: 1.55;
+  max-width: 720px;
+}

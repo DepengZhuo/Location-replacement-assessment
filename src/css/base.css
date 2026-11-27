@@ -1,0 +1,44 @@
+/* =====================================================================
+   HAHA Location Replacement Assessment v2.2
+   Design System: High-contrast Black / White / Soft Grey
+   Aligned with HAHA Location Pitch Builder visual specifications
+   ===================================================================== */
+:root {
+  --black: #111111;
+  --ink: #191919;
+  --muted: #555555;
+  --muted-2: #767672;
+  --line: #e5e5e3;
+  --line-2: #d0d0ce;
+  --soft: #f6f6f4;
+  --bg: #f3f3f1;
+  --surface: #ffffff;
+  --green: #1e7e4e;
+  --green-soft: #e6f4ea;
+  --green-line: #c2e3ce;
+  --red: #b34b40;
+  --red-soft: #fdf3f2;
+  --red-line: #e5c5c0;
+  --amber: #8a5a00;
+  --amber-soft: #fff6e5;
+  --amber-line: #f0dfb4;
+  --radius: 14px;
+  --font: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--bg);
+  color: var(--black);
+  font-family: var(--font);
+  font-size: 14.5px;
+  line-height: 1.5;
+  letter-spacing: -0.008em;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+[hidden], .hidden { display: none !important; }

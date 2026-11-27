@@ -1,0 +1,13 @@
+/* ================= PRINT / PDF ================= */
+@media print {
+  @page { size: A4; margin: 12mm; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { background: #fff !important; font-size: 9.8pt; }
+  .sidebar, .sidebar-overlay, .topbar, .report-toolbar, .no-print, .toast, .modal-backdrop { display: none !important; }
+  .main-area { margin-left: 0 !important; }
+  .page-content { padding: 0 !important; max-width: 100% !important; }
+  .proposal-paper { border: 0 !important; box-shadow: none !important; padding: 0 !important; max-width: 100% !important; }
+  .rep-sec { break-inside: avoid; page-break-inside: avoid; }
+  .rep-stat-row { grid-template-columns: repeat(4, 1fr) !important; }
+  .rep-two { grid-template-columns: 1fr 1fr !important; }
+}
