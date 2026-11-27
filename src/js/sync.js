@@ -1,5 +1,5 @@
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -16,28 +16,29 @@ function syncOutputs() {
     const rail = $('#railHost');
     if (rail) {
       const u = m.urgency;
+      const complete = u.complete;
       const tierCls = u.tier === 'strong' ? 'strong' : u.tier === 'model' ? 'conditional' : 'defer';
       const tierLbl = u.tier === 'strong' ? t('s1.tierStrong') : u.tier === 'model' ? t('s1.tierModel') : t('s1.tierLow');
       rail.innerHTML = `
         <div class="rail-panel">
           <div class="rail-label">${esc(t('s1.railTitle'))}</div>
-          <div class="rail-big">${u.total}<span style="font-size:18px;color:#888;font-weight:700"> / 100</span></div>
-          <div style="margin-top:8px"><span class="status-badge ${tierCls}">${esc(tierLbl)}</span></div>
-          <div class="score-bar-track" style="margin-top:12px"><div class="score-bar-fill" style="width:${u.total}%"></div></div>
+          <div class="rail-big">${complete ? u.total : '--'}<span style="font-size:18px;color:#888;font-weight:700"> / 100</span></div>
+          <div style="margin-top:8px"><span class="status-badge ${complete ? tierCls : 'defer'}">${esc(complete ? tierLbl : t('s1.railPending'))}</span></div>
+          <div class="score-bar-track" style="margin-top:12px"><div class="score-bar-fill" style="width:${complete ? u.total : 0}%"></div></div>
           <div class="rail-div"></div>
           <div class="breakdown-bar">
-            <div class="breakdown-head"><span>${esc(t('s1.railHw'))}</span><strong>${u.hwPts} / 40</strong></div>
-            <div class="score-bar-track"><div class="score-bar-fill" style="width:${(u.hwPts / 40) * 100}%"></div></div>
+            <div class="breakdown-head"><span>${esc(t('s1.railHw'))}</span><strong>${complete ? u.hwPts : '—'} / 40</strong></div>
+            <div class="score-bar-track"><div class="score-bar-fill" style="width:${complete ? (u.hwPts / 40) * 100 : 0}%"></div></div>
           </div>
           <div class="breakdown-bar">
-            <div class="breakdown-head"><span>${esc(t('s1.railComm'))}</span><strong>${u.commercialPts} / 60</strong></div>
-            <div class="score-bar-track"><div class="score-bar-fill" style="width:${(u.commercialPts / 60) * 100}%"></div></div>
+            <div class="breakdown-head"><span>${esc(t('s1.railComm'))}</span><strong>${complete ? u.commercialPts : '—'} / 60</strong></div>
+            <div class="score-bar-track"><div class="score-bar-fill" style="width:${complete ? (u.commercialPts / 60) * 100 : 0}%"></div></div>
           </div>
-          <div class="rail-div"></div>
-          <button type="button" class="button button-white button-wide" data-nav="step2">${esc(t('s1.railNext'))}</button>
         </div>
       `;
     }
+    syncStepGates(p);
+    renderStorageWarning();
     return;
   }
 
@@ -45,9 +46,9 @@ function syncOutputs() {
   if (app.view === 'step2') {
     const out = {
       dAov: m.old.aov > 0 ? money(m.old.aov, 2) : '—',
-      dDaily: m.old.monthlyOrders > 0 ? nf(m.old.dailyOrders, 1) + ' / day' : '—',
+      dDaily: m.old.monthlyOrders > 0 ? nf(m.old.dailyOrders, 1) + t('common.perDay') : '—',
       dMargin: m.old.sales > 0 ? pct(m.old.margin, 1) : '—',
-      oldSiteFee: money(m.old.siteFee, 2) + '/mo',
+      oldSiteFee: money(m.old.siteFee, 2) + t('common.perMonth'),
       siteFormulaCur: t('s2.formulaCur', {
         sales: money(m.old.sales, 0),
         share: nf(m.siteTerms.share, 1),
@@ -60,25 +61,26 @@ function syncOutputs() {
         rent: money(m.hahaTerms.rent, 0),
         total: money(m.haha.siteFee, 2)
       }),
-      upRevVariety: '+' + money(m.growth.varietyRev, 0) + '/mo',
-      upRevBasket:  '+' + money(m.growth.basketRev, 0) + '/mo',
-      upRevStock:   '+' + money(m.growth.stockRev, 0) + '/mo',
-      upRevPayment: '+' + money(m.growth.paymentRev, 0) + '/mo',
-      projSales: m.hasData ? money(m.haha.sales, 0) + '/mo' : '—',
+      upRevVariety: '+' + money(m.growth.varietyRev, 0) + t('common.perMonth'),
+      upRevBasket:  '+' + money(m.growth.basketRev, 0) + t('common.perMonth'),
+      upRevStock:   '+' + money(m.growth.stockRev, 0) + t('common.perMonth'),
+      upRevPayment: '+' + money(m.growth.paymentRev, 0) + t('common.perMonth'),
+      projSales: m.hasData ? money(m.haha.sales, 0) + t('common.perMonth') : '—',
       revUplift: m.hasData ? '+' + pct(m.growth.totalRevenueGrowthPct, 1) + ' (+' + money(m.growth.totalRevenueGrowth, 0) + ')' : '—',
-      projDaily: m.hasData ? nf(m.haha.dailyOrders, 1) + ' / day' : '—',
+      projDaily: m.hasData ? nf(m.haha.dailyOrders, 1) + t('common.perDay') : '—',
       cashSigning: money(m.finance.cashDueAtSigning, 0),
-      finPayment: money(m.finance.payment, 2) + '/mo',
+      finPayment: money(m.finance.payment, 2) + t('common.perMonth'),
       finCoverage: isFinite(m.finance.coverage) ? nf(m.finance.coverage, 2) + '×' : '—',
-      finCashAfter: money(m.finance.cashAfter, 0) + '/mo',
+      finCashAfter: money(m.finance.cashAfter, 0) + t('common.perMonth'),
       selfFundText: t('s2.selfFund', {
         cov: nf(m.finance.coverage, 2),
         cash: money(m.finance.cashAfter, 0),
+        vsOld: signedMoney(m.finance.vsOldCash, 0),
         term: m.finance.months
       }),
-      hahaTotalCost: money(m.haha.cost, 0) + '/mo',
+      hahaTotalCost: money(m.haha.cost, 0) + t('common.perMonth'),
       kpiGain: m.hasData ? signedMoney(m.invest.delta, 0) : '—',
-      kpiAnnual: m.hasData ? signedMoney(m.invest.annualDelta, 0) + ' / yr' : '—',
+      kpiAnnual: m.hasData ? signedMoney(m.invest.annualDelta, 0) + t('common.perYear') : '—',
       kpiStandalone: m.hasData ? monthsFmt(m.invest.standalonePayback) : '—',
       kpiInc: m.hasData ? monthsFmt(m.invest.payback) : '—',
       kpi3yr: m.hasData ? signedMoney(m.invest.threeYearNet, 0) : '—',
@@ -110,7 +112,8 @@ function syncOutputs() {
       finEnabled: !!p.invest.finance.enabled,
       finDisabled: !p.invest.finance.enabled,
       selfFunding: m.finance.selfFunding,
-      hiddenRepairRisk: m.hiddenRepairRisk
+      hiddenRepairRisk: m.hiddenRepairRisk,
+      ordersEstimated: !!p.baseline.ordersEstimated
     };
     $$('[data-show]').forEach(el => {
       const k = el.dataset.show;
@@ -149,7 +152,7 @@ function syncOutputs() {
             <tr><td>${esc(t('s2.rSales'))}</td><td class="r">${money(m.old.sales, 0)}</td><td class="r">${money(m.haha.sales, 0)}</td><td class="r pos">${signedMoney(m.growth.totalRevenueGrowth, 0)}</td></tr>
             <tr class="total"><td>${esc(t('s2.rCost'))}</td><td class="r">${money(m.old.cost, 0)}</td><td class="r">${money(m.haha.cost, 0)}</td><td class="r">${signedMoney(m.haha.cost - m.old.cost, 0)}</td></tr>
             <tr class="primary"><td>${esc(t('s2.rProfit'))}</td><td class="r">${money(m.old.profit, 0)}</td><td class="r">${money(m.haha.profit, 0)}</td><td class="r ${m.invest.delta >= 0 ? 'pos' : 'neg'}">${signedMoney(m.invest.delta, 0)}</td></tr>
-            <tr><td>${esc(t('s2.rMargin'))}</td><td class="r">${pct(m.old.margin, 1)}</td><td class="r">${pct(m.haha.margin, 1)}</td><td class="r">${(m.haha.margin - m.old.margin >= 0 ? '+' : '') + nf(m.haha.margin - m.old.margin, 1)} pts</td></tr>
+            <tr><td>${esc(t('s2.rMargin'))}</td><td class="r">${pct(m.old.margin, 1)}</td><td class="r">${pct(m.haha.margin, 1)}</td><td class="r">${(m.haha.margin - m.old.margin >= 0 ? '+' : '') + nf(m.haha.margin - m.old.margin, 1)} ${esc(t('s2.pts'))}</td></tr>
           </tbody>
         </table>
       `;
@@ -160,7 +163,7 @@ function syncOutputs() {
     if (stHost) {
       stHost.innerHTML = `
         <table class="table">
-          <thead><tr><th>%</th><th class="r">Profit</th><th class="r">Delta</th><th class="r">Payback</th>${m.finance.enabled ? '<th class="r">Cov</th>' : ''}</tr></thead>
+          <thead><tr><th>%</th><th class="r">${esc(t('rep.profit'))}</th><th class="r">${esc(t('rep.delta'))}</th><th class="r">${esc(t('rep.payback'))}</th>${m.finance.enabled ? `<th class="r">${esc(t('s2.cov'))}</th>` : ''}</tr></thead>
           <tbody>
             ${m.stress.map(st => `
               <tr>
@@ -215,17 +218,45 @@ function syncOutputs() {
           <div style="margin-bottom:10px"><span class="status-badge ${m.verdict}">${esc(t('verdict.' + m.verdict))}</span></div>
           <div class="rail-label" style="margin-top:12px;margin-bottom:2px">${esc(t('r2.gain'))}</div>
           <div class="rail-big ${m.invest.delta >= 0 ? 'pos' : 'neg'}">${m.hasData ? signedMoney(m.invest.delta, 0) : '—'}</div>
-          <div class="rail-sub">${m.hasData ? signedMoney(m.invest.annualDelta, 0) + ' / yr' : ''}</div>
+          <div class="rail-sub">${m.hasData ? signedMoney(m.invest.annualDelta, 0) + t('common.perYear') : ''}</div>
           <div class="rail-div"></div>
-          <div class="rail-row"><span>${esc(t('r2.standalone'))}</span><strong>${m.hasData ? esc(monthsFmt(m.invest.standalonePayback)) : '—'}</strong></div>
           <div class="rail-row"><span>${esc(t('r2.inc'))}</span><strong>${m.hasData ? esc(monthsFmt(m.invest.payback)) : '—'}</strong></div>
           <div class="rail-row"><span>${esc(t('r2.threeYr'))}</span><strong>${m.hasData ? signedMoney(m.invest.threeYearNet, 0) : '—'}</strong></div>
           <div class="rail-row"><span>${esc(t('r2.netInv'))}</span><strong>${money(m.invest.total, 0)}</strong></div>
           <div class="rail-row"><span>${esc(t('r2.model'))}</span><strong>${esc(m.invest.model.name)}</strong></div>
-          <div class="rail-div"></div>
-          <button type="button" class="button button-white button-wide" data-nav="step3">${esc(t('r2.toReport'))}</button>
         </div>
       `;
     }
+    syncStepGates(p);
+    renderStorageWarning();
   }
+}
+
+function syncStepGates(p) {
+  if (!p) return;
+  const s1 = validateStep1(p);
+  const s2 = validateStep2(p);
+  const ready = { step2: s1.ok, step3: s1.ok && s2.ok };
+
+  $$('[data-step-cta]').forEach(btn => {
+    const step = btn.dataset.stepCta;
+    const ok = !!ready[step];
+    btn.disabled = !ok;
+    btn.setAttribute('aria-disabled', String(!ok));
+    btn.title = ok ? '' : (step === 'step3' ? stepMissingText('step2', p) : stepMissingText('step1', p));
+  });
+  $$('[data-step-hint]').forEach(el => {
+    const step = el.dataset.stepHint;
+    el.textContent = stepMissingText(step, p);
+  });
+
+  $$('.nav-item[data-nav="step2"]').forEach(btn => {
+    btn.disabled = !s1.ok;
+    btn.title = s1.ok ? '' : t('validate.step1First');
+  });
+  $$('.nav-item[data-nav="step3"]').forEach(btn => {
+    const ok = s1.ok && s2.ok;
+    btn.disabled = !ok;
+    btn.title = ok ? '' : (s1.ok ? t('validate.step2First') : t('validate.step1First'));
+  });
 }

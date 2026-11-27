@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style data-src="css/base.css">
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    Design System: High-contrast Black / White / Soft Grey
    Aligned with HAHA Location Pitch Builder visual specifications
    ===================================================================== */
@@ -286,6 +286,22 @@ button { cursor: pointer; }
 .tip-wrap {
   display: inline-flex;
   align-items: center;
+}
+.storage-warning {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 32px;
+  background: var(--amber-soft);
+  border-bottom: 1px solid var(--amber-line);
+  color: var(--amber);
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.storage-warning .button {
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 </style>
@@ -1117,6 +1133,13 @@ input[type="checkbox"] { accent-color: #111; width: 16px; height: 16px; cursor: 
   padding-top: 10px;
   border-top: 1px solid var(--line);
 }
+.project-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
 .empty-box {
   padding: 36px 20px;
   text-align: center;
@@ -1126,6 +1149,34 @@ input[type="checkbox"] { accent-color: #111; width: 16px; height: 16px; cursor: 
   border-radius: 12px;
   border: 1px dashed var(--line-2);
 }
+
+/* ================= STEP FOOTER ACTION ================= */
+.step-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.step-footer-copy { min-width: 0; }
+.step-footer-copy strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  color: #111;
+}
+.step-footer-copy span {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.step-footer .button { flex-shrink: 0; min-width: 230px; }
 
 </style>
 <style data-src="css/report.css">
@@ -1258,7 +1309,8 @@ input[type="checkbox"] { accent-color: #111; width: 16px; height: 16px; cursor: 
 }
 .modal h3 { margin: 0 0 6px; font-size: 18px; font-weight: 800; }
 .modal p { margin: 0 0 14px; font-size: 13px; color: #555; line-height: 1.5; }
-.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+.modal-actions .modal-action-left { margin-right: auto; }
 
 .toast {
   position: fixed;
@@ -1296,6 +1348,7 @@ input[type="checkbox"] { accent-color: #111; width: 16px; height: 16px; cursor: 
   .dashboard-grid, .hero-strip { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .topbar { padding: 0 16px; }
+  .storage-warning { padding: 10px 16px; }
   .page-content { padding: 20px 16px 56px; }
 }
 @media (max-width: 640px) {
@@ -1303,6 +1356,10 @@ input[type="checkbox"] { accent-color: #111; width: 16px; height: 16px; cursor: 
   .choices-3 { margin-left: 0; }
   .stats-grid { grid-template-columns: 1fr; }
   .proposal-paper { padding: 22px 18px; }
+  .storage-warning { flex-wrap: wrap; }
+  .storage-warning .button { margin-left: 0; }
+  .step-footer { flex-direction: column; align-items: stretch; }
+  .step-footer .button { width: 100%; min-width: 0; }
 }
 
 </style>
@@ -1329,6 +1386,7 @@ input[type="checkbox"] { accent-color: #111; width: 16px; height: 16px; cursor: 
   <aside class="sidebar" id="sidebar"></aside>
   <div class="main-area">
     <header class="topbar" id="topbar"></header>
+    <div id="storageWarning" class="storage-warning hidden"></div>
     <main class="page-content" id="pageContent"></main>
   </div>
 </div>
@@ -1338,7 +1396,7 @@ input[type="checkbox"] { accent-color: #111; width: 16px; height: 16px; cursor: 
 
 <script data-src="js/config.js">
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -1370,6 +1428,8 @@ const URGENCY_HIGH_LINE = 60;
 function createBlankProject(locationName) {
   return {
     id: 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    schemaVersion: 2,
+    scoringVersion: 2,
     updatedAt: new Date().toISOString(),
     meta: {
       locationName: locationName || '',
@@ -1381,14 +1441,15 @@ function createBlankProject(locationName) {
     machine: {
       type: 'snack',
       age: '',
-      condition: 'fair',
-      monitoring: 'no',
-      payments: ['coin', 'bill']
+      condition: '',
+      monitoring: '',
+      payments: []
     },
-    diag: { q1: 5, q2: 5, q3: 5, q4: 5, q5: 5, q6: 5 },
+    diag: { q1: null, q2: null, q3: null, q4: null, q5: null, q6: null },
     baseline: {
       monthlySales: '',
       monthlyOrders: '',
+      ordersEstimated: false,
       profitMode: 'actual', // 'actual' | 'margin' | 'detail'
       actualProfit: '',
       estMarginPct: 28,
@@ -1511,7 +1572,7 @@ function recommendedModel(dailyOrders, machineType) {
 </script>
 <script data-src="js/utils.js">
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -1535,6 +1596,11 @@ function signedMoney(v, d) {
   return (n >= 0 ? '+' : '-') + '$' + nf(Math.abs(n), d == null ? 0 : d);
 }
 function pct(v, d) { return nf(v, d == null ? 1 : d) + '%'; }
+function monthsFmt(v) { return isFinite(v) ? nf(v, 1) + ' ' + t('common.mo') : t('common.noPayback'); }
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
 
 function getPath(obj, path) { return path.split('.').reduce((o, k) => o == null ? undefined : o[k], obj); }
 function setPath(obj, path, val) {
@@ -1575,10 +1641,22 @@ function downloadFile(filename, content, mime) {
   }
 }
 
+function collectAppCss() {
+  const inline = Array.from(document.querySelectorAll('style')).map(el => el.textContent || '').join('\n');
+  if (inline.trim()) return inline;
+  let css = '';
+  Array.from(document.styleSheets).forEach(sheet => {
+    try {
+      css += Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n') + '\n';
+    } catch (e) {}
+  });
+  return css;
+}
+
 </script>
 <script data-src="js/i18n.js">
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -1594,7 +1672,7 @@ const STR = {
     'nav.s3': 'Assessment Report',
     'side.local': 'Data stays in this browser',
     'side.localSub': 'Auto-saved locally',
-    'side.ver': 'v2.2 · Operator Replacement Suite',
+    'side.ver': 'v2.3 · Operator Replacement Suite',
     'top.newProject': '+ New Project',
     'top.newDisabledTip': 'Return to Dashboard or My Projects to start a new assessment so current progress is not interrupted.',
     'top.untitled': 'Untitled Location',
@@ -1615,15 +1693,26 @@ const STR = {
     'common.no': 'No',
     'common.mo': 'mo',
     'common.months': 'months',
+    'common.perDay': '/ day',
+    'common.perMonth': '/mo',
+    'common.perYear': '/yr',
     'common.noPayback': 'No payback',
-    'common.backup': 'Backup',
-    'common.restore': 'Restore',
+    'common.backupProject': 'Backup',
+    'common.backupAll': 'Export all',
+    'common.import': 'Import',
     'common.created': 'New project created',
     'common.sampleCreated': 'Sample project added',
-    'common.backedUp': 'Backup file downloaded',
-    'common.restored': 'Projects restored successfully',
+    'common.backedUp': 'Project backup downloaded',
+    'common.exportedAll': 'All projects exported',
+    'common.reportDownloaded': 'HTML report downloaded',
+    'common.backupFailed': 'Backup failed. Please try again.',
+    'common.imported': 'Imported {count} project(s)',
+    'common.importedSkipped': 'Imported {count}; skipped {skipped} invalid item(s)',
     'common.invalidFile': 'Invalid backup JSON file',
     'common.deleted': 'Project deleted',
+    'common.importFailed': 'Import failed. Please check the file and try again.',
+    'storage.warning': 'Browser storage is unavailable or full. Changes are only in this tab and will be lost on refresh. Download a backup now.',
+    'modal.deleteBackupHint': 'Tip: download a backup before deleting if you may need this assessment later.',
 
     'dash.kicker': 'HAHA VENDING · OPERATOR REPLACEMENT TOOLKIT',
     'dash.title': 'Turn legacy vending sites into high-margin AI locations.',
@@ -1634,8 +1723,8 @@ const STR = {
     'dash.stat1Sub': 'Saved in this browser',
     'dash.stat2': 'Recommended Replacements',
     'dash.stat2Sub': 'Economically viable sites',
-    'dash.stat3': 'Avg Payback Period',
-    'dash.stat3Sub': 'Standalone machine payback',
+    'dash.stat3': 'Avg Payback vs. Current',
+    'dash.stat3Sub': 'Incremental payback vs. keeping the current machine',
     'dash.stat4': 'Avg Monthly Profit Gain',
     'dash.stat4Sub': 'Across modeled locations',
     'dash.recent': 'Recent Projects',
@@ -1699,6 +1788,7 @@ const STR = {
     's1.q6a': 'Strong (10)', 's1.q6b': 'Moderate (5)', 's1.q6c': 'Low (0)',
 
     's1.railTitle': 'REPLACEMENT URGENCY',
+    's1.railPending': 'Complete required fields to score',
     's1.railHw': 'Hardware Pain',
     's1.railComm': 'Commercial Signals',
     's1.railNext': 'Continue to Financial Analysis →',
@@ -1707,6 +1797,33 @@ const STR = {
     's1.tierLow': 'Low Urgency / Validate First',
     's1.critTitle': 'Scoring Criteria',
     's1.critDesc': 'Total 100 pts = Hardware Pain (40 pts: Age +12, Cashless gap +12, No monitoring +8, Condition +8) + 6 Commercial Signals (60 pts: 10/5/0 each).',
+    's1.footerTitle': 'Ready for the financial analysis?',
+    's1.footerReady': 'All required site and diagnostic inputs are complete.',
+    's2.footerTitle': 'Ready to generate the assessment report?',
+    's2.footerReady': 'Baseline, investment and financing inputs are complete.',
+    'validate.project': 'Create or open a project first.',
+    'validate.need': 'Still needed: {items}',
+    'validate.step1First': 'Complete Step 01 first.',
+    'validate.step2First': 'Complete Step 02 first.',
+    'validate.locationName': 'location name',
+    'validate.machineAge': 'machine age',
+    'validate.condition': 'machine condition',
+    'validate.monitoring': 'remote monitoring',
+    'validate.payments': 'at least one payment method',
+    'validate.diag': '6 diagnostic questions',
+    'validate.monthlySales': 'monthly sales',
+    'validate.monthlyOrders': 'monthly orders',
+    'validate.profitMode': 'profit mode',
+    'validate.actualProfit': 'actual monthly profit',
+    'validate.estMarginPct': 'estimated net margin',
+    'validate.siteDeal': 'site agreement type',
+    'validate.siteShare': 'site revenue share',
+    'validate.siteRent': 'site rent',
+    'validate.model': 'equipment model',
+    'validate.downPct': 'down payment',
+    'validate.term': 'financing term',
+    'validate.apr': 'APR',
+    'validate.docFee': 'doc fee',
 
     'venue.office': 'Office / Corporate', 'venue.factory': 'Factory / Industrial', 'venue.gym': 'Gym / Fitness',
     'venue.hospital': 'Hospital / Medical', 'venue.hotel': 'Hotel / Hospitality', 'venue.school': 'School / University',
@@ -1723,6 +1840,7 @@ const STR = {
     's2.mSales': 'Monthly Sales ($)',
     's2.mOrders': 'Monthly Orders',
     's2.estOrders': "Don't know orders? Estimate at $2.50 AOV",
+    's2.estOrdersNote': 'Estimated from sales at a $2.50 AOV; the report will flag it.',
     's2.dDaily': 'Daily Orders (÷30)',
     's2.dAov': 'Avg Order Value (Sales ÷ Orders)',
     's2.dMargin': 'Current Net Margin',
@@ -1764,6 +1882,7 @@ const STR = {
 
     's2.secC': 'C. Machine Recommendation, Investment & Financing',
     's2.secCd': 'Auto-recommended by daily order volume & machine type. Click any model to select.',
+    's2.autoModel': 'Use recommended',
     's2.recBadge': 'Recommended',
     'tag.compact': 'Compact', 'tag.standard': 'Standard', 'tag.bestseller': 'US Best Seller',
     'tag.flagship': 'Flagship', 'tag.large': 'Large Capacity', 'tag.double': 'Double Door', 'tag.frozen': 'Frozen',
@@ -1782,8 +1901,10 @@ const STR = {
     's2.cashSigning': 'Day 1 Cash (Signing)',
     's2.monthlyPmt': 'Monthly Payment',
     's2.coverage': 'Payment Coverage',
+    's2.cov': 'Cov',
+    's2.pts': 'pts',
     's2.cashAfter': 'Cash After Payment',
-    's2.selfFund': 'Self-Funding Cash Flow: HAHA net profit covers the monthly payment by {cov}× — cash-flow positive from Month 1 ({cash}/mo left over), and you own the machine outright after {term} months.',
+    's2.selfFund': 'HAHA net profit covers the monthly payment {cov}× — after the payment, HAHA leaves {cash}/mo. Compared with today, you are {vsOld}/mo; you own the machine outright after {term} months.',
 
     's2.secD': 'D. HAHA Operating Costs',
     's2.secDd': 'Closed by default. Click to adjust COGS, Shrinkage/Spoilage, editable AI fee, and monthly fixed costs.',
@@ -1801,12 +1922,12 @@ const STR = {
 
     's2.secE': 'E. Before vs. After Comparison, Cash Flow & Stress Test',
     's2.kpiGain': 'Monthly Profit Gain',
-    's2.kpiStandalone': 'Standalone Equipment Payback',
-    's2.kpiStandaloneSub': 'Net investment ÷ HAHA profit',
-    's2.kpiInc': 'Incremental Payback',
+    's2.kpiStandalone': 'Machine-Only Payback',
+    's2.kpiStandaloneSub': 'If there were no existing machine profit to compare',
+    's2.kpiInc': 'Payback vs. Current Machine',
     's2.kpiIncSub': 'Net investment ÷ monthly gain',
     's2.kpi3yr': '3-Year Net Gain',
-    's2.kpi3yrSub': '36-mo gain minus net investment',
+    's2.kpi3yrSub': '36-mo gain minus investment and financing cost',
     's2.metric': 'Operating Metric',
     's2.cur': 'Current Machine',
     's2.haha': 'HAHA (Projected)',
@@ -1820,7 +1941,8 @@ const STR = {
     's2.chartTitle': '36-Month Cumulative Cash Flow',
     's2.legOld': 'Keep Current Machine',
     's2.legNew': 'Replace with HAHA',
-    's2.chartExplain': 'How to read this chart: The dashed grey line tracks cumulative profit if you keep the old machine. The green HAHA line starts below zero by your upfront investment, climbs faster each month, and crosses the grey line at the incremental payback month — everything above the dashed line afterward is pure extra profit from upgrading.',
+    's2.chartExplain': 'How to read this chart: the dashed grey line tracks cumulative profit if you keep the old machine. The green HAHA line starts at the cash due at signing (or net investment for cash), includes monthly payments when financed, and crosses the grey line at the cash payback month — everything above the dashed line afterward is extra cash from upgrading.',
+    's2.cashPaybackShort': 'cash',
     's2.zeroTitle': 'Zero-Growth Downside Check',
     's2.zeroText': 'Even with 0% sales growth (today’s sales under HAHA operating costs), monthly net profit is {v} ({gap} vs. today).',
     's2.stressTitle': 'Stress Test (Sales Realization)',
@@ -1831,8 +1953,8 @@ const STR = {
 
     'r2.title': 'LIVE FINANCIAL SNAPSHOT',
     'r2.gain': 'Monthly Profit Gain',
-    'r2.standalone': 'Standalone Payback',
-    'r2.inc': 'Incremental Payback',
+    'r2.standalone': 'Machine-Only Payback',
+    'r2.inc': 'Payback vs. Current Machine',
     'r2.threeYr': '3-Year Net Gain',
     'r2.netInv': 'Net Investment',
     'r2.model': 'Selected Model',
@@ -1847,9 +1969,9 @@ const STR = {
     'repHead.conditional': 'Validate demand or resize hardware before committing to the {model}.',
     'repHead.defer': 'Defer replacement until site volume grows or site fees improve.',
 
-    'vReason.gain': 'Adds {delta}/mo ({annual}/yr) in net profit — standalone equipment payback in {standalone} ({inc} incremental payback).',
-    'vReason.3yr': 'Generates {net3} in cumulative net extra profit over 36 months after recovering the {inv} net investment.',
-    'vReason.fin': 'Monthly financing payment ({pmt}/mo) is covered {cov}× by HAHA net profit, remaining cash-flow positive from Month 1.',
+    'vReason.gain': 'Adds {delta}/mo ({annual}/yr) in net profit — payback vs. keeping the current machine in {inc}.',
+    'vReason.3yr': 'Generates {net3} in cumulative net extra profit over 36 months after recovering the {inv} net investment and financing cost.',
+    'vReason.fin': 'Monthly financing payment ({pmt}/mo) is covered {cov}× by HAHA net profit; vs. today, monthly cash changes by {vsOld}.',
     'vReason.downside': 'At 60% of projected sales (stress test), monthly net profit remains {down}.',
     'vReason.neg': 'Under current assumptions, monthly profit does not yet exceed the existing machine.',
 
@@ -1896,7 +2018,34 @@ const STR = {
     's3.deployNote': 'Deployment Reminder: Before delivery, briefly verify a standard power outlet, 4G cellular signal, and doorway/placement clearance at the spot.',
     's3.basisSub': 'Assessment Basis & Disclaimer',
     's3.method': 'Methodology: Monthly Sales and Monthly Orders (30-day backend basis) establish AOV (Sales ÷ Orders) with zero conflicting inputs. Projected sales apply only client-agreed uplifts (order uplift capped at 40% pro-rata; AOV at 25%). HAHA costs account for COGS, site fees, card processing, shrinkage/spoilage reserve, fixed monthly SaaS/SIM/POS/maintenance, and per-order AI recognition. Financing uses equal monthly payments with any doc fee paid upfront at signing.',
-    's3.disclaimer': 'Disclaimer: All projections in this report are planning estimates based on operator-provided inputs and agreed assumptions, not guarantees of future sales or profit. Actual performance varies by foot traffic, pricing, product mix, and daily operations.'
+    's3.disclaimer': 'Disclaimer: All projections in this report are planning estimates based on operator-provided inputs and agreed assumptions, not guarantees of future sales or profit. Actual performance varies by foot traffic, pricing, product mix, and daily operations.',
+
+    'rep.date': 'Date',
+    'rep.recommendedModel': 'Recommended Model',
+    'rep.growthDriver': 'Growth Driver',
+    'rep.clientView': 'Client View',
+    'rep.appliedPct': 'Applied %',
+    'rep.monthlyImpact': 'Monthly Impact',
+    'rep.stress': 'Stress',
+    'rep.profit': 'Profit',
+    'rep.delta': 'Delta',
+    'rep.payback': 'Payback',
+    'rep.msrp': 'MSRP',
+    'rep.freightInstallRemoval': 'Freight / Install / Removal',
+    'rep.monthly': 'Monthly',
+    'rep.annual': 'Annual',
+    'rep.years': 'yrs',
+    'rep.perMonth': '/mo',
+    'rep.perYear': '/yr',
+    'rep.financeLine': '{months}m @ {apr}% ({payment}/mo · {coverage}×)',
+    'rep.financeCost': 'Financing cost (first 36 mo)',
+    'rep.machineOnly': 'Machine-only payback',
+    'rep.estimatedOrders': 'Monthly orders were estimated from sales at a $2.50 AOV; replace with backend data when available.',
+    'rep.capNote': 'Order uplift is capped at 40% and AOV at 25%. The table shows the effective percentages after pro-rata scaling.',
+    'rep.downsideTitle': 'Downside check',
+    'rep.downsideText': 'At 0% sales growth, monthly net profit is {zero}; at 60% of the projection, {stress}.',
+    'rep.delayText': 'Each month of delay leaves about {delta} of profit on the table; 6 months ≈ {six}.',
+    'rep.financeCostNote': 'The 3-year net gain includes {cost} of financing cost over the first 36 months.'
   },
 
   zh: {
@@ -1910,7 +2059,7 @@ const STR = {
     'nav.s3': '评估报告',
     'side.local': '数据仅保存在本浏览器',
     'side.localSub': '已自动本地保存',
-    'side.ver': 'v2.2 · 运营商换机决策工具',
+    'side.ver': 'v2.3 · 运营商换机决策工具',
     'top.newProject': '+ 新建项目',
     'top.newDisabledTip': '请先返回「工作台」或「我的项目」再新建评估，避免中断当前项目进度。',
     'top.untitled': '未命名点位',
@@ -1931,15 +2080,26 @@ const STR = {
     'common.no': '否',
     'common.mo': '个月',
     'common.months': '个月',
+    'common.perDay': '/天',
+    'common.perMonth': '/月',
+    'common.perYear': '/年',
     'common.noPayback': '无法回本',
-    'common.backup': '导出备份',
-    'common.restore': '导入备份',
+    'common.backupProject': '备份',
+    'common.backupAll': '导出全部',
+    'common.import': '导入项目',
     'common.created': '新项目已创建',
     'common.sampleCreated': '已新建示例项目',
-    'common.backedUp': '备份文件已下载',
-    'common.restored': '项目数据已导入',
+    'common.backedUp': '项目备份已下载',
+    'common.exportedAll': '全部项目已导出',
+    'common.reportDownloaded': 'HTML 报告已下载',
+    'common.backupFailed': '备份失败，请重试。',
+    'common.imported': '已导入 {count} 个项目',
+    'common.importedSkipped': '已导入 {count} 个，跳过 {skipped} 个无效项',
     'common.invalidFile': '备份文件格式无效',
     'common.deleted': '项目已删除',
+    'common.importFailed': '导入失败，请检查文件后重试。',
+    'storage.warning': '浏览器本地存储不可用或已满，当前修改只保存在本页，刷新会丢失。请立即下载备份。',
+    'modal.deleteBackupHint': '提示：如果之后还可能用到这个评估，建议先下载备份再删除。',
 
     'dash.kicker': 'HAHA VENDING · 运营商换机评估套件',
     'dash.title': '把传统售货机点位升级为高毛利 AI 无人零售。',
@@ -1950,8 +2110,8 @@ const STR = {
     'dash.stat1Sub': '保存在当前浏览器',
     'dash.stat2': '建议替换点位',
     'dash.stat2Sub': '经济性达标的点位',
-    'dash.stat3': '平均回本周期',
-    'dash.stat3Sub': '设备自身回本均值',
+    'dash.stat3': '平均增量回本周期',
+    'dash.stat3Sub': '对比保留旧机的增量回本均值',
     'dash.stat4': '平均月利润增量',
     'dash.stat4Sub': '已测算点位均值',
     'dash.recent': '最近项目',
@@ -2015,6 +2175,7 @@ const STR = {
     's1.q6a': '非常严重 (10)', 's1.q6b': '有一定影响 (5)', 's1.q6c': '没有影响 (0)',
 
     's1.railTitle': '换机紧迫度评分',
+    's1.railPending': '完成必填项后生成评分',
     's1.railHw': '旧机硬件痛点',
     's1.railComm': '商业诊断信号',
     's1.railNext': '进入经营数据分析 →',
@@ -2023,6 +2184,33 @@ const STR = {
     's1.tierLow': '紧迫度低 / 先验证',
     's1.critTitle': '评分标准说明',
     's1.critDesc': '总分 100 分 = 硬件痛点（40 分：机龄 +12、支付短板 +12、无监控 +8、机况 +8）+ 6 道商业信号（60 分：每题 10/5/0 分）。',
+    's1.footerTitle': '可以进入经营数据分析了吗？',
+    's1.footerReady': '点位与诊断必填项已完成。',
+    's2.footerTitle': '可以生成评估报告了吗？',
+    's2.footerReady': '销售基准、投资与分期参数已完成。',
+    'validate.project': '请先创建或打开一个项目。',
+    'validate.need': '还差：{items}',
+    'validate.step1First': '请先完成第 01 步。',
+    'validate.step2First': '请先完成第 02 步。',
+    'validate.locationName': '点位名称',
+    'validate.machineAge': '机龄',
+    'validate.condition': '机器状况',
+    'validate.monitoring': '远程监控',
+    'validate.payments': '至少一种支付方式',
+    'validate.diag': '6 道诊断题',
+    'validate.monthlySales': '月销售额',
+    'validate.monthlyOrders': '月订单数',
+    'validate.profitMode': '利润录入方式',
+    'validate.actualProfit': '实际月净利润',
+    'validate.estMarginPct': '预估净利率',
+    'validate.siteDeal': '场地合同类型',
+    'validate.siteShare': '销售分成比例',
+    'validate.siteRent': '固定月租',
+    'validate.model': '机型',
+    'validate.downPct': '首付比例',
+    'validate.term': '分期期数',
+    'validate.apr': '年化利率',
+    'validate.docFee': '签约手续费',
 
     'venue.office': '办公室 / 企业园区', 'venue.factory': '工厂 / 工业园', 'venue.gym': '健身房',
     'venue.hospital': '医院 / 医疗', 'venue.hotel': '酒店 / 服务业', 'venue.school': '学校 / 大学',
@@ -2039,6 +2227,7 @@ const STR = {
     's2.mSales': '月销售额 ($)',
     's2.mOrders': '月度订单数',
     's2.estOrders': '不知道订单数？按 $2.50 客单价估算',
+    's2.estOrdersNote': '按 $2.50 客单价估算，报告会自动标注。',
     's2.dDaily': '日均订单数 (÷30)',
     's2.dAov': '平均客单价 (月销售额 ÷ 月订单数)',
     's2.dMargin': '当前净利率',
@@ -2080,6 +2269,7 @@ const STR = {
 
     's2.secC': 'C. 机型推荐、投资与分期',
     's2.secCd': '根据点位日均单量与旧机类型自动推荐机型，点击任意机型可手动切换。',
+    's2.autoModel': '恢复自动推荐',
     's2.recBadge': '推荐',
     'tag.compact': '紧凑型', 'tag.standard': '标准型', 'tag.bestseller': '北美畅销',
     'tag.flagship': '旗舰型', 'tag.large': '大容量', 'tag.double': '双门超大', 'tag.frozen': '冷冻',
@@ -2098,8 +2288,10 @@ const STR = {
     's2.cashSigning': '签约首日现金',
     's2.monthlyPmt': '每月月供',
     's2.coverage': '月供覆盖倍数',
+    's2.cov': '覆盖',
+    's2.pts': '个百分点',
     's2.cashAfter': '交完月供剩余现金',
-    's2.selfFund': '自给自足正现金流：HAHA 月净利覆盖月供 {cov} 倍 — 首月即正现金流（交完月供还剩 {cash}/月），{term} 期后机器完全归你所有。',
+    's2.selfFund': 'HAHA 月净利覆盖月供 {cov} 倍 — 交完月供后 HAHA 还剩 {cash}/月；相对今天净多 {vsOld}/月，{term} 期后机器归你所有。',
 
     's2.secD': 'D. HAHA 运营成本微调',
     's2.secDd': '默认折叠；点击展开可调整商品成本、货损率、可编辑 AI 识别费及月固定费用。',
@@ -2117,12 +2309,12 @@ const STR = {
 
     's2.secE': 'E. 换机前后对比、现金流与压力测试',
     's2.kpiGain': '每月多赚',
-    's2.kpiStandalone': '设备自身回本',
-    's2.kpiStandaloneSub': '净投资 ÷ HAHA 月净利',
-    's2.kpiInc': '增量回本',
+    's2.kpiStandalone': '仅设备回本',
+    's2.kpiStandaloneSub': '假设没有旧机利润可比',
+    's2.kpiInc': '对比保留旧机回本',
     's2.kpiIncSub': '净投资 ÷ 每月多赚',
     's2.kpi3yr': '3 年净多赚',
-    's2.kpi3yrSub': '36个月增量扣除净投资',
+    's2.kpi3yrSub': '36个月增量扣除净投资与融资成本',
     's2.metric': '经营指标',
     's2.cur': '现有机器',
     's2.haha': 'HAHA（预测）',
@@ -2136,7 +2328,8 @@ const STR = {
     's2.chartTitle': '36 个月累计现金流曲线',
     's2.legOld': '保留现有机器',
     's2.legNew': '换用 HAHA',
-    's2.chartExplain': '读图说明：灰色虚线代表「保留旧机」逐月累计利润；绿色实线从负的净投资额起步，因每月赚得更多爬坡更陡，两线交叉点就是增量回本时间，交叉之后绿线高出灰线的部分就是换机净多赚的现金。',
+    's2.chartExplain': '读图说明：灰色虚线代表「保留旧机」逐月累计利润；绿色实线从签约首日现金（全款则为净投资）起步，分期时计入每月月供，两线交叉点就是现金回本时间，交叉之后绿线高出灰线的部分就是换机净多赚的现金。',
+    's2.cashPaybackShort': '现金',
     's2.zeroTitle': '零增长下行检验',
     's2.zeroText': '哪怕销售额零增长（按今天销量 + HAHA 成本），月净利润仍有 {v}（相对今天 {gap}）。',
     's2.stressTitle': '压力测试（预测达成率）',
@@ -2147,8 +2340,8 @@ const STR = {
 
     'r2.title': '实时财务摘要',
     'r2.gain': '每月利润增量',
-    'r2.standalone': '设备自身回本',
-    'r2.inc': '增量回本周期',
+    'r2.standalone': '仅设备回本',
+    'r2.inc': '对比保留旧机回本',
     'r2.threeYr': '3 年净多赚',
     'r2.netInv': '净投资额',
     'r2.model': '当前所选机型',
@@ -2163,9 +2356,9 @@ const STR = {
     'repHead.conditional': '建议先验证需求或调整机型配置，再决定是否投入 {model}。',
     'repHead.defer': '建议暂缓替换，待人流提升或场地费用优化后再评估。',
 
-    'vReason.gain': '每月净多赚 {delta}（每年 {annual}）— 设备自身 {standalone} 回本（按严格增量算 {inc} 回本）。',
-    'vReason.3yr': '扣除 {inv} 净投资后，36 个月累计净多赚 {net3}。',
-    'vReason.fin': '每月分期月供 {pmt}/月，HAHA 月净利覆盖 {cov} 倍，首月即可实现正现金流。',
+    'vReason.gain': '每月净多赚 {delta}（每年 {annual}）— 对比保留旧机 {inc} 回本。',
+    'vReason.3yr': '扣除 {inv} 净投资与融资成本后，36 个月累计净多赚 {net3}。',
+    'vReason.fin': '每月分期月供 {pmt}/月，HAHA 月净利覆盖 {cov} 倍；相对今天，每月净现金流变化 {vsOld}。',
     'vReason.downside': '在仅实现 60% 预测的下行压力测试中，月净利润仍为 {down}。',
     'vReason.neg': '当前假设下尚未产生高于现有机器的月利润增量。',
 
@@ -2212,7 +2405,34 @@ const STR = {
     's3.deployNote': '交付提示：设备发运前，建议现场顺手确认标准电源插座、4G 蜂窝信号及门宽摆放空间。',
     's3.basisSub': '评估方法与免责声明',
     's3.method': '测算方法：以月销售额与月订单数（30 天口径）为唯一基准计算客单价（销售额 ÷ 订单数），杜绝冲突输入。仅计入客户认可的增长项（订单总增幅封顶 40% 按比例分摊，客单价封顶 25%）。HAHA 成本含商品成本、场地费、银行卡手续费、货损准备、固定月费（SaaS/SIM/POS/维修）及单笔 AI 识别费；分期按等额本息计算，签约手续费现付不进本金。',
-    's3.disclaimer': '免责声明：本报告中的所有测算均基于运营商提供的数据与双方认可的规划假设，不构成对未来销售额或利润的承诺。实际表现取决于点位人流、定价、选品组合及日常运营。'
+    's3.disclaimer': '免责声明：本报告中的所有测算均基于运营商提供的数据与双方认可的规划假设，不构成对未来销售额或利润的承诺。实际表现取决于点位人流、定价、选品组合及日常运营。',
+
+    'rep.date': '日期',
+    'rep.recommendedModel': '推荐机型',
+    'rep.growthDriver': '增长驱动',
+    'rep.clientView': '客户认可',
+    'rep.appliedPct': '实际计入',
+    'rep.monthlyImpact': '月增量',
+    'rep.stress': '达成率',
+    'rep.profit': '净利润',
+    'rep.delta': '增量',
+    'rep.payback': '回本',
+    'rep.msrp': '建议零售价',
+    'rep.freightInstallRemoval': '运费 / 安装 / 拆除',
+    'rep.monthly': '月',
+    'rep.annual': '年',
+    'rep.years': '年',
+    'rep.perMonth': '/月',
+    'rep.perYear': '/年',
+    'rep.financeLine': '{months} 期 @ {apr}%（{payment}/月 · 覆盖 {coverage}×）',
+    'rep.financeCost': '融资成本（前 36 个月）',
+    'rep.machineOnly': '仅设备回本',
+    'rep.estimatedOrders': '月订单数按 $2.50 客单价估算；拿到后台数据后请替换。',
+    'rep.capNote': '订单总增幅封顶 40%、客单价封顶 25%；表中显示的是按比例缩放后的实际计入比例。',
+    'rep.downsideTitle': '下行检验',
+    'rep.downsideText': '即使销售额零增长，月净利润仍有 {zero}；若只做到预测的 60%，月净利润为 {stress}。',
+    'rep.delayText': '每延迟一个月，约少赚 {delta}；延迟 6 个月约少赚 {six}。',
+    'rep.financeCostNote': '3 年净多赚已扣除前 36 个月的融资成本 {cost}。'
   }
 };
 
@@ -2226,11 +2446,26 @@ function t(key, vars) {
 </script>
 <script data-src="js/store.js">
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
 const _memStore = new Map();
+const storageStatus = { available: true, lastError: '' };
+
+function storageProbe() {
+  try {
+    const k = '__haha_storage_probe__';
+    window.localStorage.setItem(k, '1');
+    window.localStorage.removeItem(k);
+    storageStatus.available = true;
+    storageStatus.lastError = '';
+  } catch (e) {
+    storageStatus.available = false;
+    storageStatus.lastError = e && e.message ? e.message : 'localStorage unavailable';
+  }
+}
+
 const safeStorage = {
   get(key) {
     try {
@@ -2243,7 +2478,14 @@ const safeStorage = {
   set(key, val) {
     const s = String(val);
     _memStore.set(key, s);
-    try { window.localStorage.setItem(key, s); } catch (e) {}
+    try {
+      window.localStorage.setItem(key, s);
+      return true;
+    } catch (e) {
+      storageStatus.available = false;
+      storageStatus.lastError = e && e.message ? e.message : 'localStorage write failed';
+      return false;
+    }
   },
   remove(key) {
     _memStore.delete(key);
@@ -2251,13 +2493,64 @@ const safeStorage = {
   }
 };
 
+storageProbe();
+
+/* Merge legacy / imported projects with the current schema without losing
+   values the user already entered. Returns null for unusable payloads. */
+function normalizeProject(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  if (!raw.meta || typeof raw.meta !== 'object') return null;
+
+  const base = createBlankProject(typeof raw.meta.locationName === 'string' ? raw.meta.locationName : '');
+  const p = Object.assign({}, base, raw);
+
+  p.id = (typeof raw.id === 'string' && raw.id) ? raw.id : base.id;
+  p.updatedAt = raw.updatedAt || new Date().toISOString();
+  p.schemaVersion = 2;
+
+  p.meta = Object.assign({}, base.meta, raw.meta);
+  p.meta.locationName = typeof p.meta.locationName === 'string' ? p.meta.locationName : '';
+  p.meta.venue = typeof p.meta.venue === 'string' && p.meta.venue ? p.meta.venue : base.meta.venue;
+  p.meta.city = typeof p.meta.city === 'string' ? p.meta.city : '';
+  p.meta.state = typeof p.meta.state === 'string' ? p.meta.state : '';
+  p.meta.date = typeof p.meta.date === 'string' && p.meta.date ? p.meta.date : todayStr();
+
+  p.machine = Object.assign({}, base.machine, raw.machine);
+  p.machine.type = typeof p.machine.type === 'string' && p.machine.type ? p.machine.type : base.machine.type;
+  p.machine.age = (p.machine.age === null || p.machine.age === undefined) ? '' : p.machine.age;
+  p.machine.condition = ['good', 'fair', 'poor', ''].includes(p.machine.condition) ? p.machine.condition : base.machine.condition;
+  p.machine.monitoring = ['yes', 'no', ''].includes(p.machine.monitoring) ? p.machine.monitoring : base.machine.monitoring;
+  p.machine.payments = Array.isArray(p.machine.payments)
+    ? p.machine.payments.filter(x => ['coin', 'bill', 'card', 'mobile'].includes(x))
+    : base.machine.payments.slice();
+
+  p.diag = Object.assign({}, base.diag, raw.diag);
+  ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'].forEach(k => {
+    const v = p.diag[k];
+    p.diag[k] = (v === 0 || v === 5 || v === 10) ? Number(v) : null;
+  });
+
+  p.baseline = Object.assign({}, base.baseline, raw.baseline);
+  p.site = Object.assign({}, base.site, raw.site);
+  p.uplift = Object.assign({}, base.uplift, raw.uplift);
+  ['variety', 'basket', 'stock', 'payment'].forEach(k => {
+    p.uplift[k] = Object.assign({}, base.uplift[k], raw.uplift && raw.uplift[k]);
+    if (!['yes', 'partial', 'no', ''].includes(p.uplift[k].accept)) p.uplift[k].accept = base.uplift[k].accept;
+  });
+  p.haha = Object.assign({}, base.haha, raw.haha);
+  p.invest = Object.assign({}, base.invest, raw.invest);
+  p.invest.finance = Object.assign({}, base.invest.finance, raw.invest && raw.invest.finance);
+  return p;
+}
+
 function loadSavedProjects() {
   try {
     const raw = safeStorage.get(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
-    }
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed.map(normalizeProject).filter(Boolean);
+    if (parsed && Array.isArray(parsed.projects)) return parsed.projects.map(normalizeProject).filter(Boolean);
+    if (parsed && parsed.project) return [normalizeProject(parsed.project)].filter(Boolean);
   } catch (e) {}
   return [];
 }
@@ -2268,24 +2561,95 @@ const app = {
   projects: loadSavedProjects(),
   activeId: safeStorage.get(ACTIVE_KEY) || null,
   search: '',
-  costExpanded: false
+  costExpanded: false,
+  storageError: !storageStatus.available
 };
 
 function saveState() {
-  safeStorage.set(STORAGE_KEY, JSON.stringify(app.projects));
+  const ok = safeStorage.set(STORAGE_KEY, JSON.stringify(app.projects));
   if (app.activeId) safeStorage.set(ACTIVE_KEY, app.activeId);
   else safeStorage.remove(ACTIVE_KEY);
   safeStorage.set(LANG_KEY, app.lang);
+  app.storageError = !ok || !storageStatus.available;
+  return ok;
 }
 
 function getActiveProject() {
   return app.projects.find(p => p.id === app.activeId) || null;
 }
 
+function backupProjectPayload(p) {
+  return {
+    schemaVersion: 2,
+    appVersion: '2.3',
+    exportedAt: new Date().toISOString(),
+    project: p
+  };
+}
+
+function exportAllPayload() {
+  return {
+    schemaVersion: 2,
+    appVersion: '2.3',
+    exportedAt: new Date().toISOString(),
+    projects: app.projects
+  };
+}
+
+function safeFilePart(value) {
+  return String(value || 'project')
+    .replace(/[\\/:*?"<>|]+/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 60) || 'project';
+}
+
+function backupProjectFile(p) {
+  if (!p) return false;
+  const name = 'HAHA-' + safeFilePart(p.meta.locationName) + '-' + todayStr() + '.json';
+  return downloadFile(name, JSON.stringify(backupProjectPayload(p), null, 2), 'application/json');
+}
+
+function exportAllFile() {
+  const name = 'HAHA-All-Projects-' + todayStr() + '.json';
+  return downloadFile(name, JSON.stringify(exportAllPayload(), null, 2), 'application/json');
+}
+
+function parseImportPayload(text) {
+  const data = JSON.parse(text);
+  let items = null;
+  if (Array.isArray(data)) items = data;
+  else if (data && Array.isArray(data.projects)) items = data.projects;
+  else if (data && data.project) items = [data.project];
+  else if (data && data.meta) items = [data];
+
+  if (!items) return { items: [], skipped: 0, invalid: true };
+
+  const valid = [];
+  let skipped = 0;
+  items.forEach(raw => {
+    const p = normalizeProject(raw);
+    if (p) valid.push(p); else skipped++;
+  });
+  return { items: valid, skipped, invalid: false };
+}
+
+function importProjects(items) {
+  let added = 0;
+  (items || []).forEach(p => {
+    if (!p) return;
+    p.id = 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+    p.updatedAt = p.updatedAt || new Date().toISOString();
+    app.projects.unshift(p);
+    added++;
+  });
+  return added;
+}
+
 </script>
 <script data-src="js/calc.js">
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -2296,46 +2660,69 @@ function num(v) {
 }
 function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
 function round1(v) { return Math.round(v * 10) / 10; }
-function todayStr() {
-  const d = new Date();
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+
+function interestPaidWithin(principal, aprPct, months, horizon) {
+  const p = Math.max(0, num(principal));
+  const n = Math.max(1, Math.round(num(months)));
+  const r = Math.max(0, num(aprPct)) / 100 / 12;
+  if (p === 0 || r === 0) return 0;
+  const pmt = amortize(p, aprPct, n);
+  let balance = p;
+  let interest = 0;
+  const count = Math.min(Math.max(0, Math.round(num(horizon))), n);
+  for (let i = 0; i < count; i++) {
+    const part = balance * r;
+    interest += part;
+    balance = Math.max(0, balance - (pmt - part));
+  }
+  return interest;
 }
 
 function compute(p) {
   /* 1. Replacement Urgency Score (0–100): Hardware Pain (0–40) + 6 Diagnostics (0–60) */
+  const ageKnown = p.machine.age !== '' && p.machine.age !== null && p.machine.age !== undefined;
   const ageVal = num(p.machine.age);
-  const agePts = p.machine.age === '' ? 0 : (ageVal >= 7 ? 12 : ageVal >= 4 ? 6 : 0);
+  const agePts = !ageKnown ? 0 : (ageVal >= 7 ? 12 : ageVal >= 4 ? 6 : 0);
   const pays = Array.isArray(p.machine.payments) ? p.machine.payments : [];
+  const payAnswered = pays.length > 0;
   const hasCard = pays.includes('card');
   const hasMobile = pays.includes('mobile');
-  const payPts = (!hasCard && !hasMobile) ? 12 : (!hasMobile ? 5 : 0);
+  const payPts = !payAnswered ? 0 : ((!hasCard && !hasMobile) ? 12 : (!hasMobile ? 5 : 0));
   const monPts = p.machine.monitoring === 'no' ? 8 : 0;
   const condPts = p.machine.condition === 'poor' ? 8 : (p.machine.condition === 'fair' ? 4 : 0);
   const hwPts = clamp(agePts + payPts + monPts + condPts, 0, 40);
 
+  const diagKeys = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'];
+  const diagValues = diagKeys.map(k => p.diag[k]);
+  const diagAnswered = diagValues.every(v => v === 0 || v === 5 || v === 10);
   const offensePts = num(p.diag.q1) + num(p.diag.q2) + num(p.diag.q3); // 0–30
   const defensePts = num(p.diag.q4) + num(p.diag.q5) + num(p.diag.q6); // 0–30
   const commercialPts = clamp(offensePts + defensePts, 0, 60);
   const urgencyTotal = clamp(hwPts + commercialPts, 0, 100);
   const urgencyTier = urgencyTotal >= 75 ? 'strong' : urgencyTotal >= 50 ? 'model' : 'low';
+  const step1Complete = !!(String(p.meta.locationName || '').trim() && ageKnown &&
+    ['good', 'fair', 'poor'].includes(p.machine.condition) &&
+    ['yes', 'no'].includes(p.machine.monitoring) &&
+    payAnswered && diagAnswered);
 
-  const hiddenRepairRisk = (p.machine.age !== '' && ageVal >= 7) || p.machine.condition === 'poor';
+  const hiddenRepairRisk = (ageKnown && ageVal >= 7) || p.machine.condition === 'poor';
 
   const rationale = [];
-  if (p.machine.age !== '' && ageVal >= 7) rationale.push({ code: 'age', vars: { years: Math.round(ageVal) } });
+  if (ageKnown && ageVal >= 7) rationale.push({ code: 'age', vars: { years: Math.round(ageVal) } });
   if (p.machine.condition === 'poor') rationale.push({ code: 'condition' });
-  if (!hasCard && !hasMobile) rationale.push({ code: 'noCashless' });
-  else if (!hasMobile) rationale.push({ code: 'noMobile' });
+  if (payAnswered && !hasCard && !hasMobile) rationale.push({ code: 'noCashless' });
+  else if (payAnswered && !hasMobile) rationale.push({ code: 'noMobile' });
   if (p.machine.monitoring === 'no') rationale.push({ code: 'monitoring' });
   if (num(p.diag.q1) === 10) rationale.push({ code: 'marginCeiling' });
   if (num(p.diag.q5) === 10) rationale.push({ code: 'retention' });
   if (num(p.diag.q4) === 10) rationale.push({ code: 'friction' });
-  if (!rationale.length) rationale.push({ code: 'default' });
+  if (!rationale.length && step1Complete) rationale.push({ code: 'default' });
 
   /* 2. Single-Source Sales Baseline (30-day backend basis) */
   const b = p.baseline;
   const oldSales = Math.max(0, num(b.monthlySales));
   const oldMonthlyOrders = Math.max(0, num(b.monthlyOrders));
+  const oldOrdersEstimated = !!b.ordersEstimated;
   const oldDailyOrders = oldMonthlyOrders / 30;
   const oldAov = oldMonthlyOrders > 0 ? oldSales / oldMonthlyOrders : 0;
 
@@ -2396,6 +2783,12 @@ function compute(p) {
   const basketRev  = hahaMonthlyOrders * (hahaAov - oldAov);
   const totalRevenueGrowth = hahaSales - oldSales;
   const totalRevenueGrowthPct = oldSales > 0 ? (totalRevenueGrowth / oldSales) * 100 : 0;
+  const appliedPct = {
+    variety: vPct * orderScale,
+    basket: aovPct,
+    stock: sPct * orderScale,
+    payment: pPct * orderScale
+  };
 
   /* 5. HAHA P&L */
   const h = p.haha;
@@ -2442,8 +2835,6 @@ function compute(p) {
   const annualDelta = delta * 12;
   const payback = delta > 0 ? investment / delta : Infinity;
   const standalonePayback = hahaProfit > 0 ? investment / hahaProfit : Infinity;
-  const threeYearNet = delta * 36 - investment;
-  const roi3 = investment > 0 ? (threeYearNet / investment) * 100 : 0;
 
   /* 7. Financing (CRITICAL: docFee ONLY at signing, NEVER inside principal) */
   const f = p.invest.finance;
@@ -2460,7 +2851,10 @@ function compute(p) {
   const coverage = payment > 0 ? hahaProfit / payment : Infinity;
   const cashAfter = hahaProfit - payment;
   const vsOldCash = cashAfter - oldProfit;
-  const selfFunding = financed && payment > 0 && hahaProfit >= payment;
+  const selfFunding = financed && payment > 0 && hahaProfit >= payment && delta > 0 && vsOldCash >= 0;
+  const financingCost36 = financed ? interestPaidWithin(principal, apr, finMonths, 36) + docFee : 0;
+  const threeYearNet = delta * 36 - investment - financingCost36;
+  const roi3 = investment > 0 ? (threeYearNet / investment) * 100 : 0;
 
   /* 8. Stress Test (100% / 80% / 60% of projected sales) */
   const stress = [1, 0.8, 0.6].map(scale => {
@@ -2500,17 +2894,18 @@ function compute(p) {
 
   return {
     hasData,
-    urgency: { total: urgencyTotal, hwPts, commercialPts, offensePts, defensePts, tier: urgencyTier },
+    step1Complete,
+    urgency: { total: urgencyTotal, hwPts, commercialPts, offensePts, defensePts, tier: urgencyTier, complete: step1Complete, diagAnswered, payAnswered, ageKnown },
     hiddenRepairRisk,
     rationale,
     quadrantId,
     siteTerms,
     hahaTerms,
-    old: { sales: oldSales, monthlyOrders: oldMonthlyOrders, dailyOrders: oldDailyOrders, aov: oldAov, siteFee: oldSiteFee, profit: oldProfit, cost: oldCost, margin: oldMargin, detail: oldDetail },
-    growth: { orderRaw, orderPct, aovPct, orderCapped, aovCapped, varietyRev, stockRev, paymentRev, basketRev, totalRevenueGrowth, totalRevenueGrowthPct },
+    old: { sales: oldSales, monthlyOrders: oldMonthlyOrders, dailyOrders: oldDailyOrders, aov: oldAov, siteFee: oldSiteFee, profit: oldProfit, cost: oldCost, margin: oldMargin, detail: oldDetail, ordersEstimated: oldOrdersEstimated },
+    growth: { orderRaw, orderPct, orderScale, aovPct, orderCapped, aovCapped, appliedPct, varietyRev, stockRev, paymentRev, basketRev, totalRevenueGrowth, totalRevenueGrowthPct },
     haha: { sales: hahaSales, monthlyOrders: hahaMonthlyOrders, dailyOrders: hahaDailyOrders, aov: hahaAov, cogs: hahaCogs, shareCost: hahaShareCost, rent: hahaRent, siteFee: hahaSiteFee, processing: hahaProcessing, shrinkage: hahaShrinkage, fixed: hahaFixed, ai: hahaAi, cost: hahaCost, profit: hahaProfit, margin: hahaMargin, zeroGrowthProfit },
     invest: { recModelId, effectiveModelId, model: activeModel, equipment, freight, install, removal, tradeIn, total: investment, delta, annualDelta, payback, standalonePayback, threeYearNet, roi3 },
-    finance: { enabled: financed, down, docFee, principal, months: finMonths, apr, payment, cashDueAtSigning, totalPaid, totalInterest, coverage, cashAfter, vsOldCash, selfFunding },
+    finance: { enabled: financed, down, docFee, principal, months: finMonths, apr, payment, cashDueAtSigning, totalPaid, totalInterest, financingCost36, coverage, cashAfter, vsOldCash, selfFunding },
     stress,
     verdict,
     viable,
@@ -2533,13 +2928,90 @@ function syncUpliftBase(p, force) {
   p.uplift._baseQ = q;
 }
 
+/* Step completion is based on the current data, not on a "visited" flag.
+   Clearing a required field re-locks the forward action. */
+function validateStep1(p) {
+  if (!p) return { ok: false, missing: ['project'] };
+  const missing = [];
+  if (!String(p.meta.locationName || '').trim()) missing.push('locationName');
+  if (p.machine.age === '' || p.machine.age === null || p.machine.age === undefined) missing.push('machineAge');
+  if (!['good', 'fair', 'poor'].includes(p.machine.condition)) missing.push('condition');
+  if (!['yes', 'no'].includes(p.machine.monitoring)) missing.push('monitoring');
+  if (!Array.isArray(p.machine.payments) || !p.machine.payments.length) missing.push('payments');
+  const diagOk = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'].every(k => [0, 5, 10].includes(p.diag[k]));
+  if (!diagOk) missing.push('diag');
+  return { ok: missing.length === 0, missing };
+}
+
+function validateStep2(p) {
+  if (!p) return { ok: false, missing: ['project'] };
+  const b = p.baseline;
+  const f = p.invest.finance;
+  const missing = [];
+
+  if (!(num(b.monthlySales) > 0)) missing.push('monthlySales');
+  if (!(num(b.monthlyOrders) > 0)) missing.push('monthlyOrders');
+  if (!['actual', 'margin', 'detail'].includes(b.profitMode)) missing.push('profitMode');
+  if (b.profitMode === 'actual' && (b.actualProfit === '' || b.actualProfit === null || b.actualProfit === undefined)) missing.push('actualProfit');
+  if (b.profitMode === 'margin' && !(num(b.estMarginPct) >= 0 && num(b.estMarginPct) <= 100)) missing.push('estMarginPct');
+
+  if (!['share', 'rent', 'combo', 'none'].includes(p.site.deal)) missing.push('siteDeal');
+  if ((p.site.deal === 'share' || p.site.deal === 'combo') && !(num(p.site.share) >= 0 && num(p.site.share) <= 100)) missing.push('siteShare');
+  if ((p.site.deal === 'rent' || p.site.deal === 'combo') && !(num(p.site.rent) >= 0)) missing.push('siteRent');
+
+  if (!MODELS.some(m => m.id === p.invest.modelId)) missing.push('model');
+
+  if (f.enabled) {
+    if (!(num(f.downPct) >= 0 && num(f.downPct) <= 100)) missing.push('downPct');
+    if (!(num(f.term) >= 1 && num(f.term) <= 72)) missing.push('term');
+    if (!(num(f.apr) >= 0)) missing.push('apr');
+    if (!(num(f.docFee) >= 0)) missing.push('docFee');
+  }
+
+  return { ok: missing.length === 0, missing };
+}
+
+function canEnterStep(step, p) {
+  if (!p) return false;
+  if (step === 'step1' || step === 'dashboard' || step === 'projects') return true;
+  const s1 = validateStep1(p);
+  if (step === 'step2') return s1.ok;
+  if (step === 'step3') return s1.ok && validateStep2(p).ok;
+  return true;
+}
+
+function stepMissingText(step, p) {
+  if (!p) return t('validate.project');
+  if (step === 'step1') {
+    const s1 = validateStep1(p);
+    return s1.ok ? t('s1.footerReady') : t('validate.need', { items: s1.missing.map(k => t('validate.' + k)).join(' · ') });
+  }
+  if (step === 'step2') {
+    const s1 = validateStep1(p);
+    if (!s1.ok) return t('validate.step1First');
+    const s2 = validateStep2(p);
+    return s2.ok ? t('s2.footerReady') : t('validate.need', { items: s2.missing.map(k => t('validate.' + k)).join(' · ') });
+  }
+  return '';
+}
+
+function newCashAtMonth(m, i) {
+  const f = m.finance;
+  if (f.enabled) {
+    const paidMonths = Math.min(i, f.months);
+    return m.haha.profit * i - f.cashDueAtSigning - f.payment * paidMonths;
+  }
+  return m.haha.profit * i - m.invest.total;
+}
+
 function cumulativeSvg(m, w, h) {
   w = w || 680;
   h = h || 215;
   const months = 36;
   const oldEnd = m.old.profit * months;
-  const newEnd = m.haha.profit * months - m.invest.total;
-  const vals = [0, oldEnd, newEnd, -m.invest.total];
+  const newStart = newCashAtMonth(m, 0);
+  const newEnd = newCashAtMonth(m, months);
+  const vals = [0, oldEnd, newEnd, newStart];
   let max = Math.max.apply(null, vals);
   let min = Math.min.apply(null, vals);
   if (max === min) { max += 500; min -= 500; }
@@ -2578,16 +3050,33 @@ function cumulativeSvg(m, w, h) {
   let newPath = '';
   for (let i = 0; i <= months; i++) {
     oldPath += `${i === 0 ? 'M' : 'L'} ${X(i).toFixed(1)} ${Y(m.old.profit * i).toFixed(1)} `;
-    newPath += `${i === 0 ? 'M' : 'L'} ${X(i).toFixed(1)} ${Y(m.haha.profit * i - m.invest.total).toFixed(1)} `;
+    newPath += `${i === 0 ? 'M' : 'L'} ${X(i).toFixed(1)} ${Y(newCashAtMonth(m, i)).toFixed(1)} `;
+  }
+
+  /* Cash-flow crossover, including down payment / monthly payments when financed. */
+  let cashPayback = Infinity;
+  if (newCashAtMonth(m, 0) >= 0) {
+    cashPayback = 0;
+  } else {
+    let prevDiff = newCashAtMonth(m, 0);
+    for (let i = 1; i <= months; i++) {
+      const diff = newCashAtMonth(m, i) - m.old.profit * i;
+      if (diff >= 0) {
+        cashPayback = prevDiff < 0 ? (i - 1) + (-prevDiff) / (diff - prevDiff) : i;
+        break;
+      }
+      prevDiff = diff;
+    }
   }
 
   let marker = '';
-  const pb = m.invest.payback;
+  const pb = cashPayback;
   if (isFinite(pb) && pb > 0 && pb <= months) {
-    const px = X(pb), py = Y(m.old.profit * pb);
+    const px = X(pb);
+    const py = Y(m.old.profit * pb);
     marker = `<line x1="${px.toFixed(1)}" x2="${px.toFixed(1)}" y1="${pad.t}" y2="${h - pad.b}" stroke="#1e7e4e" stroke-width="1" stroke-dasharray="3 3"/>
       <circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="4" fill="#1e7e4e"/>
-      <text x="${Math.min(px + 7, w - 95).toFixed(1)}" y="${Math.max(py - 8, 24).toFixed(1)}" font-size="9.5" font-weight="800" fill="#1e7e4e">${esc(monthsFmt(pb))}</text>`;
+      <text x="${Math.min(px + 7, w - 95).toFixed(1)}" y="${Math.max(py - 8, 24).toFixed(1)}" font-size="9.5" font-weight="800" fill="#1e7e4e">${esc(t('s2.cashPaybackShort') + ' ' + monthsFmt(pb))}</text>`;
   }
 
   return `<svg viewBox="0 0 ${w} ${h}" width="100%" style="display:block;height:auto">
@@ -2609,7 +3098,7 @@ function buildDecisionBullets(m) {
     }));
     list.push(t('vReason.3yr', { net3: signedMoney(m.invest.threeYearNet, 0), inv: money(m.invest.total, 0) }));
     if (m.finance.enabled && isFinite(m.finance.coverage)) {
-      list.push(t('vReason.fin', { pmt: money(m.finance.payment, 2), cov: nf(m.finance.coverage, 2) }));
+      list.push(t('vReason.fin', { pmt: money(m.finance.payment, 2), cov: nf(m.finance.coverage, 2), vsOld: signedMoney(m.finance.vsOldCash, 0) }));
     } else {
       list.push(t('vReason.downside', { down: money(m.stress[2].profit, 0) }));
     }
@@ -2632,14 +3121,16 @@ function buildConsultativeNextSteps(m) {
 </script>
 <script data-src="js/ui-shell.js">
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
 function renderSidebar() {
   const p = getActiveProject();
-  const navBtn = (view, badge, label, disabled) =>
-    `<button type="button" class="nav-item ${app.view === view ? 'active' : ''}" data-nav="${view}" ${disabled ? 'disabled' : ''}>
+  const s1 = p ? validateStep1(p) : { ok: false };
+  const s2 = p ? validateStep2(p) : { ok: false };
+  const navBtn = (view, badge, label, disabled, title) =>
+    `<button type="button" class="nav-item ${app.view === view ? 'active' : ''}" data-nav="${view}" ${disabled ? 'disabled' : ''} ${title ? `title="${esc(title)}"` : ''}>
       <span class="nav-badge">${badge}</span>
       <span class="nav-label">${esc(label)}</span>
     </button>`;
@@ -2659,8 +3150,8 @@ function renderSidebar() {
     <div class="sidebar-label">${esc(t('nav.activeProject'))}</div>
     <nav class="main-nav">
       ${navBtn('step1', '01', t('nav.s1'), !p)}
-      ${navBtn('step2', '02', t('nav.s2'), !p)}
-      ${navBtn('step3', '03', t('nav.s3'), !p)}
+      ${navBtn('step2', '02', t('nav.s2'), !p || !s1.ok, !p ? t('validate.project') : (!s1.ok ? t('validate.step1First') : ''))}
+      ${navBtn('step3', '03', t('nav.s3'), !p || !s1.ok || !s2.ok, !p ? t('validate.project') : (!s1.ok ? t('validate.step1First') : (!s2.ok ? t('validate.step2First') : '')))}
     </nav>
     <div class="sidebar-bottom">
       <div class="sidebar-note">
@@ -2699,6 +3190,22 @@ function renderTopbar() {
         <button type="button" class="${app.lang === 'zh' ? 'on' : ''}" data-action="lang" data-value="zh">中文</button>
       </div>
     </div>
+  `;
+  renderStorageWarning();
+}
+
+function renderStorageWarning() {
+  const el = $('#storageWarning');
+  if (!el) return;
+  if (!app.storageError) {
+    el.classList.add('hidden');
+    el.innerHTML = '';
+    return;
+  }
+  el.classList.remove('hidden');
+  el.innerHTML = `
+    <span>⚠ ${esc(t('storage.warning'))}</span>
+    <button type="button" class="button button-outline button-small" data-action="exportAll">${esc(t('common.backupAll'))}</button>
   `;
 }
 
@@ -2766,7 +3273,9 @@ function askDeleteModal(id) {
   showModal(`
     <h3>${esc(t('proj.delTitle'))}</h3>
     <p>${esc(t('proj.delMsg', { name: p.meta.locationName || t('top.untitled') }))}</p>
+    <p style="font-size:12px;color:var(--muted)">${esc(t('modal.deleteBackupHint'))}</p>
     <div class="modal-actions">
+      <button type="button" class="button button-outline modal-action-left" data-action="backupProject" data-id="${id}">${esc(t('common.backupProject'))}</button>
       <button type="button" class="button button-outline" data-action="closeModal">${esc(t('common.cancel'))}</button>
       <button type="button" class="button button-danger" data-action="confirmDelete" data-id="${id}">${esc(t('common.delete'))}</button>
     </div>
@@ -2776,7 +3285,7 @@ function askDeleteModal(id) {
 </script>
 <script data-src="js/ui-pages.js">
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -2784,9 +3293,9 @@ function renderDashboard() {
   const list = app.projects;
   const computed = list.map(p => ({ p, m: compute(p) }));
   const viableList = computed.filter(x => x.m.viable);
-  const validStandalone = computed.filter(x => x.m.hasData && isFinite(x.m.invest.standalonePayback));
-  const avgStandalone = validStandalone.length
-    ? validStandalone.reduce((s, x) => s + x.m.invest.standalonePayback, 0) / validStandalone.length
+  const validPayback = computed.filter(x => x.m.hasData && isFinite(x.m.invest.payback));
+  const avgPayback = validPayback.length
+    ? validPayback.reduce((s, x) => s + x.m.invest.payback, 0) / validPayback.length
     : Infinity;
   const assessed = computed.filter(x => x.m.hasData);
   const avgGain = assessed.length
@@ -2829,7 +3338,7 @@ function renderDashboard() {
     <div class="stats-grid">
       <div class="stat-card"><span>${esc(t('dash.stat1'))}</span><strong>${list.length}</strong><small>${esc(t('dash.stat1Sub'))}</small></div>
       <div class="stat-card"><span>${esc(t('dash.stat2'))}</span><strong>${viableList.length}</strong><small>${esc(t('dash.stat2Sub'))}</small></div>
-      <div class="stat-card"><span>${esc(t('dash.stat3'))}</span><strong>${isFinite(avgStandalone) ? nf(avgStandalone, 1) + ' ' + esc(t('common.mo')) : '—'}</strong><small>${esc(t('dash.stat3Sub'))}</small></div>
+      <div class="stat-card"><span>${esc(t('dash.stat3'))}</span><strong>${isFinite(avgPayback) ? nf(avgPayback, 1) + ' ' + esc(t('common.mo')) : '—'}</strong><small>${esc(t('dash.stat3Sub'))}</small></div>
       <div class="stat-card"><span>${esc(t('dash.stat4'))}</span><strong>${assessed.length ? signedMoney(avgGain, 0) : '—'}</strong><small>${esc(t('dash.stat4Sub'))}</small></div>
     </div>
 
@@ -2888,11 +3397,14 @@ function projectCardsHtml() {
         <h3>${esc(p.meta.locationName || t('top.untitled'))}</h3>
         <p>${esc([p.meta.city, p.meta.state].filter(Boolean).join(', ') || '—')} · ${esc(m.invest.model.name)}</p>
         <div style="font-size:13px;font-weight:800;color:${m.hasData && m.invest.delta >= 0 ? 'var(--green)' : 'var(--muted)'}">
-          ${m.hasData ? signedMoney(m.invest.delta, 0) + '/mo · ' + esc(monthsFmt(m.invest.standalonePayback)) : '—'}
+          ${m.hasData ? signedMoney(m.invest.delta, 0) + '/mo · ' + esc(monthsFmt(m.invest.payback)) : '—'}
         </div>
         <div class="project-card-bottom">
           <button type="button" class="button button-dark button-small" data-action="openProj" data-id="${p.id}">${esc(t('common.open'))}</button>
-          <button type="button" class="button button-danger button-small" data-action="askDelete" data-id="${p.id}">${esc(t('common.delete'))}</button>
+          <div class="project-card-actions">
+            <button type="button" class="button button-outline button-small" data-action="backupProject" data-id="${p.id}">${esc(t('common.backupProject'))}</button>
+            <button type="button" class="button button-danger button-small" data-action="askDelete" data-id="${p.id}">${esc(t('common.delete'))}</button>
+          </div>
         </div>
       </div>
     `;
@@ -2914,8 +3426,8 @@ function renderProjects() {
         <input type="text" id="projSearch" value="${esc(app.search)}" placeholder="${esc(t('proj.search'))}">
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button type="button" class="button button-outline button-small" data-action="backupAll">${esc(t('common.backup'))}</button>
-        <button type="button" class="button button-outline button-small" data-action="restoreAll">${esc(t('common.restore'))}</button>
+        <button type="button" class="button button-outline button-small" data-action="importProjects">${esc(t('common.import'))}</button>
+        <button type="button" class="button button-ghost button-small" data-action="exportAll">${esc(t('common.backupAll'))}</button>
       </div>
     </div>
     <div id="projCardsHost">${projectCardsHtml()}</div>
@@ -2925,7 +3437,7 @@ function renderProjects() {
 </script>
 <script data-src="js/ui-step1.js">
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -2994,25 +3506,25 @@ function renderStep1(p) {
           </div>
           <div class="form-grid-3" style="margin-bottom:14px">
             <div class="field">
-              <label>${esc(t('s1.mAge'))}</label>
+              <label>${esc(t('s1.mAge'))} *</label>
               <input type="number" min="0" step="1" data-bind="machine.age" value="${esc(p.machine.age)}" placeholder="0">
               <span class="field-hint">${esc(t('s1.mAgeHint'))}</span>
             </div>
             <div class="field">
-              <label>${esc(t('s1.mCond'))}</label>
+              <label>${esc(t('s1.mCond'))} *</label>
               <div class="seg block" data-seg-group="machine.condition">
                 ${['good', 'fair', 'poor'].map(x => `<button type="button" class="${p.machine.condition === x ? 'on' : ''}" data-set="machine.condition" data-value="${x}">${esc(t('cond.' + x))}</button>`).join('')}
               </div>
             </div>
             <div class="field">
-              <label>${esc(t('s1.mMon'))}</label>
+              <label>${esc(t('s1.mMon'))} *</label>
               <div class="seg block" data-seg-group="machine.monitoring">
                 ${['yes', 'no'].map(x => `<button type="button" class="${p.machine.monitoring === x ? 'on' : ''}" data-set="machine.monitoring" data-value="${x}">${esc(t('common.' + x))}</button>`).join('')}
               </div>
             </div>
           </div>
           <div class="field">
-            <label>${esc(t('s1.mPay'))}</label>
+            <label>${esc(t('s1.mPay'))} *</label>
             <div class="chips" data-multi-group="machine.payments">
               ${pays.map(x => `<button type="button" class="chip ${(p.machine.payments || []).includes(x) ? 'on' : ''}" data-toggle="machine.payments" data-value="${x}">${esc(t('pay.' + x))}</button>`).join('')}
             </div>
@@ -3028,7 +3540,8 @@ function renderStep1(p) {
           </div>
           <div class="criteria-list">
             ${diagQs.map((q, idx) => {
-              const cur = num(p.diag[q.k]);
+              const raw = p.diag[q.k];
+              const cur = [0, 5, 10].includes(raw) ? raw : null;
               return `
                 <div class="criterion">
                   <div class="criterion-top">
@@ -3047,6 +3560,14 @@ function renderStep1(p) {
               `;
             }).join('')}
           </div>
+        </div>
+
+        <div class="step-footer" data-step-footer="step1">
+          <div class="step-footer-copy">
+            <strong>${esc(t('s1.footerTitle'))}</strong>
+            <span data-step-hint="step1">${esc(stepMissingText('step1', p))}</span>
+          </div>
+          <button type="button" class="button button-dark" data-nav="step2" data-step-cta="step2" disabled>${esc(t('s1.railNext'))}</button>
         </div>
       </div>
 
@@ -3070,7 +3591,7 @@ function renderStep1(p) {
 </script>
 <script data-src="js/ui-step2.js">
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -3117,6 +3638,7 @@ function renderStep2(p) {
               <label>${esc(t('s2.mOrders'))}</label>
               <input type="number" min="0" step="10" data-bind="baseline.monthlyOrders" value="${esc(b.monthlyOrders)}" placeholder="720">
               <button type="button" class="button button-outline button-small" style="margin-top:4px;align-self:flex-start" data-action="estOrders">${esc(t('s2.estOrders'))}</button>
+              <span class="field-hint hidden" data-show="ordersEstimated">${esc(t('s2.estOrdersNote'))}</span>
             </div>
           </div>
 
@@ -3229,7 +3751,7 @@ function renderStep2(p) {
                 <div class="uplift-card">
                   <div class="uplift-head">
                     <div><h4>${esc(t(item.t))}</h4><p>${esc(t(item.d))}</p></div>
-                    <span class="cap-badge" data-show="${item.capFlag}">${esc(t('s2.capped'))}</span>
+                    <span class="cap-badge hidden" data-show="${item.capFlag}">${esc(t('s2.capped'))}</span>
                   </div>
                   <div class="seg block" data-seg-group="uplift.${item.k}.accept">
                     <button type="button" class="${u.accept === 'yes' ? 'on' : ''}" data-set="uplift.${item.k}.accept" data-value="yes">${esc(t('s2.yes100'))}</button>
@@ -3241,7 +3763,7 @@ function renderStep2(p) {
                       <input type="number" class="has-unit" min="0" step="0.5" data-bind="uplift.${item.k}.pct" value="${esc(u.pct)}">
                       <span class="unit">%</span>
                     </div>
-                    <div class="uplift-impact" data-out="${item.out}">+$0/mo</div>
+                    <div class="uplift-impact" data-out="${item.out}">+$0${t('common.perMonth')}</div>
                   </div>
                 </div>
               `;
@@ -3258,7 +3780,10 @@ function renderStep2(p) {
         <div class="panel">
           <div class="panel-head">
             <div><h3>${esc(t('s2.secC'))}</h3><p>${esc(t('s2.secCd'))}</p></div>
-            <span class="step-tag">C</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <button type="button" class="button button-ghost button-small" data-action="autoModel">${esc(t('s2.autoModel'))}</button>
+              <span class="step-tag">C</span>
+            </div>
           </div>
           <div class="model-grid">
             ${MODELS.map(mod => `
@@ -3303,17 +3828,17 @@ function renderStep2(p) {
             </div>
           </div>
 
-          <div data-show="finDisabled">
+          <div class="hidden" data-show="finDisabled">
             <div class="derived-bar" style="grid-template-columns:1fr 1fr">
               <div class="derived-item"><span>${esc(t('s2.cashSigning'))}</span><strong data-out="cashSigning">—</strong></div>
               <div class="derived-item"><span>${esc(t('s2.kpiStandalone'))}</span><strong data-out="kpiStandalone">—</strong></div>
             </div>
           </div>
 
-          <div data-show="finEnabled">
+          <div class="hidden" data-show="finEnabled">
             <div class="form-grid-4">
               <div class="field"><label>${esc(t('s2.down'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="0" max="100" step="1" data-bind="invest.finance.downPct" value="${esc(f.downPct)}"><span class="unit">%</span></div></div>
-              <div class="field"><label>${esc(t('s2.term'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="1" max="72" step="1" data-bind="invest.finance.term" value="${esc(f.term)}"><span class="unit">mo</span></div></div>
+              <div class="field"><label>${esc(t('s2.term'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="1" max="72" step="1" data-bind="invest.finance.term" value="${esc(f.term)}"><span class="unit">${esc(t('common.mo'))}</span></div></div>
               <div class="field"><label>${esc(t('s2.apr'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="0" step="0.1" data-bind="invest.finance.apr" value="${esc(f.apr)}"><span class="unit">%</span></div></div>
               <div class="field"><label>${esc(t('s2.docFee'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" step="25" data-bind="invest.finance.docFee" value="${esc(f.docFee)}"></div></div>
             </div>
@@ -3323,7 +3848,7 @@ function renderStep2(p) {
               <div class="derived-item"><span>${esc(t('s2.coverage'))}</span><strong data-out="finCoverage" data-tone="finCovTone">—</strong></div>
               <div class="derived-item"><span>${esc(t('s2.cashAfter'))}</span><strong data-out="finCashAfter">—</strong></div>
             </div>
-            <div class="callout good" data-show="selfFunding">
+            <div class="callout good hidden" data-show="selfFunding">
               <div class="big">✓</div>
               <div class="txt" data-out="selfFundText"></div>
             </div>
@@ -3405,7 +3930,7 @@ function renderStep2(p) {
             <div class="txt"><strong>${esc(t('s2.zeroTitle'))}</strong><br><span data-out="zeroText"></span></div>
           </div>
 
-          <div class="callout warn" data-show="hiddenRepairRisk">
+          <div class="callout warn hidden" data-show="hiddenRepairRisk">
             <div class="big">⚠</div>
             <div class="txt"><strong>${esc(t('s2.hiddenRiskTitle'))}</strong><br>${esc(t('s2.hiddenRiskText'))}</div>
           </div>
@@ -3418,8 +3943,8 @@ function renderStep2(p) {
             <div>
               <strong style="font-size:13.5px;display:block;margin-bottom:8px">${esc(t('s2.propTitle'))}</strong>
               <div class="derived-bar" style="margin-top:0;grid-template-columns:1fr 1fr">
-                <div class="derived-item"><span>Monthly</span><strong data-out="propMo">—</strong></div>
-                <div class="derived-item"><span>Annual</span><strong data-out="propYr">—</strong></div>
+                <div class="derived-item"><span>${esc(t('rep.monthly'))}</span><strong data-out="propMo">—</strong></div>
+                <div class="derived-item"><span>${esc(t('rep.annual'))}</span><strong data-out="propYr">—</strong></div>
               </div>
               <p style="font-size:12px;color:var(--muted);margin-top:8px">${esc(t('s2.propSub'))}</p>
             </div>
@@ -3427,6 +3952,14 @@ function renderStep2(p) {
 
           <div class="verdict-box" data-out-html="verdictBox"></div>
           <div class="warn-list" data-out-html="warningsHost"></div>
+        </div>
+
+        <div class="step-footer" data-step-footer="step2">
+          <div class="step-footer-copy">
+            <strong>${esc(t('s2.footerTitle'))}</strong>
+            <span data-step-hint="step2">${esc(stepMissingText('step2', p))}</span>
+          </div>
+          <button type="button" class="button button-dark" data-nav="step3" data-step-cta="step3" disabled>${esc(t('r2.toReport'))}</button>
         </div>
       </div>
 
@@ -3439,7 +3972,7 @@ function renderStep2(p) {
 </script>
 <script data-src="js/ui-report.js">
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -3459,8 +3992,11 @@ function reportDocumentHtml(p, m) {
   ].map(r => {
     const u = p.uplift[r.k];
     const lbl = u.accept === 'yes' ? t('common.yes') : u.accept === 'partial' ? t('common.partly') : t('common.no');
-    return `<tr><td>${esc(r.label)}</td><td>${esc(lbl)}</td><td class="r">${nf(u.pct, 1)}%</td><td class="r">+${money(r.rev, 0)}</td></tr>`;
+    return `<tr><td>${esc(r.label)}</td><td>${esc(lbl)}</td><td class="r">${nf(m.growth.appliedPct[r.k], 1)}%</td><td class="r">+${money(r.rev, 0)}</td></tr>`;
   }).join('');
+
+  const cashLabel = f.enabled ? t('s2.cashSigning') : t('r2.netInv');
+  const cashValue = f.enabled ? money(m.finance.cashDueAtSigning, 0) : money(m.invest.total, 0);
 
   return `
     <div class="proposal-paper">
@@ -3471,8 +4007,8 @@ function reportDocumentHtml(p, m) {
       <h1 class="rep-title">${esc(locName)}</h1>
       <div class="rep-meta-bar">
         <div><span>${esc(t('s1.venue'))}:</span><strong>${esc(t('venue.' + p.meta.venue))}${cityState ? ' · ' + esc(cityState) : ''}</strong></div>
-        <div><span>Date:</span><strong>${esc(p.meta.date)}</strong></div>
-        <div><span>Recommended Model:</span><strong>${esc(m.invest.model.name)} (${esc(t('tag.' + m.invest.model.tag))})</strong></div>
+        <div><span>${esc(t('rep.date'))}:</span><strong>${esc(p.meta.date)}</strong></div>
+        <div><span>${esc(t('rep.recommendedModel'))}:</span><strong>${esc(m.invest.model.name)} (${esc(t('tag.' + m.invest.model.tag))})</strong></div>
       </div>
 
       <!-- Executive Summary (No duplicate Key Figures table) -->
@@ -3486,12 +4022,15 @@ function reportDocumentHtml(p, m) {
           ${esc(m.invest.model.name)} (${money(m.invest.model.msrp, 0)}) · ${esc(t('r2.netInv'))}: <strong>${money(m.invest.total, 0)}</strong>
         </div>
         <div class="rep-stat-row">
-          <div class="rep-stat"><span>${esc(t('s2.kpiGain'))}</span><strong>${signedMoney(m.invest.delta, 0)}/mo</strong></div>
-          <div class="rep-stat"><span>${esc(t('s2.kpiStandalone'))}</span><strong>${esc(monthsFmt(m.invest.standalonePayback))}</strong></div>
+          <div class="rep-stat"><span>${esc(t('s2.kpiGain'))}</span><strong>${signedMoney(m.invest.delta, 0)}${t('rep.perMonth')}</strong></div>
           <div class="rep-stat"><span>${esc(t('s2.kpiInc'))}</span><strong>${esc(monthsFmt(m.invest.payback))}</strong></div>
           <div class="rep-stat"><span>${esc(t('s2.kpi3yr'))}</span><strong>${signedMoney(m.invest.threeYearNet, 0)}</strong></div>
+          <div class="rep-stat"><span>${esc(cashLabel)}</span><strong>${cashValue}</strong></div>
         </div>
+        <div class="rep-note">${esc(t('rep.machineOnly'))}: ${esc(monthsFmt(m.invest.standalonePayback))} · ${esc(t('s2.kpiStandaloneSub'))}</div>
         <ul class="rep-list">${bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>
+        ${m.hasData ? `<div class="rep-note"><strong>${esc(t('rep.downsideTitle'))}:</strong> ${esc(t('rep.downsideText', { zero: money(m.haha.zeroGrowthProfit, 0), stress: money(m.stress[2].profit, 0) }))}</div>` : ''}
+        ${m.hasData && m.invest.delta > 0 ? `<div class="rep-note">${esc(t('rep.delayText', { delta: money(m.invest.delta, 0), six: money(m.invest.delta * 6, 0) }))}</div>` : ''}
       </div>
 
       <!-- 01 · Site & Diagnostic Overview -->
@@ -3500,7 +4039,7 @@ function reportDocumentHtml(p, m) {
         <div class="rep-two">
           <table class="table">
             <tr><td>${esc(t('s1.mType'))}</td><td class="r"><strong>${esc(t('mtype.' + p.machine.type))}</strong></td></tr>
-            <tr><td>${esc(t('s1.mAge'))} / ${esc(t('s1.mCond'))}</td><td class="r">${p.machine.age !== '' ? p.machine.age + ' yrs' : '—'} · ${esc(t('cond.' + p.machine.condition))}</td></tr>
+            <tr><td>${esc(t('s1.mAge'))} / ${esc(t('s1.mCond'))}</td><td class="r">${p.machine.age !== '' ? p.machine.age + ' ' + esc(t('rep.years')) : '—'} · ${esc(t('cond.' + p.machine.condition))}</td></tr>
             <tr><td>${esc(t('s1.mMon'))}</td><td class="r">${esc(t('common.' + p.machine.monitoring))}</td></tr>
             <tr><td>${esc(t('s1.railHw'))} / ${esc(t('s1.railComm'))}</td><td class="r">${m.urgency.hwPts}/40 · ${m.urgency.commercialPts}/60</td></tr>
             <tr class="total"><td>${esc(t('s1.railTitle'))}</td><td class="r">${m.urgency.total} / 100</td></tr>
@@ -3518,12 +4057,14 @@ function reportDocumentHtml(p, m) {
       <div class="rep-sec">
         <h3>${esc(t('s3.sec2'))}</h3>
         <table class="table" style="margin-bottom:14px">
-          <thead><tr><th>Growth Driver</th><th>Client View</th><th class="r">Applied %</th><th class="r">Monthly Impact</th></tr></thead>
+          <thead><tr><th>${esc(t('rep.growthDriver'))}</th><th>${esc(t('rep.clientView'))}</th><th class="r">${esc(t('rep.appliedPct'))}</th><th class="r">${esc(t('rep.monthlyImpact'))}</th></tr></thead>
           <tbody>
             ${upRows}
             <tr class="total"><td colspan="2">${esc(t('s2.revUplift'))}</td><td class="r">+${pct(m.growth.totalRevenueGrowthPct, 1)}</td><td class="r">+${money(m.growth.totalRevenueGrowth, 0)}</td></tr>
           </tbody>
         </table>
+        ${(m.growth.orderCapped || m.growth.aovCapped) ? `<div class="rep-note">${esc(t('rep.capNote'))}</div>` : ''}
+        ${m.old.ordersEstimated ? `<div class="rep-note">${esc(t('rep.estimatedOrders'))}</div>` : ''}
         <table class="table">
           <thead><tr><th>${esc(t('s2.metric'))}</th><th class="r">${esc(t('s2.cur'))}</th><th class="r">${esc(t('s2.haha'))}</th><th class="r">${esc(t('s2.chg'))}</th></tr></thead>
           <tbody>
@@ -3543,20 +4084,23 @@ function reportDocumentHtml(p, m) {
         <h3>${esc(t('s3.sec3'))}</h3>
         <div class="rep-two">
           <table class="table">
-            <tr><td>${esc(m.invest.model.name)} MSRP</td><td class="r">${money(m.invest.equipment, 0)}</td></tr>
-            <tr><td>Freight / Install / Removal</td><td class="r">${money(m.invest.freight + m.invest.install + m.invest.removal, 0)}</td></tr>
+            <tr><td>${esc(m.invest.model.name)} ${esc(t('rep.msrp'))}</td><td class="r">${money(m.invest.equipment, 0)}</td></tr>
+            <tr><td>${esc(t('rep.freightInstallRemoval'))}</td><td class="r">${money(m.invest.freight + m.invest.install + m.invest.removal, 0)}</td></tr>
             <tr><td>${esc(t('s2.tradeIn'))}</td><td class="r">-${money(m.invest.tradeIn, 0)}</td></tr>
             <tr class="total"><td>${esc(t('r2.netInv'))}</td><td class="r">${money(m.invest.total, 0)}</td></tr>
-            <tr><td>${esc(t('s2.payMethod'))}</td><td class="r">${f.enabled ? `${m.finance.months}m @ ${m.finance.apr}% (${money(m.finance.payment, 2)}/mo · ${nf(m.finance.coverage, 2)}×)` : esc(t('s2.cash'))}</td></tr>
-            <tr><td>${esc(t('s2.propTitle'))}</td><td class="r">${money(m.siteEarnings.monthly, 0)}/mo (${money(m.siteEarnings.annual, 0)}/yr)</td></tr>
+            <tr><td>${esc(t('s2.payMethod'))}</td><td class="r">${f.enabled ? esc(t('rep.financeLine', { months: m.finance.months, apr: nf(m.finance.apr, 1), payment: money(m.finance.payment, 2), coverage: isFinite(m.finance.coverage) ? nf(m.finance.coverage, 2) : '—' })) : esc(t('s2.cash'))}</td></tr>
+            ${f.enabled ? `<tr><td>${esc(t('rep.financeCost'))}</td><td class="r">${money(m.finance.financingCost36, 0)}</td></tr>` : ''}
+            <tr><td>${esc(t('rep.machineOnly'))}</td><td class="r">${esc(monthsFmt(m.invest.standalonePayback))}</td></tr>
+            <tr><td>${esc(t('s2.propTitle'))}</td><td class="r">${money(m.siteEarnings.monthly, 0)}${t('rep.perMonth')} (${money(m.siteEarnings.annual, 0)}${t('rep.perYear')})</td></tr>
           </table>
           <table class="table">
-            <thead><tr><th>Stress</th><th class="r">Profit</th><th class="r">Delta</th><th class="r">Payback</th></tr></thead>
+            <thead><tr><th>${esc(t('rep.stress'))}</th><th class="r">${esc(t('rep.profit'))}</th><th class="r">${esc(t('rep.delta'))}</th><th class="r">${esc(t('rep.payback'))}</th></tr></thead>
             <tbody>
               ${m.stress.map(st => `<tr><td>${nf(st.scale * 100, 0)}%</td><td class="r">${money(st.profit, 0)}</td><td class="r">${signedMoney(st.delta, 0)}</td><td class="r">${esc(monthsFmt(st.payback))}</td></tr>`).join('')}
             </tbody>
           </table>
         </div>
+        ${f.enabled ? `<div class="rep-note">${esc(t('rep.financeCostNote', { cost: money(m.finance.financingCost36, 0) }))}</div>` : ''}
       </div>
 
       <!-- 04 · Next Steps & Assessment Notes (NO Sign-Off lines) -->
@@ -3596,7 +4140,7 @@ function renderStep3(p, m) {
 </script>
 <script data-src="js/sync.js">
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -3613,28 +4157,29 @@ function syncOutputs() {
     const rail = $('#railHost');
     if (rail) {
       const u = m.urgency;
+      const complete = u.complete;
       const tierCls = u.tier === 'strong' ? 'strong' : u.tier === 'model' ? 'conditional' : 'defer';
       const tierLbl = u.tier === 'strong' ? t('s1.tierStrong') : u.tier === 'model' ? t('s1.tierModel') : t('s1.tierLow');
       rail.innerHTML = `
         <div class="rail-panel">
           <div class="rail-label">${esc(t('s1.railTitle'))}</div>
-          <div class="rail-big">${u.total}<span style="font-size:18px;color:#888;font-weight:700"> / 100</span></div>
-          <div style="margin-top:8px"><span class="status-badge ${tierCls}">${esc(tierLbl)}</span></div>
-          <div class="score-bar-track" style="margin-top:12px"><div class="score-bar-fill" style="width:${u.total}%"></div></div>
+          <div class="rail-big">${complete ? u.total : '--'}<span style="font-size:18px;color:#888;font-weight:700"> / 100</span></div>
+          <div style="margin-top:8px"><span class="status-badge ${complete ? tierCls : 'defer'}">${esc(complete ? tierLbl : t('s1.railPending'))}</span></div>
+          <div class="score-bar-track" style="margin-top:12px"><div class="score-bar-fill" style="width:${complete ? u.total : 0}%"></div></div>
           <div class="rail-div"></div>
           <div class="breakdown-bar">
-            <div class="breakdown-head"><span>${esc(t('s1.railHw'))}</span><strong>${u.hwPts} / 40</strong></div>
-            <div class="score-bar-track"><div class="score-bar-fill" style="width:${(u.hwPts / 40) * 100}%"></div></div>
+            <div class="breakdown-head"><span>${esc(t('s1.railHw'))}</span><strong>${complete ? u.hwPts : '—'} / 40</strong></div>
+            <div class="score-bar-track"><div class="score-bar-fill" style="width:${complete ? (u.hwPts / 40) * 100 : 0}%"></div></div>
           </div>
           <div class="breakdown-bar">
-            <div class="breakdown-head"><span>${esc(t('s1.railComm'))}</span><strong>${u.commercialPts} / 60</strong></div>
-            <div class="score-bar-track"><div class="score-bar-fill" style="width:${(u.commercialPts / 60) * 100}%"></div></div>
+            <div class="breakdown-head"><span>${esc(t('s1.railComm'))}</span><strong>${complete ? u.commercialPts : '—'} / 60</strong></div>
+            <div class="score-bar-track"><div class="score-bar-fill" style="width:${complete ? (u.commercialPts / 60) * 100 : 0}%"></div></div>
           </div>
-          <div class="rail-div"></div>
-          <button type="button" class="button button-white button-wide" data-nav="step2">${esc(t('s1.railNext'))}</button>
         </div>
       `;
     }
+    syncStepGates(p);
+    renderStorageWarning();
     return;
   }
 
@@ -3642,9 +4187,9 @@ function syncOutputs() {
   if (app.view === 'step2') {
     const out = {
       dAov: m.old.aov > 0 ? money(m.old.aov, 2) : '—',
-      dDaily: m.old.monthlyOrders > 0 ? nf(m.old.dailyOrders, 1) + ' / day' : '—',
+      dDaily: m.old.monthlyOrders > 0 ? nf(m.old.dailyOrders, 1) + t('common.perDay') : '—',
       dMargin: m.old.sales > 0 ? pct(m.old.margin, 1) : '—',
-      oldSiteFee: money(m.old.siteFee, 2) + '/mo',
+      oldSiteFee: money(m.old.siteFee, 2) + t('common.perMonth'),
       siteFormulaCur: t('s2.formulaCur', {
         sales: money(m.old.sales, 0),
         share: nf(m.siteTerms.share, 1),
@@ -3657,25 +4202,26 @@ function syncOutputs() {
         rent: money(m.hahaTerms.rent, 0),
         total: money(m.haha.siteFee, 2)
       }),
-      upRevVariety: '+' + money(m.growth.varietyRev, 0) + '/mo',
-      upRevBasket:  '+' + money(m.growth.basketRev, 0) + '/mo',
-      upRevStock:   '+' + money(m.growth.stockRev, 0) + '/mo',
-      upRevPayment: '+' + money(m.growth.paymentRev, 0) + '/mo',
-      projSales: m.hasData ? money(m.haha.sales, 0) + '/mo' : '—',
+      upRevVariety: '+' + money(m.growth.varietyRev, 0) + t('common.perMonth'),
+      upRevBasket:  '+' + money(m.growth.basketRev, 0) + t('common.perMonth'),
+      upRevStock:   '+' + money(m.growth.stockRev, 0) + t('common.perMonth'),
+      upRevPayment: '+' + money(m.growth.paymentRev, 0) + t('common.perMonth'),
+      projSales: m.hasData ? money(m.haha.sales, 0) + t('common.perMonth') : '—',
       revUplift: m.hasData ? '+' + pct(m.growth.totalRevenueGrowthPct, 1) + ' (+' + money(m.growth.totalRevenueGrowth, 0) + ')' : '—',
-      projDaily: m.hasData ? nf(m.haha.dailyOrders, 1) + ' / day' : '—',
+      projDaily: m.hasData ? nf(m.haha.dailyOrders, 1) + t('common.perDay') : '—',
       cashSigning: money(m.finance.cashDueAtSigning, 0),
-      finPayment: money(m.finance.payment, 2) + '/mo',
+      finPayment: money(m.finance.payment, 2) + t('common.perMonth'),
       finCoverage: isFinite(m.finance.coverage) ? nf(m.finance.coverage, 2) + '×' : '—',
-      finCashAfter: money(m.finance.cashAfter, 0) + '/mo',
+      finCashAfter: money(m.finance.cashAfter, 0) + t('common.perMonth'),
       selfFundText: t('s2.selfFund', {
         cov: nf(m.finance.coverage, 2),
         cash: money(m.finance.cashAfter, 0),
+        vsOld: signedMoney(m.finance.vsOldCash, 0),
         term: m.finance.months
       }),
-      hahaTotalCost: money(m.haha.cost, 0) + '/mo',
+      hahaTotalCost: money(m.haha.cost, 0) + t('common.perMonth'),
       kpiGain: m.hasData ? signedMoney(m.invest.delta, 0) : '—',
-      kpiAnnual: m.hasData ? signedMoney(m.invest.annualDelta, 0) + ' / yr' : '—',
+      kpiAnnual: m.hasData ? signedMoney(m.invest.annualDelta, 0) + t('common.perYear') : '—',
       kpiStandalone: m.hasData ? monthsFmt(m.invest.standalonePayback) : '—',
       kpiInc: m.hasData ? monthsFmt(m.invest.payback) : '—',
       kpi3yr: m.hasData ? signedMoney(m.invest.threeYearNet, 0) : '—',
@@ -3707,7 +4253,8 @@ function syncOutputs() {
       finEnabled: !!p.invest.finance.enabled,
       finDisabled: !p.invest.finance.enabled,
       selfFunding: m.finance.selfFunding,
-      hiddenRepairRisk: m.hiddenRepairRisk
+      hiddenRepairRisk: m.hiddenRepairRisk,
+      ordersEstimated: !!p.baseline.ordersEstimated
     };
     $$('[data-show]').forEach(el => {
       const k = el.dataset.show;
@@ -3746,7 +4293,7 @@ function syncOutputs() {
             <tr><td>${esc(t('s2.rSales'))}</td><td class="r">${money(m.old.sales, 0)}</td><td class="r">${money(m.haha.sales, 0)}</td><td class="r pos">${signedMoney(m.growth.totalRevenueGrowth, 0)}</td></tr>
             <tr class="total"><td>${esc(t('s2.rCost'))}</td><td class="r">${money(m.old.cost, 0)}</td><td class="r">${money(m.haha.cost, 0)}</td><td class="r">${signedMoney(m.haha.cost - m.old.cost, 0)}</td></tr>
             <tr class="primary"><td>${esc(t('s2.rProfit'))}</td><td class="r">${money(m.old.profit, 0)}</td><td class="r">${money(m.haha.profit, 0)}</td><td class="r ${m.invest.delta >= 0 ? 'pos' : 'neg'}">${signedMoney(m.invest.delta, 0)}</td></tr>
-            <tr><td>${esc(t('s2.rMargin'))}</td><td class="r">${pct(m.old.margin, 1)}</td><td class="r">${pct(m.haha.margin, 1)}</td><td class="r">${(m.haha.margin - m.old.margin >= 0 ? '+' : '') + nf(m.haha.margin - m.old.margin, 1)} pts</td></tr>
+            <tr><td>${esc(t('s2.rMargin'))}</td><td class="r">${pct(m.old.margin, 1)}</td><td class="r">${pct(m.haha.margin, 1)}</td><td class="r">${(m.haha.margin - m.old.margin >= 0 ? '+' : '') + nf(m.haha.margin - m.old.margin, 1)} ${esc(t('s2.pts'))}</td></tr>
           </tbody>
         </table>
       `;
@@ -3757,7 +4304,7 @@ function syncOutputs() {
     if (stHost) {
       stHost.innerHTML = `
         <table class="table">
-          <thead><tr><th>%</th><th class="r">Profit</th><th class="r">Delta</th><th class="r">Payback</th>${m.finance.enabled ? '<th class="r">Cov</th>' : ''}</tr></thead>
+          <thead><tr><th>%</th><th class="r">${esc(t('rep.profit'))}</th><th class="r">${esc(t('rep.delta'))}</th><th class="r">${esc(t('rep.payback'))}</th>${m.finance.enabled ? `<th class="r">${esc(t('s2.cov'))}</th>` : ''}</tr></thead>
           <tbody>
             ${m.stress.map(st => `
               <tr>
@@ -3812,34 +4359,83 @@ function syncOutputs() {
           <div style="margin-bottom:10px"><span class="status-badge ${m.verdict}">${esc(t('verdict.' + m.verdict))}</span></div>
           <div class="rail-label" style="margin-top:12px;margin-bottom:2px">${esc(t('r2.gain'))}</div>
           <div class="rail-big ${m.invest.delta >= 0 ? 'pos' : 'neg'}">${m.hasData ? signedMoney(m.invest.delta, 0) : '—'}</div>
-          <div class="rail-sub">${m.hasData ? signedMoney(m.invest.annualDelta, 0) + ' / yr' : ''}</div>
+          <div class="rail-sub">${m.hasData ? signedMoney(m.invest.annualDelta, 0) + t('common.perYear') : ''}</div>
           <div class="rail-div"></div>
-          <div class="rail-row"><span>${esc(t('r2.standalone'))}</span><strong>${m.hasData ? esc(monthsFmt(m.invest.standalonePayback)) : '—'}</strong></div>
           <div class="rail-row"><span>${esc(t('r2.inc'))}</span><strong>${m.hasData ? esc(monthsFmt(m.invest.payback)) : '—'}</strong></div>
           <div class="rail-row"><span>${esc(t('r2.threeYr'))}</span><strong>${m.hasData ? signedMoney(m.invest.threeYearNet, 0) : '—'}</strong></div>
           <div class="rail-row"><span>${esc(t('r2.netInv'))}</span><strong>${money(m.invest.total, 0)}</strong></div>
           <div class="rail-row"><span>${esc(t('r2.model'))}</span><strong>${esc(m.invest.model.name)}</strong></div>
-          <div class="rail-div"></div>
-          <button type="button" class="button button-white button-wide" data-nav="step3">${esc(t('r2.toReport'))}</button>
         </div>
       `;
     }
+    syncStepGates(p);
+    renderStorageWarning();
   }
+}
+
+function syncStepGates(p) {
+  if (!p) return;
+  const s1 = validateStep1(p);
+  const s2 = validateStep2(p);
+  const ready = { step2: s1.ok, step3: s1.ok && s2.ok };
+
+  $$('[data-step-cta]').forEach(btn => {
+    const step = btn.dataset.stepCta;
+    const ok = !!ready[step];
+    btn.disabled = !ok;
+    btn.setAttribute('aria-disabled', String(!ok));
+    btn.title = ok ? '' : (step === 'step3' ? stepMissingText('step2', p) : stepMissingText('step1', p));
+  });
+  $$('[data-step-hint]').forEach(el => {
+    const step = el.dataset.stepHint;
+    el.textContent = stepMissingText(step, p);
+  });
+
+  $$('.nav-item[data-nav="step2"]').forEach(btn => {
+    btn.disabled = !s1.ok;
+    btn.title = s1.ok ? '' : t('validate.step1First');
+  });
+  $$('.nav-item[data-nav="step3"]').forEach(btn => {
+    const ok = s1.ok && s2.ok;
+    btn.disabled = !ok;
+    btn.title = ok ? '' : (s1.ok ? t('validate.step2First') : t('validate.step1First'));
+  });
 }
 
 </script>
 <script data-src="js/events.js">
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
+
+function goToStep(step) {
+  const p = getActiveProject();
+  if (!p) return;
+  if (!canEnterStep(step, p)) {
+    toast(stepMissingText(step === 'step3' ? 'step2' : 'step1', p));
+    return;
+  }
+  app.view = step;
+  mountView();
+}
 
 document.addEventListener('click', e => {
   /* Navigation links */
   const nav = e.target.closest('[data-nav]');
   if (nav && !nav.disabled) {
     e.preventDefault();
-    app.view = nav.dataset.nav;
+    const target = nav.dataset.nav;
+    const p = getActiveProject();
+    if (target === 'step2' && !canEnterStep('step2', p)) {
+      toast(stepMissingText('step1', p));
+      return;
+    }
+    if (target === 'step3' && !canEnterStep('step3', p)) {
+      toast(stepMissingText('step2', p));
+      return;
+    }
+    app.view = target;
     const sb = $('#sidebar'); if (sb) sb.classList.remove('open');
     const ov = $('#sidebarOverlay'); if (ov) ov.classList.remove('show');
     mountView();
@@ -3964,9 +4560,9 @@ document.addEventListener('click', e => {
     closeModal();
     mountView();
     toast(t('common.deleted'));
-  } else if (a === 'goStep1') { app.view = 'step1'; mountView(); }
-  else if (a === 'goStep2') { app.view = 'step2'; mountView(); }
-  else if (a === 'goStep3') { app.view = 'step3'; mountView(); }
+  } else if (a === 'goStep1') { goToStep('step1'); }
+  else if (a === 'goStep2') { goToStep('step2'); }
+  else if (a === 'goStep3') { goToStep('step3'); }
   else if (a === 'estOrders') {
     const p = getActiveProject();
     if (p) {
@@ -3974,11 +4570,19 @@ document.addEventListener('click', e => {
       if (sales > 0) {
         const est = Math.round(sales / 2.5);
         p.baseline.monthlyOrders = est;
+        p.baseline.ordersEstimated = true;
         const inp = $('[data-bind="baseline.monthlyOrders"]');
         if (inp) inp.value = est;
         saveState();
         syncOutputs();
       }
+    }
+  } else if (a === 'autoModel') {
+    const p = getActiveProject();
+    if (p) {
+      p.invest.modelManual = false;
+      saveState();
+      syncOutputs();
     }
   } else if (a === 'resetUplift') {
     const p = getActiveProject();
@@ -3997,11 +4601,14 @@ document.addEventListener('click', e => {
     const arrow = $('#costArrow');
     if (body) body.classList.toggle('hidden', !app.costExpanded);
     if (arrow) arrow.textContent = app.costExpanded ? '▲' : '▼';
-  } else if (a === 'backupAll') {
-    if (downloadFile('HAHA-Replacement-Backup.json', JSON.stringify(app.projects, null, 2), 'application/json')) {
-      toast(t('common.backedUp'));
-    }
-  } else if (a === 'restoreAll') {
+  } else if (a === 'backupProject') {
+    const p = app.projects.find(x => x.id === act.dataset.id) || getActiveProject();
+    if (p && backupProjectFile(p)) toast(t('common.backedUp'));
+    else toast(t('common.backupFailed'));
+  } else if (a === 'exportAll') {
+    if (exportAllFile()) toast(t('common.exportedAll'));
+    else toast(t('common.backupFailed'));
+  } else if (a === 'importProjects') {
     const imp = $('#importFile');
     if (imp) imp.click();
   } else if (a === 'printReport') {
@@ -4010,12 +4617,13 @@ document.addEventListener('click', e => {
     const p = getActiveProject();
     if (!p) return;
     const m = compute(p);
-    const styleEl = document.querySelector('style');
-    const css = styleEl ? styleEl.textContent : '';
+    const css = collectAppCss();
     const html = `<!DOCTYPE html><html lang="${app.lang === 'zh' ? 'zh-CN' : 'en'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.meta.locationName || 'HAHA Assessment Report')}</title><style>${css} body{background:#fff;padding:24px}</style></head><body>${reportDocumentHtml(p, m)}</body></html>`;
-    const fname = (p.meta.locationName || 'HAHA-Report').replace(/[^\w\-]+/g, '-') + '-Report.html';
+    const fname = 'HAHA-' + safeFilePart(p.meta.locationName) + '-Report.html';
     if (downloadFile(fname, html, 'text/html;charset=utf-8')) {
-      toast(t('common.backedUp'));
+      toast(t('common.reportDownloaded'));
+    } else {
+      toast(t('common.backupFailed'));
     }
   }
 });
@@ -4038,6 +4646,7 @@ document.addEventListener('input', e => {
   const path = el.dataset.bind;
   const val = el.type === 'checkbox' ? el.checked : el.value;
   setPath(p, path, val);
+  if (path === 'baseline.monthlyOrders') p.baseline.ordersEstimated = false;
   if (/^uplift\.[a-z]+\.pct$/.test(path)) {
     p.uplift[path.split('.')[1]].custom = true;
   }
@@ -4064,7 +4673,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeModal();
 });
 
-/* Restore Backup JSON */
+/* Import Project JSON (single project, all-project export, or legacy array) */
 const impInput = $('#importFile');
 if (impInput) {
   impInput.addEventListener('change', e => {
@@ -4073,25 +4682,19 @@ if (impInput) {
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        const data = JSON.parse(reader.result);
-        const items = Array.isArray(data) ? data : [data];
-        let added = 0;
-        items.forEach(item => {
-          if (item && item.meta) {
-            item.id = 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
-            app.projects.unshift(item);
-            added++;
-          }
-        });
+        const result = parseImportPayload(reader.result);
+        const added = importProjects(result.items);
         if (added > 0) {
           saveState();
           mountView();
-          toast(t('common.restored'));
+          toast(result.skipped
+            ? t('common.importedSkipped', { count: added, skipped: result.skipped })
+            : t('common.imported', { count: added }));
         } else {
           toast(t('common.invalidFile'));
         }
       } catch (err) {
-        toast(t('common.invalidFile'));
+        toast(t('common.importFailed'));
       }
     };
     reader.readAsText(file);
@@ -4102,7 +4705,7 @@ if (impInput) {
 </script>
 <script data-src="js/boot.js">
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 

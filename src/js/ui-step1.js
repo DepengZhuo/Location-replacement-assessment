@@ -1,5 +1,5 @@
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -68,25 +68,25 @@ function renderStep1(p) {
           </div>
           <div class="form-grid-3" style="margin-bottom:14px">
             <div class="field">
-              <label>${esc(t('s1.mAge'))}</label>
+              <label>${esc(t('s1.mAge'))} *</label>
               <input type="number" min="0" step="1" data-bind="machine.age" value="${esc(p.machine.age)}" placeholder="0">
               <span class="field-hint">${esc(t('s1.mAgeHint'))}</span>
             </div>
             <div class="field">
-              <label>${esc(t('s1.mCond'))}</label>
+              <label>${esc(t('s1.mCond'))} *</label>
               <div class="seg block" data-seg-group="machine.condition">
                 ${['good', 'fair', 'poor'].map(x => `<button type="button" class="${p.machine.condition === x ? 'on' : ''}" data-set="machine.condition" data-value="${x}">${esc(t('cond.' + x))}</button>`).join('')}
               </div>
             </div>
             <div class="field">
-              <label>${esc(t('s1.mMon'))}</label>
+              <label>${esc(t('s1.mMon'))} *</label>
               <div class="seg block" data-seg-group="machine.monitoring">
                 ${['yes', 'no'].map(x => `<button type="button" class="${p.machine.monitoring === x ? 'on' : ''}" data-set="machine.monitoring" data-value="${x}">${esc(t('common.' + x))}</button>`).join('')}
               </div>
             </div>
           </div>
           <div class="field">
-            <label>${esc(t('s1.mPay'))}</label>
+            <label>${esc(t('s1.mPay'))} *</label>
             <div class="chips" data-multi-group="machine.payments">
               ${pays.map(x => `<button type="button" class="chip ${(p.machine.payments || []).includes(x) ? 'on' : ''}" data-toggle="machine.payments" data-value="${x}">${esc(t('pay.' + x))}</button>`).join('')}
             </div>
@@ -102,7 +102,8 @@ function renderStep1(p) {
           </div>
           <div class="criteria-list">
             ${diagQs.map((q, idx) => {
-              const cur = num(p.diag[q.k]);
+              const raw = p.diag[q.k];
+              const cur = [0, 5, 10].includes(raw) ? raw : null;
               return `
                 <div class="criterion">
                   <div class="criterion-top">
@@ -121,6 +122,14 @@ function renderStep1(p) {
               `;
             }).join('')}
           </div>
+        </div>
+
+        <div class="step-footer" data-step-footer="step1">
+          <div class="step-footer-copy">
+            <strong>${esc(t('s1.footerTitle'))}</strong>
+            <span data-step-hint="step1">${esc(stepMissingText('step1', p))}</span>
+          </div>
+          <button type="button" class="button button-dark" data-nav="step2" data-step-cta="step2" disabled>${esc(t('s1.railNext'))}</button>
         </div>
       </div>
 

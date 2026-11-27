@@ -1,14 +1,35 @@
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
+
+function goToStep(step) {
+  const p = getActiveProject();
+  if (!p) return;
+  if (!canEnterStep(step, p)) {
+    toast(stepMissingText(step === 'step3' ? 'step2' : 'step1', p));
+    return;
+  }
+  app.view = step;
+  mountView();
+}
 
 document.addEventListener('click', e => {
   /* Navigation links */
   const nav = e.target.closest('[data-nav]');
   if (nav && !nav.disabled) {
     e.preventDefault();
-    app.view = nav.dataset.nav;
+    const target = nav.dataset.nav;
+    const p = getActiveProject();
+    if (target === 'step2' && !canEnterStep('step2', p)) {
+      toast(stepMissingText('step1', p));
+      return;
+    }
+    if (target === 'step3' && !canEnterStep('step3', p)) {
+      toast(stepMissingText('step2', p));
+      return;
+    }
+    app.view = target;
     const sb = $('#sidebar'); if (sb) sb.classList.remove('open');
     const ov = $('#sidebarOverlay'); if (ov) ov.classList.remove('show');
     mountView();
@@ -133,9 +154,9 @@ document.addEventListener('click', e => {
     closeModal();
     mountView();
     toast(t('common.deleted'));
-  } else if (a === 'goStep1') { app.view = 'step1'; mountView(); }
-  else if (a === 'goStep2') { app.view = 'step2'; mountView(); }
-  else if (a === 'goStep3') { app.view = 'step3'; mountView(); }
+  } else if (a === 'goStep1') { goToStep('step1'); }
+  else if (a === 'goStep2') { goToStep('step2'); }
+  else if (a === 'goStep3') { goToStep('step3'); }
   else if (a === 'estOrders') {
     const p = getActiveProject();
     if (p) {
@@ -143,11 +164,19 @@ document.addEventListener('click', e => {
       if (sales > 0) {
         const est = Math.round(sales / 2.5);
         p.baseline.monthlyOrders = est;
+        p.baseline.ordersEstimated = true;
         const inp = $('[data-bind="baseline.monthlyOrders"]');
         if (inp) inp.value = est;
         saveState();
         syncOutputs();
       }
+    }
+  } else if (a === 'autoModel') {
+    const p = getActiveProject();
+    if (p) {
+      p.invest.modelManual = false;
+      saveState();
+      syncOutputs();
     }
   } else if (a === 'resetUplift') {
     const p = getActiveProject();
@@ -166,11 +195,14 @@ document.addEventListener('click', e => {
     const arrow = $('#costArrow');
     if (body) body.classList.toggle('hidden', !app.costExpanded);
     if (arrow) arrow.textContent = app.costExpanded ? '▲' : '▼';
-  } else if (a === 'backupAll') {
-    if (downloadFile('HAHA-Replacement-Backup.json', JSON.stringify(app.projects, null, 2), 'application/json')) {
-      toast(t('common.backedUp'));
-    }
-  } else if (a === 'restoreAll') {
+  } else if (a === 'backupProject') {
+    const p = app.projects.find(x => x.id === act.dataset.id) || getActiveProject();
+    if (p && backupProjectFile(p)) toast(t('common.backedUp'));
+    else toast(t('common.backupFailed'));
+  } else if (a === 'exportAll') {
+    if (exportAllFile()) toast(t('common.exportedAll'));
+    else toast(t('common.backupFailed'));
+  } else if (a === 'importProjects') {
     const imp = $('#importFile');
     if (imp) imp.click();
   } else if (a === 'printReport') {
@@ -179,12 +211,13 @@ document.addEventListener('click', e => {
     const p = getActiveProject();
     if (!p) return;
     const m = compute(p);
-    const styleEl = document.querySelector('style');
-    const css = styleEl ? styleEl.textContent : '';
+    const css = collectAppCss();
     const html = `<!DOCTYPE html><html lang="${app.lang === 'zh' ? 'zh-CN' : 'en'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.meta.locationName || 'HAHA Assessment Report')}</title><style>${css} body{background:#fff;padding:24px}</style></head><body>${reportDocumentHtml(p, m)}</body></html>`;
-    const fname = (p.meta.locationName || 'HAHA-Report').replace(/[^\w\-]+/g, '-') + '-Report.html';
+    const fname = 'HAHA-' + safeFilePart(p.meta.locationName) + '-Report.html';
     if (downloadFile(fname, html, 'text/html;charset=utf-8')) {
-      toast(t('common.backedUp'));
+      toast(t('common.reportDownloaded'));
+    } else {
+      toast(t('common.backupFailed'));
     }
   }
 });
@@ -207,6 +240,7 @@ document.addEventListener('input', e => {
   const path = el.dataset.bind;
   const val = el.type === 'checkbox' ? el.checked : el.value;
   setPath(p, path, val);
+  if (path === 'baseline.monthlyOrders') p.baseline.ordersEstimated = false;
   if (/^uplift\.[a-z]+\.pct$/.test(path)) {
     p.uplift[path.split('.')[1]].custom = true;
   }
@@ -233,7 +267,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeModal();
 });
 
-/* Restore Backup JSON */
+/* Import Project JSON (single project, all-project export, or legacy array) */
 const impInput = $('#importFile');
 if (impInput) {
   impInput.addEventListener('change', e => {
@@ -242,25 +276,19 @@ if (impInput) {
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        const data = JSON.parse(reader.result);
-        const items = Array.isArray(data) ? data : [data];
-        let added = 0;
-        items.forEach(item => {
-          if (item && item.meta) {
-            item.id = 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
-            app.projects.unshift(item);
-            added++;
-          }
-        });
+        const result = parseImportPayload(reader.result);
+        const added = importProjects(result.items);
         if (added > 0) {
           saveState();
           mountView();
-          toast(t('common.restored'));
+          toast(result.skipped
+            ? t('common.importedSkipped', { count: added, skipped: result.skipped })
+            : t('common.imported', { count: added }));
         } else {
           toast(t('common.invalidFile'));
         }
       } catch (err) {
-        toast(t('common.invalidFile'));
+        toast(t('common.importFailed'));
       }
     };
     reader.readAsText(file);

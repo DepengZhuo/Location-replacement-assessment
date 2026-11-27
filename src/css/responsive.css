@@ -13,6 +13,7 @@
   .dashboard-grid, .hero-strip { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .topbar { padding: 0 16px; }
+  .storage-warning { padding: 10px 16px; }
   .page-content { padding: 20px 16px 56px; }
 }
 @media (max-width: 640px) {
@@ -20,4 +21,8 @@
   .choices-3 { margin-left: 0; }
   .stats-grid { grid-template-columns: 1fr; }
   .proposal-paper { padding: 22px 18px; }
+  .storage-warning { flex-wrap: wrap; }
+  .storage-warning .button { margin-left: 0; }
+  .step-footer { flex-direction: column; align-items: stretch; }
+  .step-footer .button { width: 100%; min-width: 0; }
 }

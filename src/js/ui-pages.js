@@ -1,5 +1,5 @@
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -7,9 +7,9 @@ function renderDashboard() {
   const list = app.projects;
   const computed = list.map(p => ({ p, m: compute(p) }));
   const viableList = computed.filter(x => x.m.viable);
-  const validStandalone = computed.filter(x => x.m.hasData && isFinite(x.m.invest.standalonePayback));
-  const avgStandalone = validStandalone.length
-    ? validStandalone.reduce((s, x) => s + x.m.invest.standalonePayback, 0) / validStandalone.length
+  const validPayback = computed.filter(x => x.m.hasData && isFinite(x.m.invest.payback));
+  const avgPayback = validPayback.length
+    ? validPayback.reduce((s, x) => s + x.m.invest.payback, 0) / validPayback.length
     : Infinity;
   const assessed = computed.filter(x => x.m.hasData);
   const avgGain = assessed.length
@@ -52,7 +52,7 @@ function renderDashboard() {
     <div class="stats-grid">
       <div class="stat-card"><span>${esc(t('dash.stat1'))}</span><strong>${list.length}</strong><small>${esc(t('dash.stat1Sub'))}</small></div>
       <div class="stat-card"><span>${esc(t('dash.stat2'))}</span><strong>${viableList.length}</strong><small>${esc(t('dash.stat2Sub'))}</small></div>
-      <div class="stat-card"><span>${esc(t('dash.stat3'))}</span><strong>${isFinite(avgStandalone) ? nf(avgStandalone, 1) + ' ' + esc(t('common.mo')) : '—'}</strong><small>${esc(t('dash.stat3Sub'))}</small></div>
+      <div class="stat-card"><span>${esc(t('dash.stat3'))}</span><strong>${isFinite(avgPayback) ? nf(avgPayback, 1) + ' ' + esc(t('common.mo')) : '—'}</strong><small>${esc(t('dash.stat3Sub'))}</small></div>
       <div class="stat-card"><span>${esc(t('dash.stat4'))}</span><strong>${assessed.length ? signedMoney(avgGain, 0) : '—'}</strong><small>${esc(t('dash.stat4Sub'))}</small></div>
     </div>
 
@@ -111,11 +111,14 @@ function projectCardsHtml() {
         <h3>${esc(p.meta.locationName || t('top.untitled'))}</h3>
         <p>${esc([p.meta.city, p.meta.state].filter(Boolean).join(', ') || '—')} · ${esc(m.invest.model.name)}</p>
         <div style="font-size:13px;font-weight:800;color:${m.hasData && m.invest.delta >= 0 ? 'var(--green)' : 'var(--muted)'}">
-          ${m.hasData ? signedMoney(m.invest.delta, 0) + '/mo · ' + esc(monthsFmt(m.invest.standalonePayback)) : '—'}
+          ${m.hasData ? signedMoney(m.invest.delta, 0) + '/mo · ' + esc(monthsFmt(m.invest.payback)) : '—'}
         </div>
         <div class="project-card-bottom">
           <button type="button" class="button button-dark button-small" data-action="openProj" data-id="${p.id}">${esc(t('common.open'))}</button>
-          <button type="button" class="button button-danger button-small" data-action="askDelete" data-id="${p.id}">${esc(t('common.delete'))}</button>
+          <div class="project-card-actions">
+            <button type="button" class="button button-outline button-small" data-action="backupProject" data-id="${p.id}">${esc(t('common.backupProject'))}</button>
+            <button type="button" class="button button-danger button-small" data-action="askDelete" data-id="${p.id}">${esc(t('common.delete'))}</button>
+          </div>
         </div>
       </div>
     `;
@@ -137,8 +140,8 @@ function renderProjects() {
         <input type="text" id="projSearch" value="${esc(app.search)}" placeholder="${esc(t('proj.search'))}">
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button type="button" class="button button-outline button-small" data-action="backupAll">${esc(t('common.backup'))}</button>
-        <button type="button" class="button button-outline button-small" data-action="restoreAll">${esc(t('common.restore'))}</button>
+        <button type="button" class="button button-outline button-small" data-action="importProjects">${esc(t('common.import'))}</button>
+        <button type="button" class="button button-ghost button-small" data-action="exportAll">${esc(t('common.backupAll'))}</button>
       </div>
     </div>
     <div id="projCardsHost">${projectCardsHtml()}</div>

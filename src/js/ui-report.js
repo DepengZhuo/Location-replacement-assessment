@@ -1,5 +1,5 @@
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -19,8 +19,11 @@ function reportDocumentHtml(p, m) {
   ].map(r => {
     const u = p.uplift[r.k];
     const lbl = u.accept === 'yes' ? t('common.yes') : u.accept === 'partial' ? t('common.partly') : t('common.no');
-    return `<tr><td>${esc(r.label)}</td><td>${esc(lbl)}</td><td class="r">${nf(u.pct, 1)}%</td><td class="r">+${money(r.rev, 0)}</td></tr>`;
+    return `<tr><td>${esc(r.label)}</td><td>${esc(lbl)}</td><td class="r">${nf(m.growth.appliedPct[r.k], 1)}%</td><td class="r">+${money(r.rev, 0)}</td></tr>`;
   }).join('');
+
+  const cashLabel = f.enabled ? t('s2.cashSigning') : t('r2.netInv');
+  const cashValue = f.enabled ? money(m.finance.cashDueAtSigning, 0) : money(m.invest.total, 0);
 
   return `
     <div class="proposal-paper">
@@ -31,8 +34,8 @@ function reportDocumentHtml(p, m) {
       <h1 class="rep-title">${esc(locName)}</h1>
       <div class="rep-meta-bar">
         <div><span>${esc(t('s1.venue'))}:</span><strong>${esc(t('venue.' + p.meta.venue))}${cityState ? ' · ' + esc(cityState) : ''}</strong></div>
-        <div><span>Date:</span><strong>${esc(p.meta.date)}</strong></div>
-        <div><span>Recommended Model:</span><strong>${esc(m.invest.model.name)} (${esc(t('tag.' + m.invest.model.tag))})</strong></div>
+        <div><span>${esc(t('rep.date'))}:</span><strong>${esc(p.meta.date)}</strong></div>
+        <div><span>${esc(t('rep.recommendedModel'))}:</span><strong>${esc(m.invest.model.name)} (${esc(t('tag.' + m.invest.model.tag))})</strong></div>
       </div>
 
       <!-- Executive Summary (No duplicate Key Figures table) -->
@@ -46,12 +49,15 @@ function reportDocumentHtml(p, m) {
           ${esc(m.invest.model.name)} (${money(m.invest.model.msrp, 0)}) · ${esc(t('r2.netInv'))}: <strong>${money(m.invest.total, 0)}</strong>
         </div>
         <div class="rep-stat-row">
-          <div class="rep-stat"><span>${esc(t('s2.kpiGain'))}</span><strong>${signedMoney(m.invest.delta, 0)}/mo</strong></div>
-          <div class="rep-stat"><span>${esc(t('s2.kpiStandalone'))}</span><strong>${esc(monthsFmt(m.invest.standalonePayback))}</strong></div>
+          <div class="rep-stat"><span>${esc(t('s2.kpiGain'))}</span><strong>${signedMoney(m.invest.delta, 0)}${t('rep.perMonth')}</strong></div>
           <div class="rep-stat"><span>${esc(t('s2.kpiInc'))}</span><strong>${esc(monthsFmt(m.invest.payback))}</strong></div>
           <div class="rep-stat"><span>${esc(t('s2.kpi3yr'))}</span><strong>${signedMoney(m.invest.threeYearNet, 0)}</strong></div>
+          <div class="rep-stat"><span>${esc(cashLabel)}</span><strong>${cashValue}</strong></div>
         </div>
+        <div class="rep-note">${esc(t('rep.machineOnly'))}: ${esc(monthsFmt(m.invest.standalonePayback))} · ${esc(t('s2.kpiStandaloneSub'))}</div>
         <ul class="rep-list">${bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>
+        ${m.hasData ? `<div class="rep-note"><strong>${esc(t('rep.downsideTitle'))}:</strong> ${esc(t('rep.downsideText', { zero: money(m.haha.zeroGrowthProfit, 0), stress: money(m.stress[2].profit, 0) }))}</div>` : ''}
+        ${m.hasData && m.invest.delta > 0 ? `<div class="rep-note">${esc(t('rep.delayText', { delta: money(m.invest.delta, 0), six: money(m.invest.delta * 6, 0) }))}</div>` : ''}
       </div>
 
       <!-- 01 · Site & Diagnostic Overview -->
@@ -60,7 +66,7 @@ function reportDocumentHtml(p, m) {
         <div class="rep-two">
           <table class="table">
             <tr><td>${esc(t('s1.mType'))}</td><td class="r"><strong>${esc(t('mtype.' + p.machine.type))}</strong></td></tr>
-            <tr><td>${esc(t('s1.mAge'))} / ${esc(t('s1.mCond'))}</td><td class="r">${p.machine.age !== '' ? p.machine.age + ' yrs' : '—'} · ${esc(t('cond.' + p.machine.condition))}</td></tr>
+            <tr><td>${esc(t('s1.mAge'))} / ${esc(t('s1.mCond'))}</td><td class="r">${p.machine.age !== '' ? p.machine.age + ' ' + esc(t('rep.years')) : '—'} · ${esc(t('cond.' + p.machine.condition))}</td></tr>
             <tr><td>${esc(t('s1.mMon'))}</td><td class="r">${esc(t('common.' + p.machine.monitoring))}</td></tr>
             <tr><td>${esc(t('s1.railHw'))} / ${esc(t('s1.railComm'))}</td><td class="r">${m.urgency.hwPts}/40 · ${m.urgency.commercialPts}/60</td></tr>
             <tr class="total"><td>${esc(t('s1.railTitle'))}</td><td class="r">${m.urgency.total} / 100</td></tr>
@@ -78,12 +84,14 @@ function reportDocumentHtml(p, m) {
       <div class="rep-sec">
         <h3>${esc(t('s3.sec2'))}</h3>
         <table class="table" style="margin-bottom:14px">
-          <thead><tr><th>Growth Driver</th><th>Client View</th><th class="r">Applied %</th><th class="r">Monthly Impact</th></tr></thead>
+          <thead><tr><th>${esc(t('rep.growthDriver'))}</th><th>${esc(t('rep.clientView'))}</th><th class="r">${esc(t('rep.appliedPct'))}</th><th class="r">${esc(t('rep.monthlyImpact'))}</th></tr></thead>
           <tbody>
             ${upRows}
             <tr class="total"><td colspan="2">${esc(t('s2.revUplift'))}</td><td class="r">+${pct(m.growth.totalRevenueGrowthPct, 1)}</td><td class="r">+${money(m.growth.totalRevenueGrowth, 0)}</td></tr>
           </tbody>
         </table>
+        ${(m.growth.orderCapped || m.growth.aovCapped) ? `<div class="rep-note">${esc(t('rep.capNote'))}</div>` : ''}
+        ${m.old.ordersEstimated ? `<div class="rep-note">${esc(t('rep.estimatedOrders'))}</div>` : ''}
         <table class="table">
           <thead><tr><th>${esc(t('s2.metric'))}</th><th class="r">${esc(t('s2.cur'))}</th><th class="r">${esc(t('s2.haha'))}</th><th class="r">${esc(t('s2.chg'))}</th></tr></thead>
           <tbody>
@@ -103,20 +111,23 @@ function reportDocumentHtml(p, m) {
         <h3>${esc(t('s3.sec3'))}</h3>
         <div class="rep-two">
           <table class="table">
-            <tr><td>${esc(m.invest.model.name)} MSRP</td><td class="r">${money(m.invest.equipment, 0)}</td></tr>
-            <tr><td>Freight / Install / Removal</td><td class="r">${money(m.invest.freight + m.invest.install + m.invest.removal, 0)}</td></tr>
+            <tr><td>${esc(m.invest.model.name)} ${esc(t('rep.msrp'))}</td><td class="r">${money(m.invest.equipment, 0)}</td></tr>
+            <tr><td>${esc(t('rep.freightInstallRemoval'))}</td><td class="r">${money(m.invest.freight + m.invest.install + m.invest.removal, 0)}</td></tr>
             <tr><td>${esc(t('s2.tradeIn'))}</td><td class="r">-${money(m.invest.tradeIn, 0)}</td></tr>
             <tr class="total"><td>${esc(t('r2.netInv'))}</td><td class="r">${money(m.invest.total, 0)}</td></tr>
-            <tr><td>${esc(t('s2.payMethod'))}</td><td class="r">${f.enabled ? `${m.finance.months}m @ ${m.finance.apr}% (${money(m.finance.payment, 2)}/mo · ${nf(m.finance.coverage, 2)}×)` : esc(t('s2.cash'))}</td></tr>
-            <tr><td>${esc(t('s2.propTitle'))}</td><td class="r">${money(m.siteEarnings.monthly, 0)}/mo (${money(m.siteEarnings.annual, 0)}/yr)</td></tr>
+            <tr><td>${esc(t('s2.payMethod'))}</td><td class="r">${f.enabled ? esc(t('rep.financeLine', { months: m.finance.months, apr: nf(m.finance.apr, 1), payment: money(m.finance.payment, 2), coverage: isFinite(m.finance.coverage) ? nf(m.finance.coverage, 2) : '—' })) : esc(t('s2.cash'))}</td></tr>
+            ${f.enabled ? `<tr><td>${esc(t('rep.financeCost'))}</td><td class="r">${money(m.finance.financingCost36, 0)}</td></tr>` : ''}
+            <tr><td>${esc(t('rep.machineOnly'))}</td><td class="r">${esc(monthsFmt(m.invest.standalonePayback))}</td></tr>
+            <tr><td>${esc(t('s2.propTitle'))}</td><td class="r">${money(m.siteEarnings.monthly, 0)}${t('rep.perMonth')} (${money(m.siteEarnings.annual, 0)}${t('rep.perYear')})</td></tr>
           </table>
           <table class="table">
-            <thead><tr><th>Stress</th><th class="r">Profit</th><th class="r">Delta</th><th class="r">Payback</th></tr></thead>
+            <thead><tr><th>${esc(t('rep.stress'))}</th><th class="r">${esc(t('rep.profit'))}</th><th class="r">${esc(t('rep.delta'))}</th><th class="r">${esc(t('rep.payback'))}</th></tr></thead>
             <tbody>
               ${m.stress.map(st => `<tr><td>${nf(st.scale * 100, 0)}%</td><td class="r">${money(st.profit, 0)}</td><td class="r">${signedMoney(st.delta, 0)}</td><td class="r">${esc(monthsFmt(st.payback))}</td></tr>`).join('')}
             </tbody>
           </table>
         </div>
+        ${f.enabled ? `<div class="rep-note">${esc(t('rep.financeCostNote', { cost: money(m.finance.financingCost36, 0) }))}</div>` : ''}
       </div>
 
       <!-- 04 · Next Steps & Assessment Notes (NO Sign-Off lines) -->

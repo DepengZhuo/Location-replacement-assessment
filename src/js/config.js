@@ -1,5 +1,5 @@
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -31,6 +31,8 @@ const URGENCY_HIGH_LINE = 60;
 function createBlankProject(locationName) {
   return {
     id: 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    schemaVersion: 2,
+    scoringVersion: 2,
     updatedAt: new Date().toISOString(),
     meta: {
       locationName: locationName || '',
@@ -42,14 +44,15 @@ function createBlankProject(locationName) {
     machine: {
       type: 'snack',
       age: '',
-      condition: 'fair',
-      monitoring: 'no',
-      payments: ['coin', 'bill']
+      condition: '',
+      monitoring: '',
+      payments: []
     },
-    diag: { q1: 5, q2: 5, q3: 5, q4: 5, q5: 5, q6: 5 },
+    diag: { q1: null, q2: null, q3: null, q4: null, q5: null, q6: null },
     baseline: {
       monthlySales: '',
       monthlyOrders: '',
+      ordersEstimated: false,
       profitMode: 'actual', // 'actual' | 'margin' | 'detail'
       actualProfit: '',
       estMarginPct: 28,

@@ -1,12 +1,14 @@
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
 function renderSidebar() {
   const p = getActiveProject();
-  const navBtn = (view, badge, label, disabled) =>
-    `<button type="button" class="nav-item ${app.view === view ? 'active' : ''}" data-nav="${view}" ${disabled ? 'disabled' : ''}>
+  const s1 = p ? validateStep1(p) : { ok: false };
+  const s2 = p ? validateStep2(p) : { ok: false };
+  const navBtn = (view, badge, label, disabled, title) =>
+    `<button type="button" class="nav-item ${app.view === view ? 'active' : ''}" data-nav="${view}" ${disabled ? 'disabled' : ''} ${title ? `title="${esc(title)}"` : ''}>
       <span class="nav-badge">${badge}</span>
       <span class="nav-label">${esc(label)}</span>
     </button>`;
@@ -26,8 +28,8 @@ function renderSidebar() {
     <div class="sidebar-label">${esc(t('nav.activeProject'))}</div>
     <nav class="main-nav">
       ${navBtn('step1', '01', t('nav.s1'), !p)}
-      ${navBtn('step2', '02', t('nav.s2'), !p)}
-      ${navBtn('step3', '03', t('nav.s3'), !p)}
+      ${navBtn('step2', '02', t('nav.s2'), !p || !s1.ok, !p ? t('validate.project') : (!s1.ok ? t('validate.step1First') : ''))}
+      ${navBtn('step3', '03', t('nav.s3'), !p || !s1.ok || !s2.ok, !p ? t('validate.project') : (!s1.ok ? t('validate.step1First') : (!s2.ok ? t('validate.step2First') : '')))}
     </nav>
     <div class="sidebar-bottom">
       <div class="sidebar-note">
@@ -66,6 +68,22 @@ function renderTopbar() {
         <button type="button" class="${app.lang === 'zh' ? 'on' : ''}" data-action="lang" data-value="zh">中文</button>
       </div>
     </div>
+  `;
+  renderStorageWarning();
+}
+
+function renderStorageWarning() {
+  const el = $('#storageWarning');
+  if (!el) return;
+  if (!app.storageError) {
+    el.classList.add('hidden');
+    el.innerHTML = '';
+    return;
+  }
+  el.classList.remove('hidden');
+  el.innerHTML = `
+    <span>⚠ ${esc(t('storage.warning'))}</span>
+    <button type="button" class="button button-outline button-small" data-action="exportAll">${esc(t('common.backupAll'))}</button>
   `;
 }
 
@@ -133,7 +151,9 @@ function askDeleteModal(id) {
   showModal(`
     <h3>${esc(t('proj.delTitle'))}</h3>
     <p>${esc(t('proj.delMsg', { name: p.meta.locationName || t('top.untitled') }))}</p>
+    <p style="font-size:12px;color:var(--muted)">${esc(t('modal.deleteBackupHint'))}</p>
     <div class="modal-actions">
+      <button type="button" class="button button-outline modal-action-left" data-action="backupProject" data-id="${id}">${esc(t('common.backupProject'))}</button>
       <button type="button" class="button button-outline" data-action="closeModal">${esc(t('common.cancel'))}</button>
       <button type="button" class="button button-danger" data-action="confirmDelete" data-id="${id}">${esc(t('common.delete'))}</button>
     </div>

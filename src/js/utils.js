@@ -1,5 +1,5 @@
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -23,6 +23,11 @@ function signedMoney(v, d) {
   return (n >= 0 ? '+' : '-') + '$' + nf(Math.abs(n), d == null ? 0 : d);
 }
 function pct(v, d) { return nf(v, d == null ? 1 : d) + '%'; }
+function monthsFmt(v) { return isFinite(v) ? nf(v, 1) + ' ' + t('common.mo') : t('common.noPayback'); }
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
 
 function getPath(obj, path) { return path.split('.').reduce((o, k) => o == null ? undefined : o[k], obj); }
 function setPath(obj, path, val) {
@@ -61,4 +66,16 @@ function downloadFile(filename, content, mime) {
   } catch (e) {
     return false;
   }
+}
+
+function collectAppCss() {
+  const inline = Array.from(document.querySelectorAll('style')).map(el => el.textContent || '').join('\n');
+  if (inline.trim()) return inline;
+  let css = '';
+  Array.from(document.styleSheets).forEach(sheet => {
+    try {
+      css += Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n') + '\n';
+    } catch (e) {}
+  });
+  return css;
 }

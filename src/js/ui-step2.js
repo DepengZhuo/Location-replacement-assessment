@@ -1,5 +1,5 @@
 /* =====================================================================
-   HAHA Location Replacement Assessment v2.2
+   HAHA Location Replacement Assessment v2.3
    ===================================================================== */
 'use strict';
 
@@ -46,6 +46,7 @@ function renderStep2(p) {
               <label>${esc(t('s2.mOrders'))}</label>
               <input type="number" min="0" step="10" data-bind="baseline.monthlyOrders" value="${esc(b.monthlyOrders)}" placeholder="720">
               <button type="button" class="button button-outline button-small" style="margin-top:4px;align-self:flex-start" data-action="estOrders">${esc(t('s2.estOrders'))}</button>
+              <span class="field-hint hidden" data-show="ordersEstimated">${esc(t('s2.estOrdersNote'))}</span>
             </div>
           </div>
 
@@ -158,7 +159,7 @@ function renderStep2(p) {
                 <div class="uplift-card">
                   <div class="uplift-head">
                     <div><h4>${esc(t(item.t))}</h4><p>${esc(t(item.d))}</p></div>
-                    <span class="cap-badge" data-show="${item.capFlag}">${esc(t('s2.capped'))}</span>
+                    <span class="cap-badge hidden" data-show="${item.capFlag}">${esc(t('s2.capped'))}</span>
                   </div>
                   <div class="seg block" data-seg-group="uplift.${item.k}.accept">
                     <button type="button" class="${u.accept === 'yes' ? 'on' : ''}" data-set="uplift.${item.k}.accept" data-value="yes">${esc(t('s2.yes100'))}</button>
@@ -170,7 +171,7 @@ function renderStep2(p) {
                       <input type="number" class="has-unit" min="0" step="0.5" data-bind="uplift.${item.k}.pct" value="${esc(u.pct)}">
                       <span class="unit">%</span>
                     </div>
-                    <div class="uplift-impact" data-out="${item.out}">+$0/mo</div>
+                    <div class="uplift-impact" data-out="${item.out}">+$0${t('common.perMonth')}</div>
                   </div>
                 </div>
               `;
@@ -187,7 +188,10 @@ function renderStep2(p) {
         <div class="panel">
           <div class="panel-head">
             <div><h3>${esc(t('s2.secC'))}</h3><p>${esc(t('s2.secCd'))}</p></div>
-            <span class="step-tag">C</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <button type="button" class="button button-ghost button-small" data-action="autoModel">${esc(t('s2.autoModel'))}</button>
+              <span class="step-tag">C</span>
+            </div>
           </div>
           <div class="model-grid">
             ${MODELS.map(mod => `
@@ -232,17 +236,17 @@ function renderStep2(p) {
             </div>
           </div>
 
-          <div data-show="finDisabled">
+          <div class="hidden" data-show="finDisabled">
             <div class="derived-bar" style="grid-template-columns:1fr 1fr">
               <div class="derived-item"><span>${esc(t('s2.cashSigning'))}</span><strong data-out="cashSigning">—</strong></div>
               <div class="derived-item"><span>${esc(t('s2.kpiStandalone'))}</span><strong data-out="kpiStandalone">—</strong></div>
             </div>
           </div>
 
-          <div data-show="finEnabled">
+          <div class="hidden" data-show="finEnabled">
             <div class="form-grid-4">
               <div class="field"><label>${esc(t('s2.down'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="0" max="100" step="1" data-bind="invest.finance.downPct" value="${esc(f.downPct)}"><span class="unit">%</span></div></div>
-              <div class="field"><label>${esc(t('s2.term'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="1" max="72" step="1" data-bind="invest.finance.term" value="${esc(f.term)}"><span class="unit">mo</span></div></div>
+              <div class="field"><label>${esc(t('s2.term'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="1" max="72" step="1" data-bind="invest.finance.term" value="${esc(f.term)}"><span class="unit">${esc(t('common.mo'))}</span></div></div>
               <div class="field"><label>${esc(t('s2.apr'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="0" step="0.1" data-bind="invest.finance.apr" value="${esc(f.apr)}"><span class="unit">%</span></div></div>
               <div class="field"><label>${esc(t('s2.docFee'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" step="25" data-bind="invest.finance.docFee" value="${esc(f.docFee)}"></div></div>
             </div>
@@ -252,7 +256,7 @@ function renderStep2(p) {
               <div class="derived-item"><span>${esc(t('s2.coverage'))}</span><strong data-out="finCoverage" data-tone="finCovTone">—</strong></div>
               <div class="derived-item"><span>${esc(t('s2.cashAfter'))}</span><strong data-out="finCashAfter">—</strong></div>
             </div>
-            <div class="callout good" data-show="selfFunding">
+            <div class="callout good hidden" data-show="selfFunding">
               <div class="big">✓</div>
               <div class="txt" data-out="selfFundText"></div>
             </div>
@@ -334,7 +338,7 @@ function renderStep2(p) {
             <div class="txt"><strong>${esc(t('s2.zeroTitle'))}</strong><br><span data-out="zeroText"></span></div>
           </div>
 
-          <div class="callout warn" data-show="hiddenRepairRisk">
+          <div class="callout warn hidden" data-show="hiddenRepairRisk">
             <div class="big">⚠</div>
             <div class="txt"><strong>${esc(t('s2.hiddenRiskTitle'))}</strong><br>${esc(t('s2.hiddenRiskText'))}</div>
           </div>
@@ -347,8 +351,8 @@ function renderStep2(p) {
             <div>
               <strong style="font-size:13.5px;display:block;margin-bottom:8px">${esc(t('s2.propTitle'))}</strong>
               <div class="derived-bar" style="margin-top:0;grid-template-columns:1fr 1fr">
-                <div class="derived-item"><span>Monthly</span><strong data-out="propMo">—</strong></div>
-                <div class="derived-item"><span>Annual</span><strong data-out="propYr">—</strong></div>
+                <div class="derived-item"><span>${esc(t('rep.monthly'))}</span><strong data-out="propMo">—</strong></div>
+                <div class="derived-item"><span>${esc(t('rep.annual'))}</span><strong data-out="propYr">—</strong></div>
               </div>
               <p style="font-size:12px;color:var(--muted);margin-top:8px">${esc(t('s2.propSub'))}</p>
             </div>
@@ -356,6 +360,14 @@ function renderStep2(p) {
 
           <div class="verdict-box" data-out-html="verdictBox"></div>
           <div class="warn-list" data-out-html="warningsHost"></div>
+        </div>
+
+        <div class="step-footer" data-step-footer="step2">
+          <div class="step-footer-copy">
+            <strong>${esc(t('s2.footerTitle'))}</strong>
+            <span data-step-hint="step2">${esc(stepMissingText('step2', p))}</span>
+          </div>
+          <button type="button" class="button button-dark" data-nav="step3" data-step-cta="step3" disabled>${esc(t('r2.toReport'))}</button>
         </div>
       </div>
 

@@ -228,3 +228,19 @@
   display: inline-flex;
   align-items: center;
 }
+.storage-warning {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 32px;
+  background: var(--amber-soft);
+  border-bottom: 1px solid var(--amber-line);
+  color: var(--amber);
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.storage-warning .button {
+  margin-left: auto;
+  flex-shrink: 0;
+}
