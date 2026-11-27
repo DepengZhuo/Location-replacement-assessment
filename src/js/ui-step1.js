@@ -4,7 +4,7 @@
 'use strict';
 
 function renderStep1(p) {
-  const venues = ['office', 'factory', 'gym', 'hospital', 'hotel', 'school', 'apartment', 'transit', 'construction', 'retail'];
+  const venues = ['office', 'office_premium', 'factory', 'gym', 'hospital', 'hotel', 'school', 'apartment', 'transit', 'construction', 'retail'];
   const mtypes = ['snack', 'beverage', 'combo', 'frozen', 'other'];
   const pays = ['coin', 'bill', 'card', 'mobile'];
   const diagQs = [

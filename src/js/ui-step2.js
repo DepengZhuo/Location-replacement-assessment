@@ -203,6 +203,7 @@ function renderStep2(p) {
               </button>
             `).join('')}
           </div>
+          <div class="model-reason" data-out="modelReason">—</div>
 
           <div class="form-grid-4" style="align-items:start">
             <div class="field">

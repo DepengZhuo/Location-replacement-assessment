@@ -48,6 +48,15 @@ function syncOutputs() {
       dAov: m.old.aov > 0 ? money(m.old.aov, 2) : '—',
       dDaily: m.old.monthlyOrders > 0 ? nf(m.old.dailyOrders, 1) + t('common.perDay') : '—',
       dMargin: m.old.sales > 0 ? pct(m.old.margin, 1) : '—',
+      modelReason: m.invest.recFrozen
+        ? (m.invest.recLowVolume
+          ? t('s2.recFrozenLow', { orders: nf(m.invest.recDailyOrders, 1) })
+          : t('s2.recFrozen'))
+        : t('s2.recReason', {
+          orders: nf(m.invest.recDailyOrders, 1),
+          venue: t('venue.' + p.meta.venue),
+          model: m.invest.recModelName
+        }),
       oldSiteFee: money(m.old.siteFee, 2) + t('common.perMonth'),
       siteFormulaCur: t('s2.formulaCur', {
         sales: money(m.old.sales, 0),

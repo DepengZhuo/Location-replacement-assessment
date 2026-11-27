@@ -168,7 +168,7 @@ const STR = {
     'validate.apr': 'APR',
     'validate.docFee': 'doc fee',
 
-    'venue.office': 'Office / Corporate', 'venue.factory': 'Factory / Industrial', 'venue.gym': 'Gym / Fitness',
+    'venue.office': 'Office / Corporate', 'venue.office_premium': 'High-end Office / HQ', 'venue.factory': 'Factory / Industrial', 'venue.gym': 'Gym / Fitness',
     'venue.hospital': 'Hospital / Medical', 'venue.hotel': 'Hotel / Hospitality', 'venue.school': 'School / University',
     'venue.apartment': 'Apartment / Residential', 'venue.transit': 'Airport / Transit', 'venue.construction': 'Construction Site', 'venue.retail': 'Retail / Other',
     'mtype.snack': 'Snack / Spring', 'mtype.beverage': 'Beverage', 'mtype.combo': 'Combo', 'mtype.frozen': 'Frozen / Fresh', 'mtype.other': 'Other',
@@ -224,9 +224,12 @@ const STR = {
     's2.projDaily': 'Projected Daily Orders',
 
     's2.secC': 'C. Machine Recommendation, Investment & Financing',
-    's2.secCd': 'Auto-recommended by daily order volume & machine type. Click any model to select.',
+    's2.secCd': 'Auto-recommended by daily orders, venue type and machine type. Click any model to select.',
     's2.autoModel': 'Use recommended',
     's2.recBadge': 'Recommended',
+    's2.recReason': 'Auto pick: {orders} orders/day · {venue} → {model}.',
+    's2.recFrozen': 'Frozen / fresh machine type → Freezer 550.',
+    's2.recFrozenLow': 'Frozen / fresh + {orders} orders/day → Freezer 550; below 15/day, validate payback first.',
     'tag.compact': 'Compact', 'tag.standard': 'Standard', 'tag.bestseller': 'US Best Seller',
     'tag.flagship': 'Flagship', 'tag.large': 'Large Capacity', 'tag.double': 'Double Door', 'tag.frozen': 'Frozen',
     's2.freight': 'Freight (+$250)',
@@ -340,6 +343,7 @@ const STR = {
     'warn.coverageLow': 'Monthly payment coverage is {coverage}× (aim for ≥ 1.25×).',
     'warn.cashBelowOld': 'Net cash after monthly financing payment is below current machine profit.',
     'warn.longPayback': 'Incremental payback is {months} months.',
+    'warn.frozenLowVolume': 'Frozen / fresh site at {orders} orders/day is below 15/day; validate payback before committing.',
 
     'why.age': 'Current machine is {years} years old — rising repair and downtime risk.',
     'why.condition': 'Physical condition is poor — reliability is already costing sales.',
@@ -558,7 +562,7 @@ const STR = {
     'validate.apr': '年化利率',
     'validate.docFee': '签约手续费',
 
-    'venue.office': '办公室 / 企业园区', 'venue.factory': '工厂 / 工业园', 'venue.gym': '健身房',
+    'venue.office': '办公室 / 企业园区', 'venue.office_premium': '高端办公 / 总部', 'venue.factory': '工厂 / 工业园', 'venue.gym': '健身房',
     'venue.hospital': '医院 / 医疗', 'venue.hotel': '酒店 / 服务业', 'venue.school': '学校 / 大学',
     'venue.apartment': '公寓 / 住宅', 'venue.transit': '机场 / 交通枢纽', 'venue.construction': '建筑工地', 'venue.retail': '零售 / 其他',
     'mtype.snack': '弹簧零食柜', 'mtype.beverage': '饮料柜', 'mtype.combo': '综合柜', 'mtype.frozen': '冷冻 / 鲜食柜', 'mtype.other': '其他',
@@ -614,9 +618,12 @@ const STR = {
     's2.projDaily': 'HAHA 预测日均单量',
 
     's2.secC': 'C. 机型推荐、投资与分期',
-    's2.secCd': '根据点位日均单量与旧机类型自动推荐机型，点击任意机型可手动切换。',
+    's2.secCd': '根据日均单量、场地类型与旧机类型自动推荐机型，点击任意机型可手动切换。',
     's2.autoModel': '恢复自动推荐',
     's2.recBadge': '推荐',
+    's2.recReason': '自动推荐：{orders} 单/天 · {venue} → {model}。',
+    's2.recFrozen': '旧机为冷冻/鲜食 → 优先 Freezer 550。',
+    's2.recFrozenLow': '冷冻/鲜食 + {orders} 单/天 → Freezer 550；低于 15 单/天，建议先验证回本。',
     'tag.compact': '紧凑型', 'tag.standard': '标准型', 'tag.bestseller': '北美畅销',
     'tag.flagship': '旗舰型', 'tag.large': '大容量', 'tag.double': '双门超大', 'tag.frozen': '冷冻',
     's2.freight': '运费 (+$250)',
@@ -730,6 +737,7 @@ const STR = {
     'warn.coverageLow': '月供覆盖倍数为 {coverage}×（建议 ≥ 1.25×）。',
     'warn.cashBelowOld': '交完月供后剩余现金低于现有机器月利润。',
     'warn.longPayback': '增量回本周期为 {months} 个月。',
+    'warn.frozenLowVolume': '冷冻/鲜食点位日均 {orders} 单，低于 15 单/天，建议先验证回本再投入。',
 
     'why.age': '现有机器机龄已达 {years} 年，维修与停机风险上升。',
     'why.condition': '机器物理状况较差，故障率已直接拖累营收。',

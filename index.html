@@ -871,6 +871,16 @@ input[type="checkbox"] { accent-color: #111; width: 16px; height: 16px; cursor: 
   gap: 10px;
   margin-bottom: 14px;
 }
+.model-reason {
+  margin: -4px 0 14px;
+  padding: 8px 10px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
 .model-card {
   position: relative;
   border: 1px solid var(--line-2);
@@ -1424,6 +1434,7 @@ const QUADRANT_BASE = {
 const FREIGHT_FEE = 250;
 const REVENUE_LINE = 1200;
 const URGENCY_HIGH_LINE = 60;
+const PREMIUM_VENUES = ['hotel', 'hospital', 'transit', 'gym', 'office_premium'];
 
 function createBlankProject(locationName) {
   return {
@@ -1561,11 +1572,13 @@ function amortize(principal, aprPct, months) {
   return (p * r * f) / (f - 1);
 }
 
-function recommendedModel(dailyOrders, machineType) {
+function recommendedModel(dailyOrders, machineType, venue) {
+  const orders = Number(dailyOrders) || 0;
   if (machineType === 'frozen') return 'freezer550';
-  if (dailyOrders > 50) return 'ultra1200';
-  if (dailyOrders >= 35) return 'max620s';
-  if (dailyOrders >= 15) return 'pro542';
+  if (orders > 55) return 'ultra1200';
+  if (orders >= 35) return PREMIUM_VENUES.includes(venue) ? 'max620s' : 'max660';
+  if (orders >= 18) return 'pro542';
+  if (orders >= 10) return 'plus440';
   return 'mini360';
 }
 
@@ -1825,7 +1838,7 @@ const STR = {
     'validate.apr': 'APR',
     'validate.docFee': 'doc fee',
 
-    'venue.office': 'Office / Corporate', 'venue.factory': 'Factory / Industrial', 'venue.gym': 'Gym / Fitness',
+    'venue.office': 'Office / Corporate', 'venue.office_premium': 'High-end Office / HQ', 'venue.factory': 'Factory / Industrial', 'venue.gym': 'Gym / Fitness',
     'venue.hospital': 'Hospital / Medical', 'venue.hotel': 'Hotel / Hospitality', 'venue.school': 'School / University',
     'venue.apartment': 'Apartment / Residential', 'venue.transit': 'Airport / Transit', 'venue.construction': 'Construction Site', 'venue.retail': 'Retail / Other',
     'mtype.snack': 'Snack / Spring', 'mtype.beverage': 'Beverage', 'mtype.combo': 'Combo', 'mtype.frozen': 'Frozen / Fresh', 'mtype.other': 'Other',
@@ -1881,9 +1894,12 @@ const STR = {
     's2.projDaily': 'Projected Daily Orders',
 
     's2.secC': 'C. Machine Recommendation, Investment & Financing',
-    's2.secCd': 'Auto-recommended by daily order volume & machine type. Click any model to select.',
+    's2.secCd': 'Auto-recommended by daily orders, venue type and machine type. Click any model to select.',
     's2.autoModel': 'Use recommended',
     's2.recBadge': 'Recommended',
+    's2.recReason': 'Auto pick: {orders} orders/day · {venue} → {model}.',
+    's2.recFrozen': 'Frozen / fresh machine type → Freezer 550.',
+    's2.recFrozenLow': 'Frozen / fresh + {orders} orders/day → Freezer 550; below 15/day, validate payback first.',
     'tag.compact': 'Compact', 'tag.standard': 'Standard', 'tag.bestseller': 'US Best Seller',
     'tag.flagship': 'Flagship', 'tag.large': 'Large Capacity', 'tag.double': 'Double Door', 'tag.frozen': 'Frozen',
     's2.freight': 'Freight (+$250)',
@@ -1997,6 +2013,7 @@ const STR = {
     'warn.coverageLow': 'Monthly payment coverage is {coverage}× (aim for ≥ 1.25×).',
     'warn.cashBelowOld': 'Net cash after monthly financing payment is below current machine profit.',
     'warn.longPayback': 'Incremental payback is {months} months.',
+    'warn.frozenLowVolume': 'Frozen / fresh site at {orders} orders/day is below 15/day; validate payback before committing.',
 
     'why.age': 'Current machine is {years} years old — rising repair and downtime risk.',
     'why.condition': 'Physical condition is poor — reliability is already costing sales.',
@@ -2215,7 +2232,7 @@ const STR = {
     'validate.apr': '年化利率',
     'validate.docFee': '签约手续费',
 
-    'venue.office': '办公室 / 企业园区', 'venue.factory': '工厂 / 工业园', 'venue.gym': '健身房',
+    'venue.office': '办公室 / 企业园区', 'venue.office_premium': '高端办公 / 总部', 'venue.factory': '工厂 / 工业园', 'venue.gym': '健身房',
     'venue.hospital': '医院 / 医疗', 'venue.hotel': '酒店 / 服务业', 'venue.school': '学校 / 大学',
     'venue.apartment': '公寓 / 住宅', 'venue.transit': '机场 / 交通枢纽', 'venue.construction': '建筑工地', 'venue.retail': '零售 / 其他',
     'mtype.snack': '弹簧零食柜', 'mtype.beverage': '饮料柜', 'mtype.combo': '综合柜', 'mtype.frozen': '冷冻 / 鲜食柜', 'mtype.other': '其他',
@@ -2271,9 +2288,12 @@ const STR = {
     's2.projDaily': 'HAHA 预测日均单量',
 
     's2.secC': 'C. 机型推荐、投资与分期',
-    's2.secCd': '根据点位日均单量与旧机类型自动推荐机型，点击任意机型可手动切换。',
+    's2.secCd': '根据日均单量、场地类型与旧机类型自动推荐机型，点击任意机型可手动切换。',
     's2.autoModel': '恢复自动推荐',
     's2.recBadge': '推荐',
+    's2.recReason': '自动推荐：{orders} 单/天 · {venue} → {model}。',
+    's2.recFrozen': '旧机为冷冻/鲜食 → 优先 Freezer 550。',
+    's2.recFrozenLow': '冷冻/鲜食 + {orders} 单/天 → Freezer 550；低于 15 单/天，建议先验证回本。',
     'tag.compact': '紧凑型', 'tag.standard': '标准型', 'tag.bestseller': '北美畅销',
     'tag.flagship': '旗舰型', 'tag.large': '大容量', 'tag.double': '双门超大', 'tag.frozen': '冷冻',
     's2.freight': '运费 (+$250)',
@@ -2387,6 +2407,7 @@ const STR = {
     'warn.coverageLow': '月供覆盖倍数为 {coverage}×（建议 ≥ 1.25×）。',
     'warn.cashBelowOld': '交完月供后剩余现金低于现有机器月利润。',
     'warn.longPayback': '增量回本周期为 {months} 个月。',
+    'warn.frozenLowVolume': '冷冻/鲜食点位日均 {orders} 单，低于 15 单/天，建议先验证回本再投入。',
 
     'why.age': '现有机器机龄已达 {years} 年，维修与停机风险上升。',
     'why.condition': '机器物理状况较差，故障率已直接拖累营收。',
@@ -2826,9 +2847,12 @@ function compute(p) {
 
   /* 6. Model Recommendation (Daily Orders + Frozen Machine Type) & Net Investment */
   const basisDailyOrders = hahaDailyOrders > 0 ? hahaDailyOrders : oldDailyOrders;
-  const recModelId = recommendedModel(basisDailyOrders, p.machine.type);
+  const recModelId = recommendedModel(basisDailyOrders, p.machine.type, p.meta.venue);
   const effectiveModelId = p.invest.modelManual ? p.invest.modelId : recModelId;
   const activeModel = MODELS.find(m => m.id === effectiveModelId) || MODELS[2];
+  const recModel = MODELS.find(m => m.id === recModelId) || MODELS[2];
+  const recFrozen = p.machine.type === 'frozen';
+  const recLowVolume = recFrozen && basisDailyOrders < 15;
 
   const equipment = activeModel.msrp;
   const freight = p.invest.freight ? FREIGHT_FEE : 0;
@@ -2897,6 +2921,7 @@ function compute(p) {
   if (financed && coverage < 1.25) warnings.push({ level: 'warn', code: 'coverageLow', vars: { coverage: coverage.toFixed(2) } });
   if (financed && vsOldCash < 0) warnings.push({ level: 'warn', code: 'cashBelowOld' });
   if (hasData && delta > 0 && payback > 36) warnings.push({ level: 'warn', code: 'longPayback', vars: { months: payback.toFixed(0) } });
+  if (recLowVolume && hasData) warnings.push({ level: 'warn', code: 'frozenLowVolume', vars: { orders: basisDailyOrders.toFixed(1) } });
 
   return {
     hasData,
@@ -2910,7 +2935,7 @@ function compute(p) {
     old: { sales: oldSales, monthlyOrders: oldMonthlyOrders, dailyOrders: oldDailyOrders, aov: oldAov, siteFee: oldSiteFee, profit: oldProfit, cost: oldCost, margin: oldMargin, detail: oldDetail, ordersEstimated: oldOrdersEstimated },
     growth: { orderRaw, orderPct, orderScale, aovPct, orderCapped, aovCapped, appliedPct, varietyRev, stockRev, paymentRev, basketRev, totalRevenueGrowth, totalRevenueGrowthPct },
     haha: { sales: hahaSales, monthlyOrders: hahaMonthlyOrders, dailyOrders: hahaDailyOrders, aov: hahaAov, cogs: hahaCogs, shareCost: hahaShareCost, rent: hahaRent, siteFee: hahaSiteFee, processing: hahaProcessing, shrinkage: hahaShrinkage, fixed: hahaFixed, ai: hahaAi, cost: hahaCost, profit: hahaProfit, margin: hahaMargin, zeroGrowthProfit },
-    invest: { recModelId, effectiveModelId, model: activeModel, equipment, freight, install, removal, tradeIn, total: investment, delta, annualDelta, payback, standalonePayback, threeYearNet, roi3 },
+    invest: { recModelId, recModelName: recModel.name, recDailyOrders: basisDailyOrders, recFrozen, recLowVolume, effectiveModelId, model: activeModel, equipment, freight, install, removal, tradeIn, total: investment, delta, annualDelta, payback, standalonePayback, threeYearNet, roi3 },
     finance: { enabled: financed, down, docFee, principal, months: finMonths, apr, payment, cashDueAtSigning, totalPaid, totalInterest, financingCost36, coverage, cashAfter, vsOldCash, selfFunding },
     stress,
     verdict,
@@ -3448,7 +3473,7 @@ function renderProjects() {
 'use strict';
 
 function renderStep1(p) {
-  const venues = ['office', 'factory', 'gym', 'hospital', 'hotel', 'school', 'apartment', 'transit', 'construction', 'retail'];
+  const venues = ['office', 'office_premium', 'factory', 'gym', 'hospital', 'hotel', 'school', 'apartment', 'transit', 'construction', 'retail'];
   const mtypes = ['snack', 'beverage', 'combo', 'frozen', 'other'];
   const pays = ['coin', 'bill', 'card', 'mobile'];
   const diagQs = [
@@ -3801,6 +3826,7 @@ function renderStep2(p) {
               </button>
             `).join('')}
           </div>
+          <div class="model-reason" data-out="modelReason">—</div>
 
           <div class="form-grid-4" style="align-items:start">
             <div class="field">
@@ -4195,6 +4221,15 @@ function syncOutputs() {
       dAov: m.old.aov > 0 ? money(m.old.aov, 2) : '—',
       dDaily: m.old.monthlyOrders > 0 ? nf(m.old.dailyOrders, 1) + t('common.perDay') : '—',
       dMargin: m.old.sales > 0 ? pct(m.old.margin, 1) : '—',
+      modelReason: m.invest.recFrozen
+        ? (m.invest.recLowVolume
+          ? t('s2.recFrozenLow', { orders: nf(m.invest.recDailyOrders, 1) })
+          : t('s2.recFrozen'))
+        : t('s2.recReason', {
+          orders: nf(m.invest.recDailyOrders, 1),
+          venue: t('venue.' + p.meta.venue),
+          model: m.invest.recModelName
+        }),
       oldSiteFee: money(m.old.siteFee, 2) + t('common.perMonth'),
       siteFormulaCur: t('s2.formulaCur', {
         sales: money(m.old.sales, 0),

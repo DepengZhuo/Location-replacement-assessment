@@ -27,6 +27,7 @@ const QUADRANT_BASE = {
 const FREIGHT_FEE = 250;
 const REVENUE_LINE = 1200;
 const URGENCY_HIGH_LINE = 60;
+const PREMIUM_VENUES = ['hotel', 'hospital', 'transit', 'gym', 'office_premium'];
 
 function createBlankProject(locationName) {
   return {
@@ -164,10 +165,12 @@ function amortize(principal, aprPct, months) {
   return (p * r * f) / (f - 1);
 }
 
-function recommendedModel(dailyOrders, machineType) {
+function recommendedModel(dailyOrders, machineType, venue) {
+  const orders = Number(dailyOrders) || 0;
   if (machineType === 'frozen') return 'freezer550';
-  if (dailyOrders > 50) return 'ultra1200';
-  if (dailyOrders >= 35) return 'max620s';
-  if (dailyOrders >= 15) return 'pro542';
+  if (orders > 55) return 'ultra1200';
+  if (orders >= 35) return PREMIUM_VENUES.includes(venue) ? 'max620s' : 'max660';
+  if (orders >= 18) return 'pro542';
+  if (orders >= 10) return 'plus440';
   return 'mini360';
 }

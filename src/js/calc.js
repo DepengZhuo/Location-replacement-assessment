@@ -170,9 +170,12 @@ function compute(p) {
 
   /* 6. Model Recommendation (Daily Orders + Frozen Machine Type) & Net Investment */
   const basisDailyOrders = hahaDailyOrders > 0 ? hahaDailyOrders : oldDailyOrders;
-  const recModelId = recommendedModel(basisDailyOrders, p.machine.type);
+  const recModelId = recommendedModel(basisDailyOrders, p.machine.type, p.meta.venue);
   const effectiveModelId = p.invest.modelManual ? p.invest.modelId : recModelId;
   const activeModel = MODELS.find(m => m.id === effectiveModelId) || MODELS[2];
+  const recModel = MODELS.find(m => m.id === recModelId) || MODELS[2];
+  const recFrozen = p.machine.type === 'frozen';
+  const recLowVolume = recFrozen && basisDailyOrders < 15;
 
   const equipment = activeModel.msrp;
   const freight = p.invest.freight ? FREIGHT_FEE : 0;
@@ -241,6 +244,7 @@ function compute(p) {
   if (financed && coverage < 1.25) warnings.push({ level: 'warn', code: 'coverageLow', vars: { coverage: coverage.toFixed(2) } });
   if (financed && vsOldCash < 0) warnings.push({ level: 'warn', code: 'cashBelowOld' });
   if (hasData && delta > 0 && payback > 36) warnings.push({ level: 'warn', code: 'longPayback', vars: { months: payback.toFixed(0) } });
+  if (recLowVolume && hasData) warnings.push({ level: 'warn', code: 'frozenLowVolume', vars: { orders: basisDailyOrders.toFixed(1) } });
 
   return {
     hasData,
@@ -254,7 +258,7 @@ function compute(p) {
     old: { sales: oldSales, monthlyOrders: oldMonthlyOrders, dailyOrders: oldDailyOrders, aov: oldAov, siteFee: oldSiteFee, profit: oldProfit, cost: oldCost, margin: oldMargin, detail: oldDetail, ordersEstimated: oldOrdersEstimated },
     growth: { orderRaw, orderPct, orderScale, aovPct, orderCapped, aovCapped, appliedPct, varietyRev, stockRev, paymentRev, basketRev, totalRevenueGrowth, totalRevenueGrowthPct },
     haha: { sales: hahaSales, monthlyOrders: hahaMonthlyOrders, dailyOrders: hahaDailyOrders, aov: hahaAov, cogs: hahaCogs, shareCost: hahaShareCost, rent: hahaRent, siteFee: hahaSiteFee, processing: hahaProcessing, shrinkage: hahaShrinkage, fixed: hahaFixed, ai: hahaAi, cost: hahaCost, profit: hahaProfit, margin: hahaMargin, zeroGrowthProfit },
-    invest: { recModelId, effectiveModelId, model: activeModel, equipment, freight, install, removal, tradeIn, total: investment, delta, annualDelta, payback, standalonePayback, threeYearNet, roi3 },
+    invest: { recModelId, recModelName: recModel.name, recDailyOrders: basisDailyOrders, recFrozen, recLowVolume, effectiveModelId, model: activeModel, equipment, freight, install, removal, tradeIn, total: investment, delta, annualDelta, payback, standalonePayback, threeYearNet, roi3 },
     finance: { enabled: financed, down, docFee, principal, months: finMonths, apr, payment, cashDueAtSigning, totalPaid, totalInterest, financingCost36, coverage, cashAfter, vsOldCash, selfFunding },
     stress,
     verdict,
