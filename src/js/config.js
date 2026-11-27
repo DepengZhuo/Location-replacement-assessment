@@ -102,7 +102,7 @@ function createBlankProject(locationName) {
         downPct: 10,
         term: 12,
         apr: 0,
-        docFee: 0
+        docFee: 50
       }
     }
   };
@@ -141,7 +141,7 @@ function createSampleProject() {
   p.invest.modelId = 'pro542';
   p.invest.modelManual = false;
   p.invest.freight = true;
-  p.invest.finance = { enabled: false, downPct: 10, term: 12, apr: 0, docFee: 0 };
+  p.invest.finance = { enabled: false, downPct: 10, term: 12, apr: 0, docFee: 50 };
   return p;
 }
 

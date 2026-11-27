@@ -246,9 +246,9 @@ function renderStep2(p) {
           <div class="hidden" data-show="finEnabled">
             <div class="form-grid-4">
               <div class="field"><label>${esc(t('s2.down'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="0" max="100" step="1" data-bind="invest.finance.downPct" value="${esc(f.downPct)}"><span class="unit">%</span></div></div>
-              <div class="field"><label>${esc(t('s2.term'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="1" max="72" step="1" data-bind="invest.finance.term" value="${esc(f.term)}"><span class="unit">${esc(t('common.mo'))}</span></div></div>
-              <div class="field"><label>${esc(t('s2.apr'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="0" step="0.1" data-bind="invest.finance.apr" value="${esc(f.apr)}"><span class="unit">%</span></div></div>
-              <div class="field"><label>${esc(t('s2.docFee'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" step="25" data-bind="invest.finance.docFee" value="${esc(f.docFee)}"></div></div>
+              <div class="field"><label>${esc(t('s2.term'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="1" max="24" step="1" data-bind="invest.finance.term" value="${esc(f.term)}"><span class="unit">${esc(t('common.mo'))}</span></div><span class="field-hint">${esc(t('s2.termHint'))}</span></div>
+              <div class="field"><label>${esc(t('s2.apr'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="0" step="0.1" data-bind="invest.finance.apr" value="${esc(f.apr)}"><span class="unit">%</span></div><span class="field-hint">${esc(t('s2.aprHint'))}</span></div>
+              <div class="field"><label>${esc(t('s2.docFee'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" step="10" data-bind="invest.finance.docFee" value="${esc(f.docFee)}"></div><span class="field-hint">${esc(t('s2.docFeeHint'))}</span></div>
             </div>
             <div class="derived-bar" style="grid-template-columns:repeat(4,1fr)">
               <div class="derived-item"><span>${esc(t('s2.cashSigning'))}</span><strong data-out="cashSigning">—</strong></div>

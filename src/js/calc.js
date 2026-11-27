@@ -192,7 +192,7 @@ function compute(p) {
   const down = investment * clamp(num(f.downPct), 0, 100) / 100;
   const docFee = Math.max(0, num(f.docFee));
   const principal = Math.max(0, investment - down);
-  const finMonths = clamp(Math.round(num(f.term) || 12), 1, 120);
+  const finMonths = clamp(Math.round(num(f.term) || 12), 1, 24);
   const apr = Math.max(0, num(f.apr));
   const payment = amortize(principal, apr, finMonths);
   const cashDueAtSigning = financed ? (down + docFee) : investment;
@@ -313,7 +313,7 @@ function validateStep2(p) {
 
   if (f.enabled) {
     if (!(num(f.downPct) >= 0 && num(f.downPct) <= 100)) missing.push('downPct');
-    if (!(num(f.term) >= 1 && num(f.term) <= 72)) missing.push('term');
+    if (!(num(f.term) >= 1 && num(f.term) <= 24)) missing.push('term');
     if (!(num(f.apr) >= 0)) missing.push('apr');
     if (!(num(f.docFee) >= 0)) missing.push('docFee');
   }

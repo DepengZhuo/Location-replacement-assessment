@@ -1499,7 +1499,7 @@ function createBlankProject(locationName) {
         downPct: 10,
         term: 12,
         apr: 0,
-        docFee: 0
+        docFee: 50
       }
     }
   };
@@ -1538,7 +1538,7 @@ function createSampleProject() {
   p.invest.modelId = 'pro542';
   p.invest.modelManual = false;
   p.invest.freight = true;
-  p.invest.finance = { enabled: false, downPct: 10, term: 12, apr: 0, docFee: 0 };
+  p.invest.finance = { enabled: false, downPct: 10, term: 12, apr: 0, docFee: 50 };
   return p;
 }
 
@@ -1896,8 +1896,11 @@ const STR = {
     's2.finance': 'Finance',
     's2.down': 'Down Payment (%)',
     's2.term': 'Term (months)',
+    's2.termHint': 'Standard 12 months; maximum 24.',
     's2.apr': 'APR (%)',
+    's2.aprHint': 'Current HAHA plan: 0% APR. Keep at 0 unless policy changes.',
     's2.docFee': 'Doc Fee (Upfront $)',
+    's2.docFeeHint': 'Current plan: $50 at signing.',
     's2.cashSigning': 'Day 1 Cash (Signing)',
     's2.monthlyPmt': 'Monthly Payment',
     's2.coverage': 'Payment Coverage',
@@ -2283,8 +2286,11 @@ const STR = {
     's2.finance': '分期',
     's2.down': '首付比例 (%)',
     's2.term': '分期期数 (月)',
+    's2.termHint': '标准 12 期，最长 24 期。',
     's2.apr': '年化利率 APR (%)',
+    's2.aprHint': '当前 HAHA 方案为 0 息；除政策变化外保持 0。',
     's2.docFee': '签约手续费 (现付 $)',
+    's2.docFeeHint': '当前方案为签约现付 $50。',
     's2.cashSigning': '签约首日现金',
     's2.monthlyPmt': '每月月供',
     's2.coverage': '月供覆盖倍数',
@@ -2842,7 +2848,7 @@ function compute(p) {
   const down = investment * clamp(num(f.downPct), 0, 100) / 100;
   const docFee = Math.max(0, num(f.docFee));
   const principal = Math.max(0, investment - down);
-  const finMonths = clamp(Math.round(num(f.term) || 12), 1, 120);
+  const finMonths = clamp(Math.round(num(f.term) || 12), 1, 24);
   const apr = Math.max(0, num(f.apr));
   const payment = amortize(principal, apr, finMonths);
   const cashDueAtSigning = financed ? (down + docFee) : investment;
@@ -2963,7 +2969,7 @@ function validateStep2(p) {
 
   if (f.enabled) {
     if (!(num(f.downPct) >= 0 && num(f.downPct) <= 100)) missing.push('downPct');
-    if (!(num(f.term) >= 1 && num(f.term) <= 72)) missing.push('term');
+    if (!(num(f.term) >= 1 && num(f.term) <= 24)) missing.push('term');
     if (!(num(f.apr) >= 0)) missing.push('apr');
     if (!(num(f.docFee) >= 0)) missing.push('docFee');
   }
@@ -3838,9 +3844,9 @@ function renderStep2(p) {
           <div class="hidden" data-show="finEnabled">
             <div class="form-grid-4">
               <div class="field"><label>${esc(t('s2.down'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="0" max="100" step="1" data-bind="invest.finance.downPct" value="${esc(f.downPct)}"><span class="unit">%</span></div></div>
-              <div class="field"><label>${esc(t('s2.term'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="1" max="72" step="1" data-bind="invest.finance.term" value="${esc(f.term)}"><span class="unit">${esc(t('common.mo'))}</span></div></div>
-              <div class="field"><label>${esc(t('s2.apr'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="0" step="0.1" data-bind="invest.finance.apr" value="${esc(f.apr)}"><span class="unit">%</span></div></div>
-              <div class="field"><label>${esc(t('s2.docFee'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" step="25" data-bind="invest.finance.docFee" value="${esc(f.docFee)}"></div></div>
+              <div class="field"><label>${esc(t('s2.term'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="1" max="24" step="1" data-bind="invest.finance.term" value="${esc(f.term)}"><span class="unit">${esc(t('common.mo'))}</span></div><span class="field-hint">${esc(t('s2.termHint'))}</span></div>
+              <div class="field"><label>${esc(t('s2.apr'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="0" step="0.1" data-bind="invest.finance.apr" value="${esc(f.apr)}"><span class="unit">%</span></div><span class="field-hint">${esc(t('s2.aprHint'))}</span></div>
+              <div class="field"><label>${esc(t('s2.docFee'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" step="10" data-bind="invest.finance.docFee" value="${esc(f.docFee)}"></div><span class="field-hint">${esc(t('s2.docFeeHint'))}</span></div>
             </div>
             <div class="derived-bar" style="grid-template-columns:repeat(4,1fr)">
               <div class="derived-item"><span>${esc(t('s2.cashSigning'))}</span><strong data-out="cashSigning">—</strong></div>
