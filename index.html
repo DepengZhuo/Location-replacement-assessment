@@ -1,0 +1,4091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HAHA · Location Replacement Assessment v2.2</title>
+<meta name="description" content="HAHA Vending Location Replacement Assessment v2.2 — Site Diagnostic, Financial Analysis, and Client-Ready Executive Report.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   HAHA Location Replacement Assessment v2.2
+   Design System: High-contrast Black / White / Soft Grey
+   Aligned with HAHA Location Pitch Builder visual specifications
+   ===================================================================== */
+:root {
+  --black: #111111;
+  --ink: #191919;
+  --muted: #555555;
+  --muted-2: #767672;
+  --line: #e5e5e3;
+  --line-2: #d0d0ce;
+  --soft: #f6f6f4;
+  --bg: #f3f3f1;
+  --surface: #ffffff;
+  --green: #1e7e4e;
+  --green-soft: #e6f4ea;
+  --green-line: #c2e3ce;
+  --red: #b34b40;
+  --red-soft: #fdf3f2;
+  --red-line: #e5c5c0;
+  --amber: #8a5a00;
+  --amber-soft: #fff6e5;
+  --amber-line: #f0dfb4;
+  --radius: 14px;
+  --font: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--bg);
+  color: var(--black);
+  font-family: var(--font);
+  font-size: 14.5px;
+  line-height: 1.5;
+  letter-spacing: -0.008em;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+[hidden], .hidden { display: none !important; }
+
+/* ================= APP SHELL ================= */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  background: var(--bg);
+  color: var(--black);
+}
+
+/* ================= FIXED DARK SIDEBAR ================= */
+.sidebar {
+  width: 250px;
+  background: #111111;
+  color: #ffffff;
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 30;
+  transition: transform .22s ease;
+  overflow-y: auto;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+  padding: 0 4px;
+}
+.brand-text strong {
+  display: block;
+  letter-spacing: 1px;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+.brand-text small {
+  display: block;
+  color: #999;
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  margin-top: 3px;
+  text-transform: uppercase;
+}
+.sidebar-label {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #888;
+  margin: 26px 0 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 0 6px;
+}
+.main-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 13px;
+  background: transparent;
+  border: 0;
+  color: #bbb;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: background .15s ease, color .15s ease;
+}
+.nav-item:hover:not(:disabled) {
+  color: #fff;
+  background: rgba(255, 255, 255, .09);
+}
+/* CRITICAL CSS FIX: Active nav item stays solid white + black text on hover/focus/active */
+.nav-item.active,
+.nav-item.active:hover,
+.nav-item.active:focus,
+.nav-item.active:active {
+  background: #ffffff !important;
+  color: #111111 !important;
+  font-weight: 700;
+}
+.nav-item:disabled {
+  opacity: .36;
+  cursor: not-allowed;
+}
+.nav-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, .12);
+  color: #ddd;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.nav-item.active .nav-badge,
+.nav-item.active:hover .nav-badge,
+.nav-item.active:focus .nav-badge {
+  background: #111111 !important;
+  color: #ffffff !important;
+}
+.nav-label {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-bottom {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid #222;
+}
+.sidebar-note {
+  background: #1a1a1a;
+  padding: 12px;
+  border-radius: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 12px;
+  color: #ddd;
+}
+.sidebar-note strong { display: block; font-size: 12px; color: #fff; }
+.sidebar-note small { display: block; font-size: 11px; color: #999; margin-top: 2px; }
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: #2ecc71;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.sidebar-footer {
+  margin-top: 12px;
+  font-size: 10.5px;
+  color: #777;
+  line-height: 1.4;
+}
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .48);
+  z-index: 25;
+}
+.sidebar-overlay.show { display: block; }
+
+/* ================= MAIN AREA & STICKY TOPBAR ================= */
+.main-area {
+  flex: 1;
+  margin-left: 250px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.topbar {
+  height: 64px;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+.mobile-menu {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--line);
+  font-size: 18px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  color: var(--black);
+}
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--muted);
+  min-width: 0;
+  overflow: hidden;
+}
+.breadcrumb b { color: #ccc; font-weight: 400; }
+.breadcrumb strong {
+  color: var(--black);
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.breadcrumb .bc-proj {
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.tip-wrap {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ================= BUTTONS & SEGMENTS ================= */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  border: 1px solid transparent;
+  transition: all .15s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.button-dark { background: #111; color: #fff; }
+.button-dark:hover:not(:disabled) { background: #333; }
+.button-white { background: #fff; color: #111; }
+.button-white:hover:not(:disabled) { background: #eaeae6; }
+.button-outline { background: #fff; border: 1px solid var(--line-2); color: #111; }
+.button-outline:hover:not(:disabled) { background: var(--soft); border-color: #111; }
+.button-ghost { background: transparent; color: var(--muted); }
+.button-ghost:hover:not(:disabled) { background: var(--soft); color: #111; }
+.button-danger { background: #fff; border: 1px solid var(--red-line); color: var(--red); }
+.button-danger:hover:not(:disabled) { background: var(--red-soft); border-color: var(--red); }
+.button-small { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+.button-wide { width: 100%; }
+.button:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+}
+
+.seg {
+  display: inline-flex;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 3px;
+  gap: 2px;
+}
+.seg button {
+  border: 0;
+  background: transparent;
+  padding: 6px 11px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  transition: all .13s;
+  white-space: nowrap;
+}
+.seg button:hover { color: var(--black); }
+.seg button.on { background: #111; color: #fff; }
+.seg.block { display: flex; width: 100%; }
+.seg.block button { flex: 1; }
+
+/* ================= PAGE CONTENT ================= */
+.page-content {
+  padding: 28px 32px 64px;
+  max-width: 1420px;
+  width: 100%;
+  margin: 0 auto;
+}
+.page-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #666;
+  font-weight: 800;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+.page-heading h1 {
+  font-size: 28px;
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  color: var(--black);
+  line-height: 1.15;
+}
+.page-heading p {
+  margin: 7px 0 0;
+  color: #444;
+  font-size: 14px;
+  line-height: 1.55;
+  max-width: 720px;
+}
+
+/* ================= DASHBOARD ================= */
+.hero-strip {
+  background: #111;
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.hero-kicker {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #bbb;
+  font-weight: 800;
+  display: block;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.hero-strip h2 {
+  font-size: 28px;
+  margin: 0 0 8px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+.hero-strip p {
+  margin: 0 0 20px;
+  color: #d8d8d5;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 600px;
+}
+.hero-cta { display: flex; gap: 10px; flex-wrap: wrap; }
+.hero-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.visual-frame {
+  width: 158px;
+  background: #1f1f1f;
+  border: 1px solid #383838;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.machine-top {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.machine-screen {
+  background: #262626;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.7px;
+  line-height: 1.35;
+}
+.shelf-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  background: #161616;
+  padding: 4px;
+  border-radius: 4px;
+}
+.shelf-row i { height: 10px; background: #444; border-radius: 2px; display: block; }
+.machine-foot { height: 4px; background: #444; border-radius: 2px; }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.stat-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .02);
+}
+.stat-card span { font-size: 12px; color: var(--muted); font-weight: 700; display: block; }
+.stat-card strong {
+  font-size: 27px;
+  font-weight: 900;
+  display: block;
+  margin: 6px 0 4px;
+  color: var(--black);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.stat-card small { font-size: 11.5px; color: var(--muted-2); display: block; }
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+  gap: 18px;
+}
+
+/* ================= PANELS & FORMS ================= */
+.panel {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .02);
+  margin-bottom: 18px;
+}
+.panel:last-child { margin-bottom: 0; }
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+.panel-head h3 { margin: 0; font-size: 17px; font-weight: 800; color: var(--black); }
+.panel-head p { margin: 4px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+.step-tag {
+  background: var(--soft);
+  color: #222;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: .5px;
+  white-space: nowrap;
+  border: 1px solid var(--line);
+}
+
+.two-column-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 334px;
+  gap: 20px;
+  align-items: start;
+}
+.main-col { min-width: 0; }
+.side-col {
+  position: sticky;
+  top: 84px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.form-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.field.full { grid-column: 1 / -1; }
+.field > label { font-size: 12.5px; font-weight: 700; color: #222; }
+.field-hint { font-size: 11.5px; color: var(--muted-2); line-height: 1.45; }
+input[type="text"], input[type="number"], input[type="date"], select, textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #d6d6d4;
+  border-radius: 8px;
+  background: #fafafa;
+  font-size: 14px;
+  color: #111;
+  outline: 0;
+  transition: border-color .15s, background .15s, box-shadow .15s;
+}
+input:focus, select:focus, textarea:focus { background: #fff; border-color: #111; }
+input.input-error {
+  border-color: var(--red) !important;
+  background: var(--red-soft) !important;
+  box-shadow: 0 0 0 3px rgba(179, 75, 64, 0.14);
+}
+.error-text {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--red);
+}
+.input-wrap { position: relative; display: flex; align-items: center; }
+.input-wrap .unit {
+  position: absolute;
+  right: 11px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  pointer-events: none;
+}
+.input-wrap input.has-unit { padding-right: 42px; }
+.input-wrap .prefix {
+  position: absolute;
+  left: 11px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  pointer-events: none;
+}
+.input-wrap input.has-prefix { padding-left: 24px; }
+input[type="checkbox"] { accent-color: #111; width: 16px; height: 16px; cursor: pointer; }
+
+.divider { height: 1px; background: var(--line); margin: 18px 0; }
+
+/* ================= CHIPS ================= */
+.chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: #fff;
+  color: #222;
+  font-size: 12.5px;
+  font-weight: 700;
+  transition: all .14s ease;
+}
+.chip:hover { border-color: #111; background: var(--soft); }
+.chip.on { background: #111; border-color: #111; color: #fff; }
+
+/* ================= DIAGNOSTIC CARDS (STEP 1) ================= */
+.criteria-list { display: grid; gap: 12px; }
+.criterion {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 15px 16px;
+  background: #fff;
+}
+.criterion-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+.criterion-title-wrap { display: flex; gap: 10px; align-items: flex-start; }
+.criterion-num {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #111;
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 800;
+}
+.criterion h4 { margin: 0; font-size: 14.5px; font-weight: 800; color: #111; }
+.criterion-q { margin: 4px 0 0; font-size: 13px; color: #3d3d3b; line-height: 1.5; }
+.dim-tag {
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  letter-spacing: .3px;
+}
+.dim-tag.offense { background: #111; color: #fff; }
+.dim-tag.defense { background: var(--soft); color: #222; border: 1px solid var(--line-2); }
+
+.choices-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-left: 38px;
+}
+.choice-btn {
+  padding: 9px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: 9px;
+  background: #fff;
+  color: #333;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-align: center;
+  transition: all .14s;
+}
+.choice-btn:hover { border-color: #111; background: var(--soft); }
+.choice-btn.on-10 { background: #111; border-color: #111; color: #fff; }
+.choice-btn.on-5 { background: #4a4a48; border-color: #4a4a48; color: #fff; }
+.choice-btn.on-0 { background: var(--soft); border-color: #111; color: #111; }
+
+/* ================= RIGHT STICKY RAIL & SCORING CRITERIA ================= */
+.rail-panel {
+  background: #111;
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 22px 20px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .14);
+}
+.rail-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #aaa;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.rail-big {
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+.rail-big.pos { color: #5ce1a0; }
+.rail-big.neg { color: #ff8a80; }
+.rail-sub { font-size: 12px; color: #bbb; margin-top: 4px; }
+.rail-div { height: 1px; background: rgba(255, 255, 255, .14); margin: 14px 0; }
+.rail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding: 4px 0;
+  font-size: 12.5px;
+}
+.rail-row span { color: #aaa; }
+.rail-row strong { color: #fff; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+.breakdown-bar { margin-top: 10px; }
+.breakdown-head { display: flex; justify-content: space-between; font-size: 11.5px; color: #ccc; margin-bottom: 4px; }
+.breakdown-head strong { color: #fff; font-variant-numeric: tabular-nums; }
+.score-bar-track {
+  height: 6px;
+  background: rgba(255, 255, 255, .16);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.score-bar-fill {
+  height: 100%;
+  background: #fff;
+  border-radius: inherit;
+  transition: width .2s ease;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 800;
+  background: #fff;
+  color: #111;
+}
+.status-badge.strong { background: #2ecc71; color: #0a2917; }
+.status-badge.positive { background: #ffffff; color: #111; }
+.status-badge.conditional { background: #f3c65f; color: #3a2600; }
+.status-badge.defer { background: #333; color: #ccc; }
+
+.criteria-guide-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .02);
+}
+.criteria-guide-card h4 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #111;
+}
+.criteria-guide-card p {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.criteria-tier-list {
+  display: grid;
+  gap: 8px;
+}
+.criteria-tier-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 12px;
+}
+.criteria-tier-row strong { color: #111; font-weight: 800; white-space: nowrap; }
+.criteria-tier-row span { color: var(--muted); text-align: right; font-weight: 600; }
+
+/* ================= STEP 2 SPECIFIC ================= */
+.derived-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.derived-item span { font-size: 11px; color: var(--muted); font-weight: 700; display: block; }
+.derived-item strong { font-size: 17px; font-weight: 900; color: var(--black); font-variant-numeric: tabular-nums; }
+
+.formula-box {
+  margin-top: 12px;
+  padding: 10px 13px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-left: 3px solid #111;
+  border-radius: 0 8px 8px 0;
+  font-size: 12.5px;
+  color: #222;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+.uplift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.uplift-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.uplift-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.uplift-head h4 { margin: 0; font-size: 14px; font-weight: 800; }
+.uplift-head p { margin: 2px 0 0; font-size: 12px; color: var(--muted); line-height: 1.4; }
+.cap-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--amber-soft);
+  color: var(--amber);
+  border: 1px solid var(--amber-line);
+  white-space: nowrap;
+}
+.uplift-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.uplift-impact { font-size: 15px; font-weight: 900; color: var(--green); font-variant-numeric: tabular-nums; }
+
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.model-card {
+  position: relative;
+  border: 1px solid var(--line-2);
+  border-radius: 11px;
+  padding: 13px 12px 11px;
+  background: #fff;
+  text-align: left;
+  transition: all .14s;
+}
+.model-card:hover { border-color: #111; background: var(--soft); }
+.model-card.on {
+  border: 2px solid #111;
+  background: var(--soft);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+}
+.model-card .mn { font-size: 13.5px; font-weight: 800; color: #111; }
+.model-card .mp { font-size: 16px; font-weight: 900; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.model-card .mt { font-size: 11px; color: var(--muted); margin-top: 2px; font-weight: 600; }
+.rec-badge {
+  position: absolute;
+  top: -8px;
+  right: 8px;
+  background: #111;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  text-transform: uppercase;
+}
+
+.kpi-row-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.kpi-box {
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 13px 14px;
+}
+.kpi-box.dark { background: #111; border-color: #111; color: #fff; }
+.kpi-box span { font-size: 11px; font-weight: 700; color: var(--muted); display: block; text-transform: uppercase; letter-spacing: .4px; }
+.kpi-box.dark span { color: #bbb; }
+.kpi-box strong { font-size: 21px; font-weight: 900; display: block; margin-top: 4px; font-variant-numeric: tabular-nums; line-height: 1.15; }
+.kpi-box.dark strong { color: #5ce1a0; }
+.kpi-box small { font-size: 11px; color: var(--muted-2); display: block; margin-top: 3px; }
+.kpi-box.dark small { color: #999; }
+
+.collapse-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+.collapse-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.collapse-summary strong { color: #111; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; }
+.table th {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  padding: 9px 8px;
+  border-bottom: 1.5px solid #111;
+  white-space: nowrap;
+}
+.table td {
+  padding: 9px 8px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  vertical-align: middle;
+}
+.table tr:last-child td { border-bottom: 0; }
+.table .r { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.table tr.total td { background: var(--soft); font-weight: 800; }
+.table tr.primary td { background: var(--green-soft); font-weight: 800; color: #111; }
+.pos { color: var(--green) !important; }
+.neg { color: var(--red) !important; }
+
+.callout {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-radius: 11px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  margin-top: 14px;
+}
+.callout.good { background: var(--green-soft); border-color: var(--green-line); color: #134e30; }
+.callout.warn { background: var(--amber-soft); border-color: var(--amber-line); color: #6b4600; }
+.callout .big { font-size: 20px; font-weight: 900; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.callout .txt { font-size: 13px; line-height: 1.55; }
+
+.chart-explain {
+  margin-top: 10px;
+  padding: 11px 14px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  font-size: 12px;
+  color: #333;
+  line-height: 1.55;
+}
+.chart-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.chart-legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; }
+
+.verdict-box {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border-radius: 12px;
+  background: #111;
+  color: #fff;
+}
+.verdict-box ul, .verdict-box ol {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+  color: #ddd;
+  line-height: 1.6;
+}
+.verdict-box li { margin-bottom: 3px; }
+
+.warn-list { display: grid; gap: 8px; margin-top: 12px; }
+.warn-item {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 9px 12px;
+  border-radius: 9px;
+  background: var(--amber-soft);
+  border: 1px solid var(--amber-line);
+  font-size: 12.5px;
+  color: #6b4600;
+}
+.warn-item.info { background: var(--soft); border-color: var(--line); color: var(--muted); }
+
+/* ================= PROJECTS & RECENT ================= */
+.recent-list { display: flex; flex-direction: column; gap: 10px; }
+.recent-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--soft);
+  border: 1px solid #ebebe8;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.recent-row:hover { border-color: #111; background: #fff; }
+.recent-row strong { display: block; font-size: 14px; color: #111; }
+.recent-row small { display: block; font-size: 12px; color: #555; margin-top: 2px; }
+
+.quick-link {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--soft);
+  border: 1px solid #ebebe8;
+  border-radius: 10px;
+  text-align: left;
+  margin-bottom: 10px;
+  transition: all .15s;
+}
+.quick-link:last-child { margin-bottom: 0; }
+.quick-link:hover { border-color: #111; background: #fff; }
+.quick-number {
+  font-size: 12px;
+  font-weight: 900;
+  color: #111;
+  background: #e8e8e5;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+}
+.quick-link strong { display: block; font-size: 13.5px; color: #111; }
+.quick-link small { display: block; font-size: 12px; color: #555; margin-top: 2px; }
+
+.project-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid var(--line-2);
+  padding: 7px 12px;
+  border-radius: 9px;
+  width: 290px;
+}
+.search-box input { border: 0; padding: 0; background: transparent; font-size: 13.5px; }
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+.project-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color .15s;
+  cursor: pointer;
+}
+.project-card:hover { border-color: #111; }
+.project-card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.project-type { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: var(--soft); color: #333; }
+.project-badge { font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px; background: #111; color: #fff; }
+.project-badge.strong { background: var(--green); color: #fff; }
+.project-badge.defer { background: #e8e8e5; color: #444; }
+.project-card h3 { margin: 0; font-size: 16px; font-weight: 800; color: #111; }
+.project-card p { margin: 0; font-size: 12.5px; color: #555; }
+.project-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.empty-box {
+  padding: 36px 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13.5px;
+  background: var(--soft);
+  border-radius: 12px;
+  border: 1px dashed var(--line-2);
+}
+
+/* ================= REPORT PAPER (STEP 3) ================= */
+.report-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.proposal-paper {
+  background: #fff;
+  color: #111;
+  padding: 38px 42px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .06);
+  max-width: 920px;
+  margin: 0 auto;
+}
+.rep-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #111;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+.rep-logo { font-weight: 900; letter-spacing: 1px; font-size: 16px; }
+.rep-doc-type { font-size: 11px; letter-spacing: 1.2px; color: #555; font-weight: 800; text-transform: uppercase; }
+.rep-title { margin: 0 0 6px; font-size: 25px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; }
+.rep-meta-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 10px 14px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 12.5px;
+  margin: 12px 0 18px;
+}
+.rep-meta-bar span { color: #666; margin-right: 4px; }
+.rep-stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 12px 0;
+}
+.rep-stat {
+  background: #111;
+  color: #fff;
+  padding: 13px 14px;
+  border-radius: 8px;
+}
+.rep-stat span { font-size: 10px; color: #ccc; display: block; text-transform: uppercase; letter-spacing: .5px; }
+.rep-stat strong { font-size: 19px; font-weight: 900; display: block; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.rep-sec { margin: 22px 0 0; }
+.rep-sec h3 {
+  font-size: 14px;
+  font-weight: 800;
+  margin: 0 0 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--line);
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+.rep-subh {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #111;
+  margin: 12px 0 5px;
+}
+.rep-two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.rep-list { margin: 6px 0; padding-left: 18px; font-size: 12.5px; line-height: 1.6; color: #222; }
+.rep-list li { margin-bottom: 4px; }
+.rep-note { font-size: 11.5px; color: #555; line-height: 1.55; margin-top: 8px; }
+.rep-deploy-bar {
+  margin-top: 10px;
+  padding: 9px 12px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-left: 3px solid #111;
+  border-radius: 0 7px 7px 0;
+  font-size: 12px;
+  color: #222;
+}
+.rep-alert {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--amber-soft);
+  border-left: 3px solid var(--amber);
+  font-size: 12px;
+  color: #6b4600;
+  line-height: 1.5;
+}
+.rep-foot-bar {
+  margin-top: 22px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted-2);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ================= MODAL & TOAST ================= */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .55);
+  display: grid;
+  place-items: center;
+  z-index: 900;
+  padding: 16px;
+}
+.modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px 26px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, .25);
+}
+.modal h3 { margin: 0 0 6px; font-size: 18px; font-weight: 800; }
+.modal p { margin: 0 0 14px; font-size: 13px; color: #555; line-height: 1.5; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #111;
+  color: #fff;
+  padding: 11px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: all .2s ease;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1160px) {
+  .two-column-layout { grid-template-columns: 1fr; }
+  .side-col { position: static; order: -1; }
+  .model-grid { grid-template-columns: repeat(2, 1fr); }
+  .kpi-row-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main-area { margin-left: 0; }
+  .mobile-menu { display: inline-flex; }
+  .dashboard-grid, .hero-strip { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .topbar { padding: 0 16px; }
+  .page-content { padding: 20px 16px 56px; }
+}
+@media (max-width: 640px) {
+  .form-grid, .form-grid-3, .form-grid-4, .uplift-grid, .derived-bar, .kpi-row-4, .rep-two, .rep-stat-row { grid-template-columns: 1fr; }
+  .choices-3 { margin-left: 0; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .proposal-paper { padding: 22px 18px; }
+}
+
+/* ================= PRINT / PDF ================= */
+@media print {
+  @page { size: A4; margin: 12mm; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { background: #fff !important; font-size: 9.8pt; }
+  .sidebar, .sidebar-overlay, .topbar, .report-toolbar, .no-print, .toast, .modal-backdrop { display: none !important; }
+  .main-area { margin-left: 0 !important; }
+  .page-content { padding: 0 !important; max-width: 100% !important; }
+  .proposal-paper { border: 0 !important; box-shadow: none !important; padding: 0 !important; max-width: 100% !important; }
+  .rep-sec { break-inside: avoid; page-break-inside: avoid; }
+  .rep-stat-row { grid-template-columns: repeat(4, 1fr) !important; }
+  .rep-two { grid-template-columns: 1fr 1fr !important; }
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-area">
+    <header class="topbar" id="topbar"></header>
+    <main class="page-content" id="pageContent"></main>
+  </div>
+</div>
+<div id="modalRoot"></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="importFile" accept="application/json" class="hidden">
+
+<script>
+'use strict';
+
+/* =====================================================================
+   1. SANDBOX-SAFE STORAGE HELPER (IN-MEMORY MAP FALLBACK)
+   ===================================================================== */
+const _memStore = new Map();
+const safeStorage = {
+  get(key) {
+    try {
+      const val = window.localStorage.getItem(key);
+      return val !== null ? val : (_memStore.has(key) ? _memStore.get(key) : null);
+    } catch (e) {
+      return _memStore.has(key) ? _memStore.get(key) : null;
+    }
+  },
+  set(key, val) {
+    const s = String(val);
+    _memStore.set(key, s);
+    try { window.localStorage.setItem(key, s); } catch (e) {}
+  },
+  remove(key) {
+    _memStore.delete(key);
+    try { window.localStorage.removeItem(key); } catch (e) {}
+  }
+};
+
+/* =====================================================================
+   2. CORE MODELS & PURE CALCULATION ENGINE
+   ===================================================================== */
+const STORAGE_KEY = 'haha_replace_v22_projects';
+const ACTIVE_KEY  = 'haha_replace_v22_active';
+const LANG_KEY    = 'haha_replace_v22_lang';
+
+const MODELS = [
+  { id: 'mini360',    name: 'Mini 360',    msrp: 2999, tag: 'compact' },
+  { id: 'plus440',    name: 'Plus 440',    msrp: 3499, tag: 'standard' },
+  { id: 'pro542',     name: 'Pro 542',     msrp: 4499, tag: 'bestseller' },
+  { id: 'max620s',    name: 'Max 620S',    msrp: 5499, tag: 'flagship' },
+  { id: 'max660',     name: 'Max 660',     msrp: 5099, tag: 'large' },
+  { id: 'ultra1200',  name: 'Ultra 1200',  msrp: 6999, tag: 'double' },
+  { id: 'freezer550', name: 'Freezer 550', msrp: 4999, tag: 'frozen' }
+];
+
+const QUADRANT_BASE = {
+  1: { variety: 12, basket: 10, stock: 8, payment: 5 },
+  2: { variety: 7,  basket: 5,  stock: 5, payment: 3 },
+  3: { variety: 10, basket: 8,  stock: 7, payment: 4 },
+  4: { variety: 4,  basket: 3,  stock: 3, payment: 2 }
+};
+
+const FREIGHT_FEE = 250;
+const REVENUE_LINE = 1200;
+const URGENCY_HIGH_LINE = 60;
+
+function num(v) {
+  if (v === '' || v === null || v === undefined) return 0;
+  const n = parseFloat(v);
+  return isFinite(n) ? n : 0;
+}
+function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+function round1(v) { return Math.round(v * 10) / 10; }
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function createBlankProject(locationName) {
+  return {
+    id: 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    updatedAt: new Date().toISOString(),
+    meta: {
+      locationName: locationName || '',
+      venue: 'office',
+      city: '',
+      state: '',
+      date: todayStr()
+    },
+    machine: {
+      type: 'snack',
+      age: '',
+      condition: 'fair',
+      monitoring: 'no',
+      payments: ['coin', 'bill']
+    },
+    diag: { q1: 5, q2: 5, q3: 5, q4: 5, q5: 5, q6: 5 },
+    baseline: {
+      monthlySales: '',
+      monthlyOrders: '',
+      profitMode: 'actual', // 'actual' | 'margin' | 'detail'
+      actualProfit: '',
+      estMarginPct: 28,
+      cogsRate: 45,
+      cashlessShare: 78,
+      cardFee: 5.95,
+      readerFee: 9.95,
+      platform: 0,
+      other: 0
+    },
+    site: {
+      deal: 'share', // 'share' | 'rent' | 'combo' | 'none'
+      share: 10,
+      rent: 0,
+      overrideDeal: false,
+      hahaShare: 10,
+      hahaRent: 0
+    },
+    uplift: {
+      initialized: false,
+      _baseQ: 0,
+      variety: { accept: 'partial', pct: 6, custom: false },
+      basket:  { accept: 'partial', pct: 5, custom: false },
+      stock:   { accept: 'partial', pct: 4, custom: false },
+      payment: { accept: 'partial', pct: 2.5, custom: false }
+    },
+    haha: {
+      cogsRate: 45,
+      processing: 5.95,
+      shrinkage: 1.5,
+      saas: 15,
+      sim: 15,
+      pos: 10,
+      aiPerOrder: 0.05,
+      maintenance: 15,
+      other: 0
+    },
+    invest: {
+      modelId: 'pro542',
+      modelManual: false,
+      freight: true,
+      install: 0,
+      removal: 0,
+      tradeIn: 0,
+      finance: {
+        enabled: false,
+        downPct: 10,
+        term: 12,
+        apr: 0,
+        docFee: 0
+      }
+    }
+  };
+}
+
+function createSampleProject() {
+  const p = createBlankProject('Breakroom #1 — Bldg A');
+  p.meta = {
+    locationName: 'Breakroom #1 — Bldg A',
+    venue: 'office',
+    city: 'Austin',
+    state: 'TX',
+    date: todayStr()
+  };
+  p.machine = {
+    type: 'snack',
+    age: 9,
+    condition: 'fair',
+    monitoring: 'no',
+    payments: ['coin', 'bill']
+  };
+  p.diag = { q1: 10, q2: 10, q3: 5, q4: 10, q5: 10, q6: 10 };
+  p.baseline.monthlySales = 1800;
+  p.baseline.monthlyOrders = 720;
+  p.baseline.profitMode = 'actual';
+  p.baseline.actualProfit = 500;
+  p.site = { deal: 'share', share: 10, rent: 0, overrideDeal: false, hahaShare: 10, hahaRent: 0 };
+  p.uplift = {
+    initialized: true,
+    _baseQ: 1,
+    variety: { accept: 'yes', pct: 12, custom: false },
+    basket:  { accept: 'yes', pct: 10, custom: false },
+    stock:   { accept: 'yes', pct: 8, custom: false },
+    payment: { accept: 'yes', pct: 5, custom: false }
+  };
+  p.invest.modelId = 'pro542';
+  p.invest.modelManual = false;
+  p.invest.freight = true;
+  p.invest.finance = { enabled: false, downPct: 10, term: 12, apr: 0, docFee: 0 };
+  return p;
+}
+
+function dealTerms(deal, share, rent) {
+  const shareOn = deal === 'share' || deal === 'combo';
+  const rentOn = deal === 'rent' || deal === 'combo';
+  return {
+    share: shareOn ? clamp(num(share), 0, 100) : 0,
+    rent: rentOn ? Math.max(0, num(rent)) : 0
+  };
+}
+
+function amortize(principal, aprPct, months) {
+  const p = Math.max(0, num(principal));
+  const n = Math.max(1, Math.round(num(months)));
+  const r = Math.max(0, num(aprPct)) / 100 / 12;
+  if (p === 0) return 0;
+  if (r === 0) return p / n;
+  const f = Math.pow(1 + r, n);
+  return (p * r * f) / (f - 1);
+}
+
+function recommendedModel(dailyOrders, machineType) {
+  if (machineType === 'frozen') return 'freezer550';
+  if (dailyOrders > 50) return 'ultra1200';
+  if (dailyOrders >= 35) return 'max620s';
+  if (dailyOrders >= 15) return 'pro542';
+  return 'mini360';
+}
+
+function compute(p) {
+  /* 1. Replacement Urgency Score (0–100): Hardware Pain (0–40) + 6 Diagnostics (0–60) */
+  const ageVal = num(p.machine.age);
+  const agePts = p.machine.age === '' ? 0 : (ageVal >= 7 ? 12 : ageVal >= 4 ? 6 : 0);
+  const pays = Array.isArray(p.machine.payments) ? p.machine.payments : [];
+  const hasCard = pays.includes('card');
+  const hasMobile = pays.includes('mobile');
+  const payPts = (!hasCard && !hasMobile) ? 12 : (!hasMobile ? 5 : 0);
+  const monPts = p.machine.monitoring === 'no' ? 8 : 0;
+  const condPts = p.machine.condition === 'poor' ? 8 : (p.machine.condition === 'fair' ? 4 : 0);
+  const hwPts = clamp(agePts + payPts + monPts + condPts, 0, 40);
+
+  const offensePts = num(p.diag.q1) + num(p.diag.q2) + num(p.diag.q3); // 0–30
+  const defensePts = num(p.diag.q4) + num(p.diag.q5) + num(p.diag.q6); // 0–30
+  const commercialPts = clamp(offensePts + defensePts, 0, 60);
+  const urgencyTotal = clamp(hwPts + commercialPts, 0, 100);
+  const urgencyTier = urgencyTotal >= 75 ? 'strong' : urgencyTotal >= 50 ? 'model' : 'low';
+
+  const hiddenRepairRisk = (p.machine.age !== '' && ageVal >= 7) || p.machine.condition === 'poor';
+
+  const rationale = [];
+  if (p.machine.age !== '' && ageVal >= 7) rationale.push({ code: 'age', vars: { years: Math.round(ageVal) } });
+  if (p.machine.condition === 'poor') rationale.push({ code: 'condition' });
+  if (!hasCard && !hasMobile) rationale.push({ code: 'noCashless' });
+  else if (!hasMobile) rationale.push({ code: 'noMobile' });
+  if (p.machine.monitoring === 'no') rationale.push({ code: 'monitoring' });
+  if (num(p.diag.q1) === 10) rationale.push({ code: 'marginCeiling' });
+  if (num(p.diag.q5) === 10) rationale.push({ code: 'retention' });
+  if (num(p.diag.q4) === 10) rationale.push({ code: 'friction' });
+  if (!rationale.length) rationale.push({ code: 'default' });
+
+  /* 2. Single-Source Sales Baseline (30-day backend basis) */
+  const b = p.baseline;
+  const oldSales = Math.max(0, num(b.monthlySales));
+  const oldMonthlyOrders = Math.max(0, num(b.monthlyOrders));
+  const oldDailyOrders = oldMonthlyOrders / 30;
+  const oldAov = oldMonthlyOrders > 0 ? oldSales / oldMonthlyOrders : 0;
+
+  const siteTerms = dealTerms(p.site.deal, p.site.share, p.site.rent);
+  const oldSiteFee = oldSales * siteTerms.share / 100 + siteTerms.rent;
+
+  const oldDetail = {
+    cogs: oldSales * clamp(num(b.cogsRate), 0, 100) / 100,
+    commission: oldSiteFee,
+    processing: oldSales * clamp(num(b.cashlessShare), 0, 100) / 100 * clamp(num(b.cardFee), 0, 100) / 100,
+    reader: Math.max(0, num(b.readerFee)),
+    platform: Math.max(0, num(b.platform)),
+    other: Math.max(0, num(b.other))
+  };
+
+  let oldProfit = 0;
+  let oldCost = 0;
+  if (b.profitMode === 'actual') {
+    oldProfit = num(b.actualProfit);
+    oldCost = oldSales - oldProfit;
+  } else if (b.profitMode === 'detail') {
+    oldCost = oldDetail.cogs + oldDetail.commission + oldDetail.processing + oldDetail.reader + oldDetail.platform + oldDetail.other;
+    oldProfit = oldSales - oldCost;
+  } else {
+    oldProfit = oldSales * clamp(num(b.estMarginPct), 0, 100) / 100;
+    oldCost = oldSales - oldProfit;
+  }
+  const oldMargin = oldSales > 0 ? (oldProfit / oldSales) * 100 : 0;
+
+  /* 3. Silent Quadrant Derivation (Sales >= $1,200 & Urgency >= 60) */
+  const highRev = oldSales >= REVENUE_LINE;
+  const highUrg = urgencyTotal >= URGENCY_HIGH_LINE;
+  const quadrantId = highRev ? (highUrg ? 1 : 2) : (highUrg ? 3 : 4);
+
+  /* 4. Growth Consensus with Exact Pro-Rata Cap Scaling */
+  const up = p.uplift;
+  const vPct = Math.max(0, num(up.variety.pct));
+  const sPct = Math.max(0, num(up.stock.pct));
+  const pPct = Math.max(0, num(up.payment.pct));
+  const bPct = Math.max(0, num(up.basket.pct));
+
+  const orderRaw = vPct + sPct + pPct;
+  const orderCapped = orderRaw > 40;
+  const orderPct = clamp(orderRaw, 0, 40);
+  const orderScale = orderRaw > 0 ? (orderPct / orderRaw) : 1;
+
+  const aovCapped = bPct > 25;
+  const aovPct = clamp(bPct, 0, 25);
+
+  const hahaMonthlyOrders = oldMonthlyOrders * (1 + orderPct / 100);
+  const hahaDailyOrders = hahaMonthlyOrders / 30;
+  const hahaAov = oldAov * (1 + aovPct / 100);
+  const hahaSales = hahaMonthlyOrders * hahaAov;
+
+  const varietyRev = ((vPct * orderScale) / 100) * oldSales;
+  const stockRev   = ((sPct * orderScale) / 100) * oldSales;
+  const paymentRev = ((pPct * orderScale) / 100) * oldSales;
+  const basketRev  = hahaMonthlyOrders * (hahaAov - oldAov);
+  const totalRevenueGrowth = hahaSales - oldSales;
+  const totalRevenueGrowthPct = oldSales > 0 ? (totalRevenueGrowth / oldSales) * 100 : 0;
+
+  /* 5. HAHA P&L */
+  const h = p.haha;
+  const hahaTerms = p.site.overrideDeal
+    ? dealTerms(p.site.deal, p.site.hahaShare, p.site.hahaRent)
+    : siteTerms;
+
+  const cogsRate = clamp(num(h.cogsRate), 0, 100);
+  const procRate = clamp(num(h.processing), 0, 100);
+  const shrinkRate = clamp(num(h.shrinkage), 0, 100);
+  const aiPerOrder = Math.max(0, num(h.aiPerOrder));
+
+  const hahaCogs = hahaSales * cogsRate / 100;
+  const hahaShareCost = hahaSales * hahaTerms.share / 100;
+  const hahaRent = hahaTerms.rent;
+  const hahaSiteFee = hahaShareCost + hahaRent;
+  const hahaProcessing = hahaSales * procRate / 100;
+  const hahaShrinkage = hahaSales * shrinkRate / 100;
+  const hahaFixed = Math.max(0, num(h.saas)) + Math.max(0, num(h.sim)) + Math.max(0, num(h.pos)) + Math.max(0, num(h.maintenance)) + Math.max(0, num(h.other));
+  const hahaAi = hahaMonthlyOrders * aiPerOrder;
+
+  const hahaCost = hahaCogs + hahaSiteFee + hahaProcessing + hahaShrinkage + hahaFixed + hahaAi;
+  const hahaProfit = hahaSales - hahaCost;
+  const hahaMargin = hahaSales > 0 ? (hahaProfit / hahaSales) * 100 : 0;
+
+  const varRateSum = (cogsRate + hahaTerms.share + procRate + shrinkRate) / 100;
+  const fixedTotal = hahaFixed + hahaRent;
+  const zeroGrowthProfit = oldSales - (oldSales * varRateSum) - fixedTotal - (oldMonthlyOrders * aiPerOrder);
+
+  /* 6. Model Recommendation (Daily Orders + Frozen Machine Type) & Net Investment */
+  const basisDailyOrders = hahaDailyOrders > 0 ? hahaDailyOrders : oldDailyOrders;
+  const recModelId = recommendedModel(basisDailyOrders, p.machine.type);
+  const effectiveModelId = p.invest.modelManual ? p.invest.modelId : recModelId;
+  const activeModel = MODELS.find(m => m.id === effectiveModelId) || MODELS[2];
+
+  const equipment = activeModel.msrp;
+  const freight = p.invest.freight ? FREIGHT_FEE : 0;
+  const install = Math.max(0, num(p.invest.install));
+  const removal = Math.max(0, num(p.invest.removal));
+  const tradeIn = Math.max(0, num(p.invest.tradeIn));
+  const investment = Math.max(0, equipment + freight + install + removal - tradeIn);
+
+  const delta = hahaProfit - oldProfit;
+  const annualDelta = delta * 12;
+  const payback = delta > 0 ? investment / delta : Infinity;
+  const standalonePayback = hahaProfit > 0 ? investment / hahaProfit : Infinity;
+  const threeYearNet = delta * 36 - investment;
+  const roi3 = investment > 0 ? (threeYearNet / investment) * 100 : 0;
+
+  /* 7. Financing (CRITICAL: docFee ONLY at signing, NEVER inside principal) */
+  const f = p.invest.finance;
+  const financed = !!(f.enabled && investment > 0);
+  const down = investment * clamp(num(f.downPct), 0, 100) / 100;
+  const docFee = Math.max(0, num(f.docFee));
+  const principal = Math.max(0, investment - down);
+  const finMonths = clamp(Math.round(num(f.term) || 12), 1, 120);
+  const apr = Math.max(0, num(f.apr));
+  const payment = amortize(principal, apr, finMonths);
+  const cashDueAtSigning = financed ? (down + docFee) : investment;
+  const totalPaid = financed ? (payment * finMonths + down + docFee) : investment;
+  const totalInterest = financed ? Math.max(0, payment * finMonths - principal) : 0;
+  const coverage = payment > 0 ? hahaProfit / payment : Infinity;
+  const cashAfter = hahaProfit - payment;
+  const vsOldCash = cashAfter - oldProfit;
+  const selfFunding = financed && payment > 0 && hahaProfit >= payment;
+
+  /* 8. Stress Test (100% / 80% / 60% of projected sales) */
+  const stress = [1, 0.8, 0.6].map(scale => {
+    const sSales = hahaSales * scale;
+    const sOrders = hahaMonthlyOrders * scale;
+    const sProfit = sSales - (sSales * varRateSum) - fixedTotal - (sOrders * aiPerOrder);
+    const sDelta = sProfit - oldProfit;
+    return {
+      scale,
+      sales: sSales,
+      profit: sProfit,
+      delta: sDelta,
+      payback: sDelta > 0 ? investment / sDelta : Infinity,
+      coverage: payment > 0 ? sProfit / payment : Infinity
+    };
+  });
+
+  /* 9. Business Viability Verdict (No internal A/B grade jargon) */
+  const hasData = oldSales > 0 && oldMonthlyOrders > 0;
+  const relGain = oldProfit > 0 ? delta / oldProfit : (delta >= 200 ? 1 : 0);
+  let verdict = 'defer'; // 'strong' | 'positive' | 'conditional' | 'defer'
+  if (hasData && delta > 0) {
+    if (payback <= 24 && relGain >= 0.2 && (!financed || coverage >= 1.5)) verdict = 'strong';
+    else if (payback <= 36 && (!financed || coverage >= 1.2)) verdict = 'positive';
+    else if (payback <= 48) verdict = 'conditional';
+  }
+  const viable = verdict === 'strong' || verdict === 'positive';
+
+  /* 10. Warnings */
+  const warnings = [];
+  if (!hasData) warnings.push({ level: 'info', code: 'noSales' });
+  if (orderCapped) warnings.push({ level: 'warn', code: 'orderCap' });
+  if (aovCapped) warnings.push({ level: 'warn', code: 'aovCap' });
+  if (financed && coverage < 1.25) warnings.push({ level: 'warn', code: 'coverageLow', vars: { coverage: coverage.toFixed(2) } });
+  if (financed && vsOldCash < 0) warnings.push({ level: 'warn', code: 'cashBelowOld' });
+  if (hasData && delta > 0 && payback > 36) warnings.push({ level: 'warn', code: 'longPayback', vars: { months: payback.toFixed(0) } });
+
+  return {
+    hasData,
+    urgency: { total: urgencyTotal, hwPts, commercialPts, offensePts, defensePts, tier: urgencyTier },
+    hiddenRepairRisk,
+    rationale,
+    quadrantId,
+    siteTerms,
+    hahaTerms,
+    old: { sales: oldSales, monthlyOrders: oldMonthlyOrders, dailyOrders: oldDailyOrders, aov: oldAov, siteFee: oldSiteFee, profit: oldProfit, cost: oldCost, margin: oldMargin, detail: oldDetail },
+    growth: { orderRaw, orderPct, aovPct, orderCapped, aovCapped, varietyRev, stockRev, paymentRev, basketRev, totalRevenueGrowth, totalRevenueGrowthPct },
+    haha: { sales: hahaSales, monthlyOrders: hahaMonthlyOrders, dailyOrders: hahaDailyOrders, aov: hahaAov, cogs: hahaCogs, shareCost: hahaShareCost, rent: hahaRent, siteFee: hahaSiteFee, processing: hahaProcessing, shrinkage: hahaShrinkage, fixed: hahaFixed, ai: hahaAi, cost: hahaCost, profit: hahaProfit, margin: hahaMargin, zeroGrowthProfit },
+    invest: { recModelId, effectiveModelId, model: activeModel, equipment, freight, install, removal, tradeIn, total: investment, delta, annualDelta, payback, standalonePayback, threeYearNet, roi3 },
+    finance: { enabled: financed, down, docFee, principal, months: finMonths, apr, payment, cashDueAtSigning, totalPaid, totalInterest, coverage, cashAfter, vsOldCash, selfFunding },
+    stress,
+    verdict,
+    viable,
+    warnings,
+    siteEarnings: { monthly: hahaSiteFee, annual: hahaSiteFee * 12 }
+  };
+}
+
+/* =====================================================================
+   3. COMPLETE BILINGUAL DICTIONARY (EN / 中文)
+   ===================================================================== */
+const STR = {
+  en: {
+    'brand.sub': 'REPLACEMENT ASSESSMENT',
+    'nav.workspace': 'WORKSPACE',
+    'nav.activeProject': 'ACTIVE PROJECT',
+    'nav.dashboard': 'Dashboard',
+    'nav.projects': 'My Projects',
+    'nav.s1': 'Location Assessment',
+    'nav.s2': 'Financial Analysis',
+    'nav.s3': 'Assessment Report',
+    'side.local': 'Data stays in this browser',
+    'side.localSub': 'Auto-saved locally',
+    'side.ver': 'v2.2 · Operator Replacement Suite',
+    'top.newProject': '+ New Project',
+    'top.newDisabledTip': 'Return to Dashboard or My Projects to start a new assessment so current progress is not interrupted.',
+    'top.untitled': 'Untitled Location',
+
+    'modal.newTitle': 'Start New Replacement Assessment',
+    'modal.newDesc': 'Enter the location name to create your assessment project and begin Step 01.',
+    'modal.locLabel': 'Location Name *',
+    'modal.locPh': 'e.g. Breakroom #1 — Bldg A',
+    'modal.locErr': 'Please enter a Location Name before continuing.',
+    'modal.createBtn': 'Create & Start Assessment',
+
+    'common.open': 'Open',
+    'common.delete': 'Delete',
+    'common.cancel': 'Cancel',
+    'common.confirm': 'Confirm',
+    'common.yes': 'Yes',
+    'common.partly': 'Partly',
+    'common.no': 'No',
+    'common.mo': 'mo',
+    'common.months': 'months',
+    'common.noPayback': 'No payback',
+    'common.backup': 'Backup',
+    'common.restore': 'Restore',
+    'common.created': 'New project created',
+    'common.sampleCreated': 'Sample project added',
+    'common.backedUp': 'Backup file downloaded',
+    'common.restored': 'Projects restored successfully',
+    'common.invalidFile': 'Invalid backup JSON file',
+    'common.deleted': 'Project deleted',
+
+    'dash.kicker': 'HAHA VENDING · OPERATOR REPLACEMENT TOOLKIT',
+    'dash.title': 'Turn legacy vending sites into high-margin AI locations.',
+    'dash.desc': 'Diagnose replacement urgency, co-build revenue assumptions with operators, evaluate cash vs. 0% financing, and export a compact 2–3 page executive report.',
+    'dash.ctaNew': '+ New Project',
+    'dash.ctaSample': 'Load Sample Project',
+    'dash.stat1': 'Total Assessed Locations',
+    'dash.stat1Sub': 'Saved in this browser',
+    'dash.stat2': 'Recommended Replacements',
+    'dash.stat2Sub': 'Economically viable sites',
+    'dash.stat3': 'Avg Payback Period',
+    'dash.stat3Sub': 'Standalone machine payback',
+    'dash.stat4': 'Avg Monthly Profit Gain',
+    'dash.stat4Sub': 'Across modeled locations',
+    'dash.recent': 'Recent Projects',
+    'dash.recentSub': 'Click Open to review from Step 01',
+    'dash.empty': 'No saved projects yet. Click "+ New Project" or "Load Sample Project" to begin.',
+    'dash.quick': '3-Step Replacement Workflow',
+    'dash.quickSub': 'Built for a 5-minute live operator walkthrough',
+    'dash.q1': 'Location Assessment',
+    'dash.q1d': 'Hardware pain (40 pts) + 6 Offense/Defense questions (60 pts).',
+    'dash.q2': 'Financial Analysis',
+    'dash.q2d': 'Single-source baseline, growth consensus, model sizing & financing.',
+    'dash.q3': 'Assessment Report',
+    'dash.q3d': 'Compact 2–3 page print/PDF or standalone HTML report.',
+
+    'proj.title': 'My Projects',
+    'proj.desc': 'Manage all location replacement assessments saved in this browser.',
+    'proj.search': 'Search locations or cities...',
+    'proj.delTitle': 'Delete Project',
+    'proj.delMsg': 'Are you sure you want to delete "{name}"? This cannot be undone.',
+
+    's1.eyebrow': 'STEP 01 · LOCATION ASSESSMENT',
+    's1.title': 'Diagnose the site and replacement urgency.',
+    's1.lead': 'Combine current hardware risk (40 pts) with 6 Offense & Defense commercial signals (60 pts) to score replacement urgency.',
+    's1.c1': 'Location Details',
+    's1.c1d': 'Core site information displayed on the report cover.',
+    's1.locName': 'Location Name *',
+    's1.locNamePh': 'e.g. Breakroom #1 — Bldg A',
+    's1.venue': 'Venue Type',
+    's1.city': 'City (optional)',
+    's1.state': 'State (optional)',
+    's1.c2': 'Current Machine Status',
+    's1.c2d': 'Scored up to 40 points based on age, cashless gap, monitoring, and physical condition.',
+    's1.mType': 'Machine Type',
+    's1.mAge': 'Machine Age (years)',
+    's1.mAgeHint': '≥7 yrs: +12 pts · 4–6 yrs: +6 pts',
+    's1.mCond': 'Physical Condition',
+    's1.mMon': 'Remote Monitoring',
+    's1.mPay': 'Payments Accepted',
+    's1.mPayHint': 'Missing both Card & Mobile: +12 pts · Missing Mobile only: +5 pts',
+    's1.c3': '6 Commercial Diagnostic Questions',
+    's1.c3d': 'Offense (revenue upside) + Defense (protect location & cut labor drag) — up to 60 points.',
+    's1.offense': 'OFFENSE',
+    's1.defense': 'DEFENSE',
+    's1.q1t': '1. Margin Ceiling',
+    's1.q1': 'Is the current machine limited to low-margin snacks/cans and unable to sell high-margin fresh food, energy drinks, or oversized items?',
+    's1.q1a': 'Strong (10)', 's1.q1b': 'Moderate (5)', 's1.q1c': 'Low (0)',
+    's1.q2t': '2. Multi-Item Basket Potential',
+    's1.q2': 'Do visitors have the habit and spending power to grab 2–3 items in one visit (e.g., drink + meal/snack)?',
+    's1.q2a': 'Strong (10)', 's1.q2b': 'Moderate (5)', 's1.q2c': 'Low (0)',
+    's1.q3t': '3. Captive Demand',
+    's1.q3': 'Does the site lack a nearby 24/7 convenience store or cafeteria within a 5-minute walk?',
+    's1.q3a': 'Strong (10)', 's1.q3b': 'Moderate (5)', 's1.q3c': 'Low (0)',
+    's1.q4t': '4. Operational Drag',
+    's1.q4': 'Does lack of telemetry cause blind restocking trips, frequent stockouts, or jam refunds that waste labor?',
+    's1.q4a': 'Strong (10)', 's1.q4b': 'Moderate (5)', 's1.q4c': 'Low (0)',
+    's1.q5t': '5. Location Defense',
+    's1.q5': 'Has the property mentioned aging equipment, or is there risk of competitors (Micro Markets / other smart coolers) taking over the spot?',
+    's1.q5a': 'Strong (10)', 's1.q5b': 'Moderate (5)', 's1.q5c': 'Low (0)',
+    's1.q6t': '6. Hardware Lifespan & Cashless Walk-Aways',
+    's1.q6': 'Is the machine aging (7+ yrs / frequent repairs) or losing younger buyers who don’t carry cash?',
+    's1.q6a': 'Strong (10)', 's1.q6b': 'Moderate (5)', 's1.q6c': 'Low (0)',
+
+    's1.railTitle': 'REPLACEMENT URGENCY',
+    's1.railHw': 'Hardware Pain',
+    's1.railComm': 'Commercial Signals',
+    's1.railNext': 'Continue to Financial Analysis →',
+    's1.tierStrong': 'Strong Replacement Fit',
+    's1.tierModel': 'Worth Financial Modeling',
+    's1.tierLow': 'Low Urgency / Validate First',
+    's1.critTitle': 'Scoring Criteria',
+    's1.critDesc': 'Total 100 pts = Hardware Pain (40 pts: Age +12, Cashless gap +12, No monitoring +8, Condition +8) + 6 Commercial Signals (60 pts: 10/5/0 each).',
+
+    'venue.office': 'Office / Corporate', 'venue.factory': 'Factory / Industrial', 'venue.gym': 'Gym / Fitness',
+    'venue.hospital': 'Hospital / Medical', 'venue.hotel': 'Hotel / Hospitality', 'venue.school': 'School / University',
+    'venue.apartment': 'Apartment / Residential', 'venue.transit': 'Airport / Transit', 'venue.construction': 'Construction Site', 'venue.retail': 'Retail / Other',
+    'mtype.snack': 'Snack / Spring', 'mtype.beverage': 'Beverage', 'mtype.combo': 'Combo', 'mtype.frozen': 'Frozen / Fresh', 'mtype.other': 'Other',
+    'cond.good': 'Good', 'cond.fair': 'Fair', 'cond.poor': 'Poor',
+    'pay.coin': 'Coin', 'pay.bill': 'Bill', 'pay.card': 'Card', 'pay.mobile': 'Mobile / Apple Pay',
+
+    's2.eyebrow': 'STEP 02 · FINANCIAL ANALYSIS',
+    's2.title': 'Model the operator’s replacement economics.',
+    's2.lead': 'All inputs stay synced on one screen — adjust sales, growth consensus, model, or 0% financing and see payback update live.',
+    's2.secA': 'A. Current Baseline & Site Agreement',
+    's2.secAd': 'Single-source sales baseline (30-day backend basis) with zero conflicting inputs.',
+    's2.mSales': 'Monthly Sales ($)',
+    's2.mOrders': 'Monthly Orders',
+    's2.estOrders': "Don't know orders? Estimate at $2.50 AOV",
+    's2.dDaily': 'Daily Orders (÷30)',
+    's2.dAov': 'Avg Order Value (Sales ÷ Orders)',
+    's2.dMargin': 'Current Net Margin',
+    's2.profitLabel': 'Current Monthly Profit Mode',
+    's2.pmActual': 'Actual Monthly Net Profit ($)',
+    's2.pmMargin': 'Estimated Net Margin (%)',
+    's2.pmDetail': 'Itemized Old Costs (7 items)',
+    's2.actualProfit': 'Actual Monthly Net Profit ($)',
+    's2.estMargin': 'Estimated Net Margin (%)',
+    's2.dCogs': 'Product Cost (COGS %)',
+    's2.dCashless': 'Cashless Share (%)',
+    's2.dCardFee': 'Card Fee (%)',
+    's2.dReader': 'Card Reader Fee ($/mo)',
+    's2.dPlatform': 'Platform / Telemetry ($/mo)',
+    's2.dOther': 'Other / Restocking ($/mo)',
+    's2.dSiteAuto': 'Site Fee (7th item, synced from Site Agreement below)',
+    's2.dealTitle': 'Site Agreement',
+    's2.dealShare': 'Revenue Share %', 's2.dealRent': 'Fixed Rent $', 's2.dealCombo': 'Share + Rent', 's2.dealNone': 'No Charge',
+    's2.sharePct': 'Revenue Share (%)',
+    's2.rentAmt': 'Fixed Monthly Rent ($)',
+    's2.overrideDeal': 'Site terms change after replacement',
+    's2.hahaShare': 'HAHA Revenue Share (%)',
+    's2.hahaRent': 'HAHA Fixed Monthly Rent ($)',
+    's2.formulaCur': 'Current Site Fee = {sales} × {share}% + {rent} rent = {total}/mo',
+    's2.formulaNew': 'HAHA Projected Site Fee = {sales} × {share}% + {rent} rent = {total}/mo',
+
+    's2.secB': 'B. Client-Agreed Growth Uplift',
+    's2.secBd': 'Let the operator validate each upside driver. Order uplift caps at 40% (pro-rata scaled); AOV caps at 25%.',
+    's2.resetUp': 'Reset to Site Defaults',
+    's2.up1t': '01 · More Product Variety', 's2.up1d': 'Higher-margin fresh food & larger beverages drive new trips (Orders).',
+    's2.up2t': '02 · Multi-Item Baskets', 's2.up2d': 'Grab-and-go checkout unlocks 2–3 items per transaction (AOV).',
+    's2.up3t': '03 · Fewer Stockouts', 's2.up3d': 'Real-time inventory visibility recovers lost sales (Orders).',
+    's2.up4t': '04 · Better Payment Experience', 's2.up4d': 'Tap-to-unlock removes checkout friction (Orders).',
+    's2.yes100': 'Yes (100%)', 's2.part50': 'Partly (50%)', 's2.no0': 'No (0%)',
+    's2.capped': 'Capped',
+    's2.projSales': 'Projected HAHA Sales',
+    's2.revUplift': 'Total Revenue Uplift',
+    's2.projDaily': 'Projected Daily Orders',
+
+    's2.secC': 'C. Machine Recommendation, Investment & Financing',
+    's2.secCd': 'Auto-recommended by daily order volume & machine type. Click any model to select.',
+    's2.recBadge': 'Recommended',
+    'tag.compact': 'Compact', 'tag.standard': 'Standard', 'tag.bestseller': 'US Best Seller',
+    'tag.flagship': 'Flagship', 'tag.large': 'Large Capacity', 'tag.double': 'Double Door', 'tag.frozen': 'Frozen',
+    's2.freight': 'Freight (+$250)',
+    's2.install': 'Installation ($)',
+    's2.removal': 'Old Machine Removal ($)',
+    's2.tradeIn': 'Trade-In Credit ($)',
+    's2.tradeInHint': 'Resale value or trade-in credit recovered from the replaced machine.',
+    's2.payMethod': 'Payment Method',
+    's2.cash': 'Cash',
+    's2.finance': 'Finance',
+    's2.down': 'Down Payment (%)',
+    's2.term': 'Term (months)',
+    's2.apr': 'APR (%)',
+    's2.docFee': 'Doc Fee (Upfront $)',
+    's2.cashSigning': 'Day 1 Cash (Signing)',
+    's2.monthlyPmt': 'Monthly Payment',
+    's2.coverage': 'Payment Coverage',
+    's2.cashAfter': 'Cash After Payment',
+    's2.selfFund': 'Self-Funding Cash Flow: HAHA net profit covers the monthly payment by {cov}× — cash-flow positive from Month 1 ({cash}/mo left over), and you own the machine outright after {term} months.',
+
+    's2.secD': 'D. HAHA Operating Costs',
+    's2.secDd': 'Closed by default. Click to adjust COGS, Shrinkage/Spoilage, editable AI fee, and monthly fixed costs.',
+    's2.cogs': 'COGS Rate (%)',
+    's2.cogsHint': 'Consider ~50% if expanding into fresh food.',
+    's2.proc': 'Card Processing (%)',
+    's2.shrink': 'Shrinkage / Spoilage Reserve (%)',
+    's2.shrinkHint': 'Default 1.5% (editable to 0%) for theft or fresh-food expiry.',
+    's2.aiFee': 'AI Recognition Fee ($/order)',
+    's2.saas': 'SaaS Platform ($/mo)',
+    's2.sim': 'SIM / 4G ($/mo)',
+    's2.pos': 'POS Lease ($/mo)',
+    's2.maint': 'Maintenance Reserve ($/mo)',
+    's2.other': 'Restocking Labor / Other ($/mo)',
+
+    's2.secE': 'E. Before vs. After Comparison, Cash Flow & Stress Test',
+    's2.kpiGain': 'Monthly Profit Gain',
+    's2.kpiStandalone': 'Standalone Equipment Payback',
+    's2.kpiStandaloneSub': 'Net investment ÷ HAHA profit',
+    's2.kpiInc': 'Incremental Payback',
+    's2.kpiIncSub': 'Net investment ÷ monthly gain',
+    's2.kpi3yr': '3-Year Net Gain',
+    's2.kpi3yrSub': '36-mo gain minus net investment',
+    's2.metric': 'Operating Metric',
+    's2.cur': 'Current Machine',
+    's2.haha': 'HAHA (Projected)',
+    's2.chg': 'Change',
+    's2.rOrders': 'Monthly Orders',
+    's2.rAov': 'Avg Order Value',
+    's2.rSales': 'Monthly Sales',
+    's2.rCost': 'Total Monthly Cost',
+    's2.rProfit': 'Monthly Net Profit',
+    's2.rMargin': 'Net Margin',
+    's2.chartTitle': '36-Month Cumulative Cash Flow',
+    's2.legOld': 'Keep Current Machine',
+    's2.legNew': 'Replace with HAHA',
+    's2.chartExplain': 'How to read this chart: The dashed grey line tracks cumulative profit if you keep the old machine. The green HAHA line starts below zero by your upfront investment, climbs faster each month, and crosses the grey line at the incremental payback month — everything above the dashed line afterward is pure extra profit from upgrading.',
+    's2.zeroTitle': 'Zero-Growth Downside Check',
+    's2.zeroText': 'Even with 0% sales growth (today’s sales under HAHA operating costs), monthly net profit is {v} ({gap} vs. today).',
+    's2.stressTitle': 'Stress Test (Sales Realization)',
+    's2.propTitle': 'Property / Landlord Earnings',
+    's2.propSub': 'Projected monthly & annual site income at HAHA sales.',
+    's2.hiddenRiskTitle': 'Hidden Maintenance Risk of Keeping Aging Hardware',
+    's2.hiddenRiskText': 'The current machine is ≥7 years old or in poor condition. Keeping aging equipment exposes the operator to $500–$1,000+ in unbudgeted compressor, cooling, or bill-validator repairs and lost downtime over the next 12 months.',
+
+    'r2.title': 'LIVE FINANCIAL SNAPSHOT',
+    'r2.gain': 'Monthly Profit Gain',
+    'r2.standalone': 'Standalone Payback',
+    'r2.inc': 'Incremental Payback',
+    'r2.threeYr': '3-Year Net Gain',
+    'r2.netInv': 'Net Investment',
+    'r2.model': 'Selected Model',
+    'r2.toReport': 'View Assessment Report →',
+
+    'verdict.strong': 'Strongly Recommended',
+    'verdict.positive': 'Recommended',
+    'verdict.conditional': 'Conditional / Validate',
+    'verdict.defer': 'Not Yet Recommended',
+    'repHead.strong': 'Upgrade this location to the {model} to capture strong profit upside.',
+    'repHead.positive': 'Proceed with upgrading to the {model} — economics are solidly positive.',
+    'repHead.conditional': 'Validate demand or resize hardware before committing to the {model}.',
+    'repHead.defer': 'Defer replacement until site volume grows or site fees improve.',
+
+    'vReason.gain': 'Adds {delta}/mo ({annual}/yr) in net profit — standalone equipment payback in {standalone} ({inc} incremental payback).',
+    'vReason.3yr': 'Generates {net3} in cumulative net extra profit over 36 months after recovering the {inv} net investment.',
+    'vReason.fin': 'Monthly financing payment ({pmt}/mo) is covered {cov}× by HAHA net profit, remaining cash-flow positive from Month 1.',
+    'vReason.downside': 'At 60% of projected sales (stress test), monthly net profit remains {down}.',
+    'vReason.neg': 'Under current assumptions, monthly profit does not yet exceed the existing machine.',
+
+    'next.strong1': 'Confirm the top two client-agreed growth assumptions and review preferred SKU assortment (fresh food, cold drinks, snacks).',
+    'next.strong2': 'Select Cash purchase or 0% APR 12-month financing and align site agreement duration with the payback window.',
+    'next.strong3': 'Schedule delivery and set a 30-day post-launch performance check to optimize planogram and pricing.',
+    'next.pos1': 'Confirm product cost (COGS) and shrinkage assumptions based on the planned merchandise mix.',
+    'next.pos2': 'Lock in the recommended machine model and confirm whether cash or 12-month financing fits cash-flow goals.',
+    'next.pos3': 'Coordinate installation window and plan a 30-day review of actual daily orders and AOV.',
+    'next.cond1': 'Test whether a more compact unit (Mini 360 / Plus 440) or lower site revenue share improves payback under 24 months.',
+    'next.cond2': 'Track 30 days of verified sales and customer feedback on product requests before committing capital.',
+    'next.cond3': 'Re-run this assessment once baseline volume or site contract terms are updated.',
+    'next.defer1': 'Hold capital investment for now — current traffic and fee structure do not justify replacement.',
+    'next.defer2': 'Explore renegotiating site commission/rent or relocating the unit to a higher-traffic placement.',
+    'next.defer3': 'Revisit this case if headcount increases, the landlord requests an upgrade, or the legacy machine needs major repair.',
+
+    'warn.noSales': 'Enter Monthly Sales and Monthly Orders in Section A to compute full ROI.',
+    'warn.orderCap': 'Order uplift is capped at 40% (pro-rata scaled across the 3 order cards) to keep projections defensible.',
+    'warn.aovCap': 'AOV uplift is capped at 25% to keep projections defensible.',
+    'warn.coverageLow': 'Monthly payment coverage is {coverage}× (aim for ≥ 1.25×).',
+    'warn.cashBelowOld': 'Net cash after monthly financing payment is below current machine profit.',
+    'warn.longPayback': 'Incremental payback is {months} months.',
+
+    'why.age': 'Current machine is {years} years old — rising repair and downtime risk.',
+    'why.condition': 'Physical condition is poor — reliability is already costing sales.',
+    'why.noCashless': 'No card or mobile payment — cashless customers walk away.',
+    'why.noMobile': 'Missing mobile/tap-to-pay support — losing modern frictionless buyers.',
+    'why.monitoring': 'No remote monitoring — blind restocking wastes labor and causes stockouts.',
+    'why.marginCeiling': 'Legacy slots prevent carrying high-margin fresh food and oversized beverages.',
+    'why.retention': 'Landlord expectations or competitor pressure put site retention at risk.',
+    'why.friction': 'Frequent stockouts, jams, or refund complaints drain operator labor.',
+    'why.default': 'Upgrading to AI grab-and-go retail elevates checkout speed and inventory visibility.',
+
+    's3.back': '← Back to Analysis',
+    's3.print': 'Print / Save PDF',
+    's3.download': 'Download HTML Report',
+    's3.docType': 'LOCATION REPLACEMENT ASSESSMENT',
+    's3.exec': 'Executive Summary',
+    's3.sec1': '01 · Site & Diagnostic Overview',
+    's3.sec2': '02 · Before vs. After Economics & Cash Flow',
+    's3.sec3': '03 · Investment, Financing & Stress Test',
+    's3.sec4': '04 · Next Steps & Assessment Notes',
+    's3.nextSub': 'Recommended Next Steps',
+    's3.deployNote': 'Deployment Reminder: Before delivery, briefly verify a standard power outlet, 4G cellular signal, and doorway/placement clearance at the spot.',
+    's3.basisSub': 'Assessment Basis & Disclaimer',
+    's3.method': 'Methodology: Monthly Sales and Monthly Orders (30-day backend basis) establish AOV (Sales ÷ Orders) with zero conflicting inputs. Projected sales apply only client-agreed uplifts (order uplift capped at 40% pro-rata; AOV at 25%). HAHA costs account for COGS, site fees, card processing, shrinkage/spoilage reserve, fixed monthly SaaS/SIM/POS/maintenance, and per-order AI recognition. Financing uses equal monthly payments with any doc fee paid upfront at signing.',
+    's3.disclaimer': 'Disclaimer: All projections in this report are planning estimates based on operator-provided inputs and agreed assumptions, not guarantees of future sales or profit. Actual performance varies by foot traffic, pricing, product mix, and daily operations.'
+  },
+
+  zh: {
+    'brand.sub': '点位替换评估',
+    'nav.workspace': '工作台',
+    'nav.activeProject': '当前项目',
+    'nav.dashboard': '工作台',
+    'nav.projects': '我的项目',
+    'nav.s1': '点位评估',
+    'nav.s2': '经营数据分析',
+    'nav.s3': '评估报告',
+    'side.local': '数据仅保存在本浏览器',
+    'side.localSub': '已自动本地保存',
+    'side.ver': 'v2.2 · 运营商换机决策工具',
+    'top.newProject': '+ 新建项目',
+    'top.newDisabledTip': '请先返回「工作台」或「我的项目」再新建评估，避免中断当前项目进度。',
+    'top.untitled': '未命名点位',
+
+    'modal.newTitle': '新建点位替换评估',
+    'modal.newDesc': '请先填写点位名称（必填），确认后立即进入第 01 步点位评估。',
+    'modal.locLabel': '点位名称 *',
+    'modal.locPh': '例如 Breakroom #1 — Bldg A',
+    'modal.locErr': '请先输入点位名称再继续。',
+    'modal.createBtn': '创建并开始评估',
+
+    'common.open': '打开',
+    'common.delete': '删除',
+    'common.cancel': '取消',
+    'common.confirm': '确认',
+    'common.yes': '是',
+    'common.partly': '部分',
+    'common.no': '否',
+    'common.mo': '个月',
+    'common.months': '个月',
+    'common.noPayback': '无法回本',
+    'common.backup': '导出备份',
+    'common.restore': '导入备份',
+    'common.created': '新项目已创建',
+    'common.sampleCreated': '已新建示例项目',
+    'common.backedUp': '备份文件已下载',
+    'common.restored': '项目数据已导入',
+    'common.invalidFile': '备份文件格式无效',
+    'common.deleted': '项目已删除',
+
+    'dash.kicker': 'HAHA VENDING · 运营商换机评估套件',
+    'dash.title': '把传统售货机点位升级为高毛利 AI 无人零售。',
+    'dash.desc': '诊断换机紧迫度、与运营商共同确认增长假设、对比全款与 0 息分期现金流，一键导出 2–3 页精简报告。',
+    'dash.ctaNew': '+ 新建项目',
+    'dash.ctaSample': '载入示例项目',
+    'dash.stat1': '总评估点位',
+    'dash.stat1Sub': '保存在当前浏览器',
+    'dash.stat2': '建议替换点位',
+    'dash.stat2Sub': '经济性达标的点位',
+    'dash.stat3': '平均回本周期',
+    'dash.stat3Sub': '设备自身回本均值',
+    'dash.stat4': '平均月利润增量',
+    'dash.stat4Sub': '已测算点位均值',
+    'dash.recent': '最近项目',
+    'dash.recentSub': '点击打开将从第 01 步开始查看',
+    'dash.empty': '暂无保存的项目。点击「+ 新建项目」或「载入示例项目」立即开始。',
+    'dash.quick': '3 步极简工作流',
+    'dash.quickSub': '专为 5 分钟现场运营商沟通打造',
+    'dash.q1': '点位评估',
+    'dash.q1d': '旧机硬件痛点（40 分）+ 6 道进攻/防守商业诊断（60 分）。',
+    'dash.q2': '经营数据分析',
+    'dash.q2d': '唯一销售基准、增长共识、按日单量推荐机型与分期测算。',
+    'dash.q3': '评估报告',
+    'dash.q3d': '紧凑版 2–3 页 PDF 打印或独立 HTML 报告。',
+
+    'proj.title': '我的项目',
+    'proj.desc': '本地管理所有已保存的点位替换评估项目。',
+    'proj.search': '搜索点位名称或城市...',
+    'proj.delTitle': '删除项目',
+    'proj.delMsg': '确定要删除「{name}」吗？此操作无法撤销。',
+
+    's1.eyebrow': '第 01 步 · 点位评估',
+    's1.title': '先诊断点位痛点与换机紧迫度。',
+    's1.lead': '结合现有机器硬件风险（40 分）与 6 道“进攻 + 防守”商业信号（60 分），生成 0–100 分换机紧迫度评分。',
+    's1.c1': '点位基础信息',
+    's1.c1d': '仅保留必要项，用于报告抬头展示。',
+    's1.locName': '点位名称 *',
+    's1.locNamePh': '例如 Breakroom #1 — Bldg A',
+    's1.venue': '场地类型',
+    's1.city': '城市（选填）',
+    's1.state': '州 / 省（选填）',
+    's1.c2': '现有机器状况',
+    's1.c2d': '直接参与评分（最高 40 分）：机龄、支付短板、远程监控、物理状况。',
+    's1.mType': '机器类型',
+    's1.mAge': '机龄（年）',
+    's1.mAgeHint': '≥7年 +12分 · 4–6年 +6分',
+    's1.mCond': '机器状况',
+    's1.mMon': '远程监控',
+    's1.mPay': '支持的支付方式',
+    's1.mPayHint': '同时缺失刷卡与移动支付 +12分 · 仅缺移动支付 +5分',
+    's1.c3': '6 道商业诊断题',
+    's1.c3d': '进攻（多赚钱）+ 防守（保点位、省人工），最高 60 分。',
+    's1.offense': '进攻',
+    's1.defense': '防守',
+    's1.q1t': '1. 毛利天花板',
+    's1.q1': '现有机器是不是只能卖低毛利零食/罐装饮料，卖不了高毛利的鲜食、能量饮料或大瓶装？',
+    's1.q1a': '明显受限 (10)', 's1.q1b': '有些受限 (5)', 's1.q1c': '不受限 (0)',
+    's1.q2t': '2. 连带与多件购买潜力',
+    's1.q2': '现场客群的消费习惯与消费力，是否支持一次拿 2–3 件（如饮料 + 餐食/零食）？',
+    's1.q2a': '很强 (10)', 's1.q2b': '一般 (5)', 's1.q2c': '较弱 (0)',
+    's1.q3t': '3. 周边刚需与不可替代性',
+    's1.q3': '点位步行 5 分钟内是否缺乏 24 小时便利店或食堂（封闭/半封闭刚需场景）？',
+    's1.q3a': '非常刚需 (10)', 's1.q3b': '部分替代 (5)', 's1.q3c': '选择很多 (0)',
+    's1.q4t': '4. 运维内耗与盲跑',
+    's1.q4': '缺少远程监控是否导致盲跑补货、频繁缺货或卡货退款，浪费大量人工？',
+    's1.q4a': '经常发生 (10)', 's1.q4b': '偶尔发生 (5)', 's1.q4c': '极少发生 (0)',
+    's1.q5t': '5. 点位保卫与流失风险',
+    's1.q5': '房东/物业是否提过机器老旧，或担心不升级会被同行（Micro Market / 其他智能柜）抢走点位？',
+    's1.q5a': '风险很高 (10)', 's1.q5b': '有可能 (5)', 's1.q5c': '风险很低 (0)',
+    's1.q6t': '6. 硬件老化与无现金流失',
+    's1.q6': '现有机器是否已经老化（7 年以上/维修变多），或因不支持无现金/Apple Pay 导致年轻客群流失？',
+    's1.q6a': '非常严重 (10)', 's1.q6b': '有一定影响 (5)', 's1.q6c': '没有影响 (0)',
+
+    's1.railTitle': '换机紧迫度评分',
+    's1.railHw': '旧机硬件痛点',
+    's1.railComm': '商业诊断信号',
+    's1.railNext': '进入经营数据分析 →',
+    's1.tierStrong': '强烈建议替换',
+    's1.tierModel': '值得做财务测算',
+    's1.tierLow': '紧迫度低 / 先验证',
+    's1.critTitle': '评分标准说明',
+    's1.critDesc': '总分 100 分 = 硬件痛点（40 分：机龄 +12、支付短板 +12、无监控 +8、机况 +8）+ 6 道商业信号（60 分：每题 10/5/0 分）。',
+
+    'venue.office': '办公室 / 企业园区', 'venue.factory': '工厂 / 工业园', 'venue.gym': '健身房',
+    'venue.hospital': '医院 / 医疗', 'venue.hotel': '酒店 / 服务业', 'venue.school': '学校 / 大学',
+    'venue.apartment': '公寓 / 住宅', 'venue.transit': '机场 / 交通枢纽', 'venue.construction': '建筑工地', 'venue.retail': '零售 / 其他',
+    'mtype.snack': '弹簧零食柜', 'mtype.beverage': '饮料柜', 'mtype.combo': '综合柜', 'mtype.frozen': '冷冻 / 鲜食柜', 'mtype.other': '其他',
+    'cond.good': '良好', 'cond.fair': '一般', 'cond.poor': '较差',
+    'pay.coin': '硬币', 'pay.bill': '纸币', 'pay.card': '刷卡', 'pay.mobile': '移动支付 / Apple Pay',
+
+    's2.eyebrow': '第 02 步 · 经营数据分析',
+    's2.title': '同屏算清运营商换机账与回报。',
+    's2.lead': '所有测算同屏实时联动：调整销售基准、增长共识、机型与 0 息分期，回本周期即时更新。',
+    's2.secA': 'A. 现状基准与场地合同',
+    's2.secAd': '唯一销售口径（后台默认按 30 天算日均单量），杜绝前后数据冲突。',
+    's2.mSales': '月销售额 ($)',
+    's2.mOrders': '月度订单数',
+    's2.estOrders': '不知道订单数？按 $2.50 客单价估算',
+    's2.dDaily': '日均订单数 (÷30)',
+    's2.dAov': '平均客单价 (月销售额 ÷ 月订单数)',
+    's2.dMargin': '当前净利率',
+    's2.profitLabel': '当前月净利润录入方式',
+    's2.pmActual': '实际月净利润 ($)',
+    's2.pmMargin': '按预估净利率 (%)',
+    's2.pmDetail': '旧机 7 项成本明细',
+    's2.actualProfit': '实际月净利润 ($)',
+    's2.estMargin': '预估净利率 (%)',
+    's2.dCogs': '商品成本率 (COGS %)',
+    's2.dCashless': '非现金销售占比 (%)',
+    's2.dCardFee': '银行卡手续费 (%)',
+    's2.dReader': '读卡器月费 ($/月)',
+    's2.dPlatform': '平台 / 联网费 ($/月)',
+    's2.dOther': '补货 / 维修 / 其他 ($/月)',
+    's2.dSiteAuto': '场地费（第 7 项，自动同步下方场地合同）',
+    's2.dealTitle': '场地合同',
+    's2.dealShare': '销售分成 %', 's2.dealRent': '固定月租 $', 's2.dealCombo': '分成 + 租金', 's2.dealNone': '免费',
+    's2.sharePct': '销售分成比例 (%)',
+    's2.rentAmt': '固定月租 ($)',
+    's2.overrideDeal': '换机后场地合同条款有变化',
+    's2.hahaShare': 'HAHA 销售分成 (%)',
+    's2.hahaRent': 'HAHA 固定月租 ($)',
+    's2.formulaCur': '当前场地费 = {sales} × {share}% + {rent} 租金 = {total}/月',
+    's2.formulaNew': 'HAHA 预测场地费 = {sales} × {share}% + {rent} 租金 = {total}/月',
+
+    's2.secB': 'B. 增长共识（由客户逐项认可）',
+    's2.secBd': '由运营商逐项确认增幅。订单总增幅封顶 40%（触顶按比例缩放分项金额），客单价封顶 25%。',
+    's2.resetUp': '恢复点位默认增幅',
+    's2.up1t': '01 · 更多商品种类', 's2.up1d': '新增高毛利鲜食与大瓶饮品，带来新交易（订单数）。',
+    's2.up2t': '02 · 一次购买多件', 's2.up2d': '开门自取解锁单次 2–3 件购买（客单价）。',
+    's2.up3t': '03 · 减少缺货损失', 's2.up3d': '实时库存监控找回因缺货流失的订单（订单数）。',
+    's2.up4t': '04 · 支付体验改善', 's2.up4d': '一拍开门消除结账阻力（订单数）。',
+    's2.yes100': '认可 (100%)', 's2.part50': '部分 (50%)', 's2.no0': '不认可 (0%)',
+    's2.capped': '已封顶',
+    's2.projSales': 'HAHA 预测月销售额',
+    's2.revUplift': '月销售额总增幅',
+    's2.projDaily': 'HAHA 预测日均单量',
+
+    's2.secC': 'C. 机型推荐、投资与分期',
+    's2.secCd': '根据点位日均单量与旧机类型自动推荐机型，点击任意机型可手动切换。',
+    's2.recBadge': '推荐',
+    'tag.compact': '紧凑型', 'tag.standard': '标准型', 'tag.bestseller': '北美畅销',
+    'tag.flagship': '旗舰型', 'tag.large': '大容量', 'tag.double': '双门超大', 'tag.frozen': '冷冻',
+    's2.freight': '运费 (+$250)',
+    's2.install': '安装费 ($)',
+    's2.removal': '旧机拆除费 ($)',
+    's2.tradeIn': '旧机残值抵扣 ($)',
+    's2.tradeInHint': '淘汰旧机转卖或抵扣拿回的残值，用于冲减净投资。',
+    's2.payMethod': '付款方式',
+    's2.cash': '全款',
+    's2.finance': '分期',
+    's2.down': '首付比例 (%)',
+    's2.term': '分期期数 (月)',
+    's2.apr': '年化利率 APR (%)',
+    's2.docFee': '签约手续费 (现付 $)',
+    's2.cashSigning': '签约首日现金',
+    's2.monthlyPmt': '每月月供',
+    's2.coverage': '月供覆盖倍数',
+    's2.cashAfter': '交完月供剩余现金',
+    's2.selfFund': '自给自足正现金流：HAHA 月净利覆盖月供 {cov} 倍 — 首月即正现金流（交完月供还剩 {cash}/月），{term} 期后机器完全归你所有。',
+
+    's2.secD': 'D. HAHA 运营成本微调',
+    's2.secDd': '默认折叠；点击展开可调整商品成本、货损率、可编辑 AI 识别费及月固定费用。',
+    's2.cogs': '商品成本率 (COGS %)',
+    's2.cogsHint': '若增加鲜食，建议调至 ~50%。',
+    's2.proc': '银行卡手续费 (%)',
+    's2.shrink': '货损 / 报损准备 (%)',
+    's2.shrinkHint': '默认 1.5%（可改 0%），主动计入偷盗或鲜食过期损耗。',
+    's2.aiFee': 'AI 识别费 ($/单)',
+    's2.saas': 'SaaS 平台费 ($/月)',
+    's2.sim': 'SIM / 4G 流量 ($/月)',
+    's2.pos': 'POS 租赁 ($/月)',
+    's2.maint': '维修准备金 ($/月)',
+    's2.other': '补货人工 / 其他 ($/月)',
+
+    's2.secE': 'E. 换机前后对比、现金流与压力测试',
+    's2.kpiGain': '每月多赚',
+    's2.kpiStandalone': '设备自身回本',
+    's2.kpiStandaloneSub': '净投资 ÷ HAHA 月净利',
+    's2.kpiInc': '增量回本',
+    's2.kpiIncSub': '净投资 ÷ 每月多赚',
+    's2.kpi3yr': '3 年净多赚',
+    's2.kpi3yrSub': '36个月增量扣除净投资',
+    's2.metric': '经营指标',
+    's2.cur': '现有机器',
+    's2.haha': 'HAHA（预测）',
+    's2.chg': '变化',
+    's2.rOrders': '月订单数',
+    's2.rAov': '平均客单价',
+    's2.rSales': '月销售额',
+    's2.rCost': '月度总成本',
+    's2.rProfit': '月净利润',
+    's2.rMargin': '净利率',
+    's2.chartTitle': '36 个月累计现金流曲线',
+    's2.legOld': '保留现有机器',
+    's2.legNew': '换用 HAHA',
+    's2.chartExplain': '读图说明：灰色虚线代表「保留旧机」逐月累计利润；绿色实线从负的净投资额起步，因每月赚得更多爬坡更陡，两线交叉点就是增量回本时间，交叉之后绿线高出灰线的部分就是换机净多赚的现金。',
+    's2.zeroTitle': '零增长下行检验',
+    's2.zeroText': '哪怕销售额零增长（按今天销量 + HAHA 成本），月净利润仍有 {v}（相对今天 {gap}）。',
+    's2.stressTitle': '压力测试（预测达成率）',
+    's2.propTitle': '场地方 / 房东收益',
+    's2.propSub': '按 HAHA 预测销售额计算的场地方月/年收入。',
+    's2.hiddenRiskTitle': '保留老旧设备的隐性维修风险提示',
+    's2.hiddenRiskText': '当前设备机龄 ≥7 年或状况较差。继续保留老旧机器，未来 12 个月面临 $500–$1,000+ 的突发压缩机/纸币器维修与停机流失风险。',
+
+    'r2.title': '实时财务摘要',
+    'r2.gain': '每月利润增量',
+    'r2.standalone': '设备自身回本',
+    'r2.inc': '增量回本周期',
+    'r2.threeYr': '3 年净多赚',
+    'r2.netInv': '净投资额',
+    'r2.model': '当前所选机型',
+    'r2.toReport': '查看评估报告 →',
+
+    'verdict.strong': '强烈建议替换',
+    'verdict.positive': '建议替换',
+    'verdict.conditional': '有条件 / 先验证',
+    'verdict.defer': '暂不建议替换',
+    'repHead.strong': '建议将此点位升级为 {model}，锁定显著利润增量。',
+    'repHead.positive': '建议推进升级为 {model}，整体经济性扎实成立。',
+    'repHead.conditional': '建议先验证需求或调整机型配置，再决定是否投入 {model}。',
+    'repHead.defer': '建议暂缓替换，待人流提升或场地费用优化后再评估。',
+
+    'vReason.gain': '每月净多赚 {delta}（每年 {annual}）— 设备自身 {standalone} 回本（按严格增量算 {inc} 回本）。',
+    'vReason.3yr': '扣除 {inv} 净投资后，36 个月累计净多赚 {net3}。',
+    'vReason.fin': '每月分期月供 {pmt}/月，HAHA 月净利覆盖 {cov} 倍，首月即可实现正现金流。',
+    'vReason.downside': '在仅实现 60% 预测的下行压力测试中，月净利润仍为 {down}。',
+    'vReason.neg': '当前假设下尚未产生高于现有机器的月利润增量。',
+
+    'next.strong1': '与运营商确认最大的两项增长假设，并规划升级后的高毛利选品组合（鲜食/冷饮/零食）。',
+    'next.strong2': '选定全款或 0 息 12 期分期方案，并确认场地合同期限覆盖回本周期。',
+    'next.strong3': '安排设备发运安装，并约定上线 30 天后复盘真实单量与客单价，持续调优陈列。',
+    'next.pos1': '结合计划上架的商品结构，复核商品成本率（COGS）与货损率假设。',
+    'next.pos2': '敲定推荐机型，并确认全款或 12 期分期更符合当前现金流规划。',
+    'next.pos3': '预约安装时间，并安排首月经营数据复盘。',
+    'next.cond1': '测算改用更紧凑机型（Mini 360 / Plus 440）或谈低场地分成，看能否将回本压缩至 24 个月内。',
+    'next.cond2': '先连续记录 30 天真实销量与现场客群选品需求，再投入资本。',
+    'next.cond3': '待基数或场地条款更新后，重新跑一遍本测算。',
+    'next.defer1': '当前点位流量与费用结构暂不支持换机投入，建议暂缓资本支出。',
+    'next.defer2': '尝试与场地方重谈分成/租金，或寻找更高流量的新点位。',
+    'next.defer3': '若后续园区扩招、房东提出升级需求或旧机出现大修，可随时重启评估。',
+
+    'warn.noSales': '请在 A 区输入月销售额和月订单数，以生成完整 ROI 测算。',
+    'warn.orderCap': '订单总增幅已按 40% 封顶（3 张订单卡片金额已按比例缩放），确保测算稳健。',
+    'warn.aovCap': '客单价增幅已按 25% 封顶，确保测算稳健。',
+    'warn.coverageLow': '月供覆盖倍数为 {coverage}×（建议 ≥ 1.25×）。',
+    'warn.cashBelowOld': '交完月供后剩余现金低于现有机器月利润。',
+    'warn.longPayback': '增量回本周期为 {months} 个月。',
+
+    'why.age': '现有机器机龄已达 {years} 年，维修与停机风险上升。',
+    'why.condition': '机器物理状况较差，故障率已直接拖累营收。',
+    'why.noCashless': '不支持刷卡或移动支付，无现金客群直接流失。',
+    'why.noMobile': '缺少移动支付 / 一拍即付支持，错失年轻消费群体。',
+    'why.monitoring': '无远程监控，盲跑补货浪费人工且易缺货。',
+    'why.marginCeiling': '传统货道限制了高毛利鲜食与大瓶饮品上架。',
+    'why.retention': '面临房东升级诉求或同行智能柜抢占点位的风险。',
+    'why.friction': '频繁缺货、卡货或退款投诉造成显著人工内耗。',
+    'why.default': '升级现代化 AI 开门自取零售，全面提升结账体验与库存可视性。',
+
+    's3.back': '← 返回数据分析',
+    's3.print': '打印 / 保存 PDF',
+    's3.download': '下载 HTML 报告',
+    's3.docType': '点位替换评估报告',
+    's3.exec': '执行摘要',
+    's3.sec1': '01 · 点位与诊断概览',
+    's3.sec2': '02 · 换机前后经济性与现金流',
+    's3.sec3': '03 · 投资、分期与压力测试',
+    's3.sec4': '04 · 下一步建议与评估说明',
+    's3.nextSub': '推荐下一步行动',
+    's3.deployNote': '交付提示：设备发运前，建议现场顺手确认标准电源插座、4G 蜂窝信号及门宽摆放空间。',
+    's3.basisSub': '评估方法与免责声明',
+    's3.method': '测算方法：以月销售额与月订单数（30 天口径）为唯一基准计算客单价（销售额 ÷ 订单数），杜绝冲突输入。仅计入客户认可的增长项（订单总增幅封顶 40% 按比例分摊，客单价封顶 25%）。HAHA 成本含商品成本、场地费、银行卡手续费、货损准备、固定月费（SaaS/SIM/POS/维修）及单笔 AI 识别费；分期按等额本息计算，签约手续费现付不进本金。',
+    's3.disclaimer': '免责声明：本报告中的所有测算均基于运营商提供的数据与双方认可的规划假设，不构成对未来销售额或利润的承诺。实际表现取决于点位人流、定价、选品组合及日常运营。'
+  }
+};
+
+/* =====================================================================
+   4. STATE & PERSISTENCE
+   ===================================================================== */
+function loadSavedProjects() {
+  try {
+    const raw = safeStorage.get(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch (e) {}
+  return [];
+}
+
+const app = {
+  lang: safeStorage.get(LANG_KEY) || 'en',
+  view: 'dashboard', // 'dashboard' | 'projects' | 'step1' | 'step2' | 'step3'
+  projects: loadSavedProjects(),
+  activeId: safeStorage.get(ACTIVE_KEY) || null,
+  search: '',
+  costExpanded: false
+};
+
+function saveState() {
+  safeStorage.set(STORAGE_KEY, JSON.stringify(app.projects));
+  if (app.activeId) safeStorage.set(ACTIVE_KEY, app.activeId);
+  else safeStorage.remove(ACTIVE_KEY);
+  safeStorage.set(LANG_KEY, app.lang);
+}
+
+function getActiveProject() {
+  return app.projects.find(p => p.id === app.activeId) || null;
+}
+
+/* =====================================================================
+   5. HELPERS
+   ===================================================================== */
+const $ = (sel, root) => (root || document).querySelector(sel);
+const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+
+function t(key, vars) {
+  let s = (STR[app.lang] && STR[app.lang][key] !== undefined) ? STR[app.lang][key]
+    : (STR.en[key] !== undefined ? STR.en[key] : key);
+  if (vars) s = s.replace(/\{(\w+)\}/g, (_, k) => vars[k] !== undefined ? String(vars[k]) : '');
+  return s;
+}
+function esc(v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+}
+function nf(v, d) {
+  const n = Number(v);
+  const digits = d == null ? 0 : d;
+  return (isFinite(n) ? n : 0).toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+}
+function money(v, d) {
+  const n = Number(v) || 0;
+  return (n < 0 ? '-' : '') + '$' + nf(Math.abs(n), d == null ? 0 : d);
+}
+function signedMoney(v, d) {
+  const n = Number(v) || 0;
+  return (n >= 0 ? '+' : '-') + '$' + nf(Math.abs(n), d == null ? 0 : d);
+}
+function pct(v, d) { return nf(v, d == null ? 1 : d) + '%'; }
+function monthsFmt(v) { return isFinite(v) ? nf(v, 1) + ' ' + t('common.mo') : t('common.noPayback'); }
+
+function getPath(obj, path) { return path.split('.').reduce((o, k) => o == null ? undefined : o[k], obj); }
+function setPath(obj, path, val) {
+  const parts = path.split('.');
+  const last = parts.pop();
+  let cur = obj;
+  parts.forEach(k => { if (!cur[k] || typeof cur[k] !== 'object') cur[k] = {}; cur = cur[k]; });
+  cur[last] = val;
+}
+
+let toastTimer = null;
+function toast(msg) {
+  const el = $('#toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+function syncUpliftBase(p, force) {
+  const q = compute(p).quadrantId;
+  if (!force && p.uplift.initialized && p.uplift._baseQ === q) return;
+  ['variety', 'basket', 'stock', 'payment'].forEach(k => {
+    if (force || !p.uplift[k].custom) {
+      const f = p.uplift[k].accept === 'yes' ? 1 : p.uplift[k].accept === 'partial' ? 0.5 : 0;
+      p.uplift[k].pct = round1(QUADRANT_BASE[q][k] * f);
+      if (force) p.uplift[k].custom = false;
+    }
+  });
+  p.uplift.initialized = true;
+  p.uplift._baseQ = q;
+}
+
+/* =====================================================================
+   6. 36-MONTH CUMULATIVE CASH FLOW SVG (EXACT i = 0..36, 37 POINTS)
+   ===================================================================== */
+function cumulativeSvg(m, w, h) {
+  w = w || 680;
+  h = h || 215;
+  const months = 36;
+  const oldEnd = m.old.profit * months;
+  const newEnd = m.haha.profit * months - m.invest.total;
+  const vals = [0, oldEnd, newEnd, -m.invest.total];
+  let max = Math.max.apply(null, vals);
+  let min = Math.min.apply(null, vals);
+  if (max === min) { max += 500; min -= 500; }
+  const range = max - min;
+  const rawStep = range / 5;
+  const pow = Math.pow(10, Math.floor(Math.log10(rawStep || 1)));
+  const step = ([1, 2, 2.5, 5, 10].find(c => range / (c * pow) <= 5) || 10) * pow;
+  min = Math.floor(min / step) * step;
+  max = Math.ceil(max / step) * step;
+  const ticks = Math.max(1, Math.round((max - min) / step));
+
+  const pad = { l: 58, r: 16, t: 16, b: 26 };
+  const iw = w - pad.l - pad.r;
+  const ih = h - pad.t - pad.b;
+  const X = i => pad.l + (i / months) * iw;
+  const Y = v => pad.t + ((max - v) / (max - min)) * ih;
+
+  let grid = '';
+  for (let k = 0; k <= ticks; k++) {
+    const v = min + step * k;
+    const y = Y(v);
+    const lbl = Math.abs(v) >= 1000 ? (v < 0 ? '-$' : '$') + (Math.abs(v) / 1000).toFixed(1) + 'k' : money(v, 0);
+    grid += `<line x1="${pad.l}" x2="${w - pad.r}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#e8e8e5" stroke-width="1"/>`;
+    grid += `<text x="${pad.l - 6}" y="${(y + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="#777">${lbl}</text>`;
+  }
+  if (min < 0 && max > 0) {
+    grid += `<line x1="${pad.l}" x2="${w - pad.r}" y1="${Y(0).toFixed(1)}" y2="${Y(0).toFixed(1)}" stroke="#bcbcb8" stroke-width="1"/>`;
+  }
+
+  let xLbl = '';
+  [0, 6, 12, 18, 24, 30, 36].forEach(i => {
+    xLbl += `<text x="${X(i).toFixed(1)}" y="${h - 7}" text-anchor="middle" font-size="9" fill="#777">${i === 0 ? '0' : i + 'm'}</text>`;
+  });
+
+  let oldPath = '';
+  let newPath = '';
+  for (let i = 0; i <= months; i++) {
+    oldPath += `${i === 0 ? 'M' : 'L'} ${X(i).toFixed(1)} ${Y(m.old.profit * i).toFixed(1)} `;
+    newPath += `${i === 0 ? 'M' : 'L'} ${X(i).toFixed(1)} ${Y(m.haha.profit * i - m.invest.total).toFixed(1)} `;
+  }
+
+  let marker = '';
+  const pb = m.invest.payback;
+  if (isFinite(pb) && pb > 0 && pb <= months) {
+    const px = X(pb), py = Y(m.old.profit * pb);
+    marker = `<line x1="${px.toFixed(1)}" x2="${px.toFixed(1)}" y1="${pad.t}" y2="${h - pad.b}" stroke="#1e7e4e" stroke-width="1" stroke-dasharray="3 3"/>
+      <circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="4" fill="#1e7e4e"/>
+      <text x="${Math.min(px + 7, w - 95).toFixed(1)}" y="${Math.max(py - 8, 24).toFixed(1)}" font-size="9.5" font-weight="800" fill="#1e7e4e">${esc(monthsFmt(pb))}</text>`;
+  }
+
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" style="display:block;height:auto">
+    ${grid}
+    <path d="${oldPath}" fill="none" stroke="#8f8f8b" stroke-width="1.8" stroke-dasharray="4 3"/>
+    <path d="${newPath}" fill="none" stroke="#1e7e4e" stroke-width="2.4"/>
+    ${marker}${xLbl}
+  </svg>`;
+}
+
+/* =====================================================================
+   7. DECISION BULLETS & TAILORED CONSULTATIVE NEXT STEPS
+   ===================================================================== */
+function buildDecisionBullets(m) {
+  const list = [];
+  if (m.hasData && m.invest.delta > 0) {
+    list.push(t('vReason.gain', {
+      delta: signedMoney(m.invest.delta, 0),
+      annual: signedMoney(m.invest.annualDelta, 0),
+      standalone: monthsFmt(m.invest.standalonePayback),
+      inc: monthsFmt(m.invest.payback)
+    }));
+    list.push(t('vReason.3yr', { net3: signedMoney(m.invest.threeYearNet, 0), inv: money(m.invest.total, 0) }));
+    if (m.finance.enabled && isFinite(m.finance.coverage)) {
+      list.push(t('vReason.fin', { pmt: money(m.finance.payment, 2), cov: nf(m.finance.coverage, 2) }));
+    } else {
+      list.push(t('vReason.downside', { down: money(m.stress[2].profit, 0) }));
+    }
+  } else {
+    list.push(t('vReason.neg'));
+  }
+  if (m.hiddenRepairRisk) {
+    list.push(t('s2.hiddenRiskText'));
+  }
+  return list;
+}
+
+function buildConsultativeNextSteps(m) {
+  if (m.verdict === 'strong') return [t('next.strong1'), t('next.strong2'), t('next.strong3')];
+  if (m.verdict === 'positive') return [t('next.pos1'), t('next.pos2'), t('next.pos3')];
+  if (m.verdict === 'conditional') return [t('next.cond1'), t('next.cond2'), t('next.cond3')];
+  return [t('next.defer1'), t('next.defer2'), t('next.defer3')];
+}
+
+/* =====================================================================
+   8. RENDER CHROME (SIDEBAR & TOPBAR)
+   ===================================================================== */
+function renderSidebar() {
+  const p = getActiveProject();
+  const navBtn = (view, badge, label, disabled) =>
+    `<button type="button" class="nav-item ${app.view === view ? 'active' : ''}" data-nav="${view}" ${disabled ? 'disabled' : ''}>
+      <span class="nav-badge">${badge}</span>
+      <span class="nav-label">${esc(label)}</span>
+    </button>`;
+
+  $('#sidebar').innerHTML = `
+    <a href="#" class="brand" data-nav="dashboard">
+      <div class="brand-text">
+        <strong>HAHA VENDING</strong>
+        <small>${esc(t('brand.sub'))}</small>
+      </div>
+    </a>
+    <div class="sidebar-label">${esc(t('nav.workspace'))}</div>
+    <nav class="main-nav">
+      ${navBtn('dashboard', '⌂', t('nav.dashboard'), false)}
+      ${navBtn('projects', '☰', t('nav.projects'), false)}
+    </nav>
+    <div class="sidebar-label">${esc(t('nav.activeProject'))}</div>
+    <nav class="main-nav">
+      ${navBtn('step1', '01', t('nav.s1'), !p)}
+      ${navBtn('step2', '02', t('nav.s2'), !p)}
+      ${navBtn('step3', '03', t('nav.s3'), !p)}
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-note">
+        <span class="status-dot"></span>
+        <div><strong>${esc(t('side.local'))}</strong><small>${esc(t('side.localSub'))}</small></div>
+      </div>
+      <div class="sidebar-footer">${esc(t('side.ver'))}</div>
+    </div>
+  `;
+}
+
+function renderTopbar() {
+  const p = getActiveProject();
+  const inActiveProject = ['step1', 'step2', 'step3'].includes(app.view);
+  const viewTitle = app.view === 'dashboard' ? t('nav.dashboard')
+    : app.view === 'projects' ? t('nav.projects')
+    : app.view === 'step1' ? t('nav.s1')
+    : app.view === 'step2' ? t('nav.s2') : t('nav.s3');
+
+  const tipAttr = inActiveProject ? `title="${esc(t('top.newDisabledTip'))}"` : '';
+
+  $('#topbar').innerHTML = `
+    <div class="topbar-left">
+      <button type="button" class="mobile-menu" data-action="toggleMenu">☰</button>
+      <div class="breadcrumb">
+        <span>HAHA</span><b>/</b><strong>${esc(viewTitle)}</strong>
+        ${(inActiveProject && p) ? `<b>/</b><span class="bc-proj" data-out="topProjName">${esc(p.meta.locationName || t('top.untitled'))}</span>` : ''}
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <span class="tip-wrap" ${tipAttr}>
+        <button type="button" class="button button-dark button-small" data-action="openNewModal" ${inActiveProject ? 'disabled' : ''} ${tipAttr}>${esc(t('top.newProject'))}</button>
+      </span>
+      <div class="seg">
+        <button type="button" class="${app.lang === 'en' ? 'on' : ''}" data-action="lang" data-value="en">EN</button>
+        <button type="button" class="${app.lang === 'zh' ? 'on' : ''}" data-action="lang" data-value="zh">中文</button>
+      </div>
+    </div>
+  `;
+}
+
+/* =====================================================================
+   9. VIEW: DASHBOARD
+   ===================================================================== */
+function renderDashboard() {
+  const list = app.projects;
+  const computed = list.map(p => ({ p, m: compute(p) }));
+  const viableList = computed.filter(x => x.m.viable);
+  const validStandalone = computed.filter(x => x.m.hasData && isFinite(x.m.invest.standalonePayback));
+  const avgStandalone = validStandalone.length
+    ? validStandalone.reduce((s, x) => s + x.m.invest.standalonePayback, 0) / validStandalone.length
+    : Infinity;
+  const assessed = computed.filter(x => x.m.hasData);
+  const avgGain = assessed.length
+    ? assessed.reduce((s, x) => s + x.m.invest.delta, 0) / assessed.length
+    : 0;
+
+  const recentRows = computed.slice(0, 5).map(({ p, m }) => `
+    <div class="recent-row" data-action="openProj" data-id="${p.id}">
+      <div>
+        <strong>${esc(p.meta.locationName || t('top.untitled'))}</strong>
+        <small>${esc(t('venue.' + p.meta.venue))} · ${esc(t('verdict.' + m.verdict))} · ${m.hasData ? signedMoney(m.invest.delta, 0) + '/mo' : '—'}</small>
+      </div>
+      <button type="button" class="button button-dark button-small" data-action="openProj" data-id="${p.id}">${esc(t('common.open'))}</button>
+    </div>
+  `).join('');
+
+  return `
+    <div class="hero-strip">
+      <div>
+        <span class="hero-kicker">${esc(t('dash.kicker'))}</span>
+        <h2>${esc(t('dash.title'))}</h2>
+        <p>${esc(t('dash.desc'))}</p>
+        <div class="hero-cta">
+          <button type="button" class="button button-white" data-action="openNewModal">${esc(t('dash.ctaNew'))}</button>
+          <button type="button" class="button button-outline" style="background:transparent;color:#fff;border-color:#555" data-action="loadSample">${esc(t('dash.ctaSample'))}</button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="visual-frame">
+          <div class="machine-top">HAHA Vending</div>
+          <div class="machine-screen">TAP · OPEN<br>GRAB &amp; GO</div>
+          <div class="shelf-row"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="shelf-row"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="shelf-row"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="machine-foot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><span>${esc(t('dash.stat1'))}</span><strong>${list.length}</strong><small>${esc(t('dash.stat1Sub'))}</small></div>
+      <div class="stat-card"><span>${esc(t('dash.stat2'))}</span><strong>${viableList.length}</strong><small>${esc(t('dash.stat2Sub'))}</small></div>
+      <div class="stat-card"><span>${esc(t('dash.stat3'))}</span><strong>${isFinite(avgStandalone) ? nf(avgStandalone, 1) + ' ' + esc(t('common.mo')) : '—'}</strong><small>${esc(t('dash.stat3Sub'))}</small></div>
+      <div class="stat-card"><span>${esc(t('dash.stat4'))}</span><strong>${assessed.length ? signedMoney(avgGain, 0) : '—'}</strong><small>${esc(t('dash.stat4Sub'))}</small></div>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="panel">
+        <div class="panel-head">
+          <div><h3>${esc(t('dash.recent'))}</h3><p>${esc(t('dash.recentSub'))}</p></div>
+          <button type="button" class="button button-outline button-small" data-nav="projects">${esc(t('nav.projects'))}</button>
+        </div>
+        <div class="recent-list">${recentRows || `<div class="empty-box">${esc(t('dash.empty'))}</div>`}</div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <div><h3>${esc(t('dash.quick'))}</h3><p>${esc(t('dash.quickSub'))}</p></div>
+        </div>
+        <button type="button" class="quick-link" data-action="${getActiveProject() ? 'goStep1' : 'openNewModal'}">
+          <span class="quick-number">01</span>
+          <div><strong>${esc(t('dash.q1'))}</strong><small>${esc(t('dash.q1d'))}</small></div>
+          <b>→</b>
+        </button>
+        <button type="button" class="quick-link" data-action="${getActiveProject() ? 'goStep2' : 'openNewModal'}">
+          <span class="quick-number">02</span>
+          <div><strong>${esc(t('dash.q2'))}</strong><small>${esc(t('dash.q2d'))}</small></div>
+          <b>→</b>
+        </button>
+        <button type="button" class="quick-link" data-action="${getActiveProject() ? 'goStep3' : 'openNewModal'}">
+          <span class="quick-number">03</span>
+          <div><strong>${esc(t('dash.q3'))}</strong><small>${esc(t('dash.q3d'))}</small></div>
+          <b>→</b>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+/* =====================================================================
+   10. VIEW: MY PROJECTS (NO DUPLICATE BUTTON; OPENS AT STEP 01)
+   ===================================================================== */
+function projectCardsHtml() {
+  const q = app.search.trim().toLowerCase();
+  const filtered = app.projects.filter(p => !q ||
+    (p.meta.locationName || '').toLowerCase().includes(q) ||
+    (p.meta.city || '').toLowerCase().includes(q)
+  );
+  if (!filtered.length) return `<div class="empty-box">${esc(t('dash.empty'))}</div>`;
+
+  return `<div class="projects-grid">${filtered.map(p => {
+    const m = compute(p);
+    const badgeCls = m.viable ? 'strong' : m.verdict === 'defer' ? 'defer' : '';
+    return `
+      <div class="project-card" data-action="openProj" data-id="${p.id}">
+        <div class="project-card-top">
+          <span class="project-type">${esc(t('venue.' + p.meta.venue))}</span>
+          <span class="project-badge ${badgeCls}">${esc(t('verdict.' + m.verdict))}</span>
+        </div>
+        <h3>${esc(p.meta.locationName || t('top.untitled'))}</h3>
+        <p>${esc([p.meta.city, p.meta.state].filter(Boolean).join(', ') || '—')} · ${esc(m.invest.model.name)}</p>
+        <div style="font-size:13px;font-weight:800;color:${m.hasData && m.invest.delta >= 0 ? 'var(--green)' : 'var(--muted)'}">
+          ${m.hasData ? signedMoney(m.invest.delta, 0) + '/mo · ' + esc(monthsFmt(m.invest.standalonePayback)) : '—'}
+        </div>
+        <div class="project-card-bottom">
+          <button type="button" class="button button-dark button-small" data-action="openProj" data-id="${p.id}">${esc(t('common.open'))}</button>
+          <button type="button" class="button button-danger button-small" data-action="askDelete" data-id="${p.id}">${esc(t('common.delete'))}</button>
+        </div>
+      </div>
+    `;
+  }).join('')}</div>`;
+}
+
+function renderProjects() {
+  return `
+    <div class="page-heading">
+      <div>
+        <div class="eyebrow">${esc(t('nav.workspace'))}</div>
+        <h1>${esc(t('proj.title'))}</h1>
+        <p>${esc(t('proj.desc'))}</p>
+      </div>
+    </div>
+    <div class="project-toolbar">
+      <div class="search-box">
+        <span>⌕</span>
+        <input type="text" id="projSearch" value="${esc(app.search)}" placeholder="${esc(t('proj.search'))}">
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" class="button button-outline button-small" data-action="backupAll">${esc(t('common.backup'))}</button>
+        <button type="button" class="button button-outline button-small" data-action="restoreAll">${esc(t('common.restore'))}</button>
+      </div>
+    </div>
+    <div id="projCardsHost">${projectCardsHtml()}</div>
+  `;
+}
+
+/* =====================================================================
+   11. VIEW: STEP 01 — LOCATION ASSESSMENT
+   ===================================================================== */
+function renderStep1(p) {
+  const venues = ['office', 'factory', 'gym', 'hospital', 'hotel', 'school', 'apartment', 'transit', 'construction', 'retail'];
+  const mtypes = ['snack', 'beverage', 'combo', 'frozen', 'other'];
+  const pays = ['coin', 'bill', 'card', 'mobile'];
+  const diagQs = [
+    { k: 'q1', dim: 'offense', t: 's1.q1t', q: 's1.q1', opts: ['s1.q1a', 's1.q1b', 's1.q1c'] },
+    { k: 'q2', dim: 'offense', t: 's1.q2t', q: 's1.q2', opts: ['s1.q2a', 's1.q2b', 's1.q2c'] },
+    { k: 'q3', dim: 'offense', t: 's1.q3t', q: 's1.q3', opts: ['s1.q3a', 's1.q3b', 's1.q3c'] },
+    { k: 'q4', dim: 'defense', t: 's1.q4t', q: 's1.q4', opts: ['s1.q4a', 's1.q4b', 's1.q4c'] },
+    { k: 'q5', dim: 'defense', t: 's1.q5t', q: 's1.q5', opts: ['s1.q5a', 's1.q5b', 's1.q5c'] },
+    { k: 'q6', dim: 'defense', t: 's1.q6t', q: 's1.q6', opts: ['s1.q6a', 's1.q6b', 's1.q6c'] }
+  ];
+
+  return `
+    <div class="page-heading">
+      <div>
+        <div class="eyebrow">${esc(t('s1.eyebrow'))}</div>
+        <h1>${esc(t('s1.title'))}</h1>
+        <p>${esc(t('s1.lead'))}</p>
+      </div>
+    </div>
+    <div class="two-column-layout">
+      <div class="main-col">
+        <!-- Location Details -->
+        <div class="panel">
+          <div class="panel-head">
+            <div><h3>${esc(t('s1.c1'))}</h3><p>${esc(t('s1.c1d'))}</p></div>
+            <span class="step-tag">01</span>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label>${esc(t('s1.locName'))}</label>
+              <input type="text" data-bind="meta.locationName" data-kind="text" value="${esc(p.meta.locationName)}" placeholder="${esc(t('s1.locNamePh'))}">
+            </div>
+            <div class="field">
+              <label>${esc(t('s1.venue'))}</label>
+              <select data-bind="meta.venue" data-kind="text">
+                ${venues.map(v => `<option value="${v}" ${p.meta.venue === v ? 'selected' : ''}>${esc(t('venue.' + v))}</option>`).join('')}
+              </select>
+            </div>
+            <div class="field">
+              <label>${esc(t('s1.city'))}</label>
+              <input type="text" data-bind="meta.city" data-kind="text" value="${esc(p.meta.city)}">
+            </div>
+            <div class="field">
+              <label>${esc(t('s1.state'))}</label>
+              <input type="text" data-bind="meta.state" data-kind="text" value="${esc(p.meta.state)}" placeholder="TX">
+            </div>
+          </div>
+        </div>
+
+        <!-- Current Machine Status (0–40 pts) -->
+        <div class="panel">
+          <div class="panel-head">
+            <div><h3>${esc(t('s1.c2'))}</h3><p>${esc(t('s1.c2d'))}</p></div>
+            <span class="step-tag">40 PTS</span>
+          </div>
+          <div class="field" style="margin-bottom:14px">
+            <label>${esc(t('s1.mType'))}</label>
+            <div class="chips" data-chip-group="machine.type">
+              ${mtypes.map(x => `<button type="button" class="chip ${p.machine.type === x ? 'on' : ''}" data-set="machine.type" data-value="${x}">${esc(t('mtype.' + x))}</button>`).join('')}
+            </div>
+          </div>
+          <div class="form-grid-3" style="margin-bottom:14px">
+            <div class="field">
+              <label>${esc(t('s1.mAge'))}</label>
+              <input type="number" min="0" step="1" data-bind="machine.age" value="${esc(p.machine.age)}" placeholder="0">
+              <span class="field-hint">${esc(t('s1.mAgeHint'))}</span>
+            </div>
+            <div class="field">
+              <label>${esc(t('s1.mCond'))}</label>
+              <div class="seg block" data-seg-group="machine.condition">
+                ${['good', 'fair', 'poor'].map(x => `<button type="button" class="${p.machine.condition === x ? 'on' : ''}" data-set="machine.condition" data-value="${x}">${esc(t('cond.' + x))}</button>`).join('')}
+              </div>
+            </div>
+            <div class="field">
+              <label>${esc(t('s1.mMon'))}</label>
+              <div class="seg block" data-seg-group="machine.monitoring">
+                ${['yes', 'no'].map(x => `<button type="button" class="${p.machine.monitoring === x ? 'on' : ''}" data-set="machine.monitoring" data-value="${x}">${esc(t('common.' + x))}</button>`).join('')}
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>${esc(t('s1.mPay'))}</label>
+            <div class="chips" data-multi-group="machine.payments">
+              ${pays.map(x => `<button type="button" class="chip ${(p.machine.payments || []).includes(x) ? 'on' : ''}" data-toggle="machine.payments" data-value="${x}">${esc(t('pay.' + x))}</button>`).join('')}
+            </div>
+            <span class="field-hint">${esc(t('s1.mPayHint'))}</span>
+          </div>
+        </div>
+
+        <!-- 6 Commercial Diagnostic Questions (0–60 pts) -->
+        <div class="panel">
+          <div class="panel-head">
+            <div><h3>${esc(t('s1.c3'))}</h3><p>${esc(t('s1.c3d'))}</p></div>
+            <span class="step-tag">60 PTS</span>
+          </div>
+          <div class="criteria-list">
+            ${diagQs.map((q, idx) => {
+              const cur = num(p.diag[q.k]);
+              return `
+                <div class="criterion">
+                  <div class="criterion-top">
+                    <div class="criterion-title-wrap">
+                      <span class="criterion-num">0${idx + 1}</span>
+                      <div><h4>${esc(t(q.t))}</h4><p class="criterion-q">${esc(t(q.q))}</p></div>
+                    </div>
+                    <span class="dim-tag ${q.dim}">${esc(t('s1.' + q.dim))}</span>
+                  </div>
+                  <div class="choices-3" data-diag-group="diag.${q.k}">
+                    <button type="button" class="choice-btn ${cur === 10 ? 'on-10' : ''}" data-set="diag.${q.k}" data-value="10">${esc(t(q.opts[0]))}</button>
+                    <button type="button" class="choice-btn ${cur === 5 ? 'on-5' : ''}" data-set="diag.${q.k}" data-value="5">${esc(t(q.opts[1]))}</button>
+                    <button type="button" class="choice-btn ${cur === 0 ? 'on-0' : ''}" data-set="diag.${q.k}" data-value="0">${esc(t(q.opts[2]))}</button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- Sticky Right Column: Urgency Score + Explicit Scoring Criteria Card -->
+      <aside class="side-col">
+        <div id="railHost"></div>
+        <div class="criteria-guide-card">
+          <h4>${esc(t('s1.critTitle'))}</h4>
+          <p>${esc(t('s1.critDesc'))}</p>
+          <div class="criteria-tier-list">
+            <div class="criteria-tier-row"><strong>75–100</strong><span>${esc(t('s1.tierStrong'))}</span></div>
+            <div class="criteria-tier-row"><strong>50–74</strong><span>${esc(t('s1.tierModel'))}</span></div>
+            <div class="criteria-tier-row"><strong>0–49</strong><span>${esc(t('s1.tierLow'))}</span></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  `;
+}
+
+/* =====================================================================
+   12. VIEW: STEP 02 — FINANCIAL ANALYSIS (PRE-MOUNTED INPUTS, ZERO RE-RENDER)
+   ===================================================================== */
+function renderStep2(p) {
+  const b = p.baseline;
+  const s = p.site;
+  const f = p.invest.finance;
+  const h = p.haha;
+
+  const upliftItems = [
+    { k: 'variety', t: 's2.up1t', d: 's2.up1d', out: 'upRevVariety', capFlag: 'orderCapped' },
+    { k: 'basket',  t: 's2.up2t', d: 's2.up2d', out: 'upRevBasket',  capFlag: 'aovCapped' },
+    { k: 'stock',   t: 's2.up3t', d: 's2.up3d', out: 'upRevStock',   capFlag: 'orderCapped' },
+    { k: 'payment', t: 's2.up4t', d: 's2.up4d', out: 'upRevPayment', capFlag: 'orderCapped' }
+  ];
+
+  return `
+    <div class="page-heading">
+      <div>
+        <div class="eyebrow">${esc(t('s2.eyebrow'))}</div>
+        <h1>${esc(t('s2.title'))}</h1>
+        <p>${esc(t('s2.lead'))}</p>
+      </div>
+    </div>
+
+    <div class="two-column-layout">
+      <div class="main-col">
+        <!-- CARD A: Current Baseline & Site Agreement -->
+        <div class="panel">
+          <div class="panel-head">
+            <div><h3>${esc(t('s2.secA'))}</h3><p>${esc(t('s2.secAd'))}</p></div>
+            <span class="step-tag">A</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label>${esc(t('s2.mSales'))}</label>
+              <div class="input-wrap">
+                <span class="prefix">$</span>
+                <input type="number" class="has-prefix" min="0" step="50" data-bind="baseline.monthlySales" value="${esc(b.monthlySales)}" placeholder="1800">
+              </div>
+            </div>
+            <div class="field">
+              <label>${esc(t('s2.mOrders'))}</label>
+              <input type="number" min="0" step="10" data-bind="baseline.monthlyOrders" value="${esc(b.monthlyOrders)}" placeholder="720">
+              <button type="button" class="button button-outline button-small" style="margin-top:4px;align-self:flex-start" data-action="estOrders">${esc(t('s2.estOrders'))}</button>
+            </div>
+          </div>
+
+          <div class="derived-bar">
+            <div class="derived-item"><span>${esc(t('s2.dDaily'))}</span><strong data-out="dDaily">—</strong></div>
+            <div class="derived-item"><span>${esc(t('s2.dAov'))}</span><strong data-out="dAov">—</strong></div>
+            <div class="derived-item"><span>${esc(t('s2.dMargin'))}</span><strong data-out="dMargin">—</strong></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- 3 Mutually Exclusive Profit Mode Tabs -->
+          <div class="field" style="margin-bottom:12px">
+            <label>${esc(t('s2.profitLabel'))}</label>
+            <div class="seg block" data-seg-group="baseline.profitMode">
+              <button type="button" class="${b.profitMode === 'actual' ? 'on' : ''}" data-set="baseline.profitMode" data-value="actual">${esc(t('s2.pmActual'))}</button>
+              <button type="button" class="${b.profitMode === 'margin' ? 'on' : ''}" data-set="baseline.profitMode" data-value="margin">${esc(t('s2.pmMargin'))}</button>
+              <button type="button" class="${b.profitMode === 'detail' ? 'on' : ''}" data-set="baseline.profitMode" data-value="detail">${esc(t('s2.pmDetail'))}</button>
+            </div>
+          </div>
+
+          <div data-show="pmActual" style="max-width:340px">
+            <div class="field">
+              <label>${esc(t('s2.actualProfit'))}</label>
+              <div class="input-wrap">
+                <span class="prefix">$</span>
+                <input type="number" class="has-prefix" step="10" data-bind="baseline.actualProfit" value="${esc(b.actualProfit)}" placeholder="500">
+              </div>
+            </div>
+          </div>
+
+          <div data-show="pmMargin" style="max-width:340px">
+            <div class="field">
+              <label>${esc(t('s2.estMargin'))}</label>
+              <div class="input-wrap">
+                <input type="number" class="has-unit" min="0" max="100" step="1" data-bind="baseline.estMarginPct" value="${esc(b.estMarginPct)}">
+                <span class="unit">%</span>
+              </div>
+            </div>
+          </div>
+
+          <div data-show="pmDetail" style="padding:14px;background:var(--soft);border:1px solid var(--line);border-radius:10px">
+            <div class="form-grid-3">
+              <div class="field"><label>${esc(t('s2.dCogs'))}</label><div class="input-wrap"><input type="number" class="has-unit" step="0.5" data-bind="baseline.cogsRate" value="${esc(b.cogsRate)}"><span class="unit">%</span></div></div>
+              <div class="field"><label>${esc(t('s2.dCashless'))}</label><div class="input-wrap"><input type="number" class="has-unit" step="1" data-bind="baseline.cashlessShare" value="${esc(b.cashlessShare)}"><span class="unit">%</span></div></div>
+              <div class="field"><label>${esc(t('s2.dCardFee'))}</label><div class="input-wrap"><input type="number" class="has-unit" step="0.05" data-bind="baseline.cardFee" value="${esc(b.cardFee)}"><span class="unit">%</span></div></div>
+              <div class="field"><label>${esc(t('s2.dReader'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" step="1" data-bind="baseline.readerFee" value="${esc(b.readerFee)}"></div></div>
+              <div class="field"><label>${esc(t('s2.dPlatform'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" step="1" data-bind="baseline.platform" value="${esc(b.platform)}"></div></div>
+              <div class="field"><label>${esc(t('s2.dOther'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" step="1" data-bind="baseline.other" value="${esc(b.other)}"></div></div>
+            </div>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">
+              ${esc(t('s2.dSiteAuto'))}: <strong style="color:#111" data-out="oldSiteFee">$0</strong>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Site Agreement -->
+          <div class="field" style="margin-bottom:12px">
+            <label>${esc(t('s2.dealTitle'))}</label>
+            <div class="chips" data-chip-group="site.deal">
+              ${[['share', 's2.dealShare'], ['rent', 's2.dealRent'], ['combo', 's2.dealCombo'], ['none', 's2.dealNone']].map(([v, k]) =>
+                `<button type="button" class="chip ${s.deal === v ? 'on' : ''}" data-set="site.deal" data-value="${v}">${esc(t(k))}</button>`
+              ).join('')}
+            </div>
+          </div>
+
+          <div class="form-grid" data-show="dealHasTerms">
+            <div class="field" data-show="dealHasShare">
+              <label>${esc(t('s2.sharePct'))}</label>
+              <div class="input-wrap"><input type="number" class="has-unit" min="0" max="100" step="0.5" data-bind="site.share" value="${esc(s.share)}"><span class="unit">%</span></div>
+            </div>
+            <div class="field" data-show="dealHasRent">
+              <label>${esc(t('s2.rentAmt'))}</label>
+              <div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" step="10" data-bind="site.rent" value="${esc(s.rent)}"></div>
+            </div>
+          </div>
+
+          <div class="formula-box">
+            <div data-out="siteFormulaCur"></div>
+            <div data-show="overrideDeal" style="margin-top:4px;color:var(--green);font-weight:700" data-out="siteFormulaNew"></div>
+          </div>
+
+          <label style="display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;font-weight:700;cursor:pointer">
+            <input type="checkbox" data-bind="site.overrideDeal" ${s.overrideDeal ? 'checked' : ''}> ${esc(t('s2.overrideDeal'))}
+          </label>
+
+          <div class="form-grid" data-show="overrideDeal" style="margin-top:10px">
+            <div class="field" data-show="dealHasShare">
+              <label>${esc(t('s2.hahaShare'))}</label>
+              <div class="input-wrap"><input type="number" class="has-unit" min="0" max="100" step="0.5" data-bind="site.hahaShare" value="${esc(s.hahaShare)}"><span class="unit">%</span></div>
+            </div>
+            <div class="field" data-show="dealHasRent">
+              <label>${esc(t('s2.hahaRent'))}</label>
+              <div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" step="10" data-bind="site.hahaRent" value="${esc(s.hahaRent)}"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD B: Client-Agreed Growth Uplift -->
+        <div class="panel">
+          <div class="panel-head">
+            <div><h3>${esc(t('s2.secB'))}</h3><p>${esc(t('s2.secBd'))}</p></div>
+            <button type="button" class="button button-outline button-small" data-action="resetUplift">${esc(t('s2.resetUp'))}</button>
+          </div>
+          <div class="uplift-grid">
+            ${upliftItems.map(item => {
+              const u = p.uplift[item.k];
+              return `
+                <div class="uplift-card">
+                  <div class="uplift-head">
+                    <div><h4>${esc(t(item.t))}</h4><p>${esc(t(item.d))}</p></div>
+                    <span class="cap-badge" data-show="${item.capFlag}">${esc(t('s2.capped'))}</span>
+                  </div>
+                  <div class="seg block" data-seg-group="uplift.${item.k}.accept">
+                    <button type="button" class="${u.accept === 'yes' ? 'on' : ''}" data-set="uplift.${item.k}.accept" data-value="yes">${esc(t('s2.yes100'))}</button>
+                    <button type="button" class="${u.accept === 'partial' ? 'on' : ''}" data-set="uplift.${item.k}.accept" data-value="partial">${esc(t('s2.part50'))}</button>
+                    <button type="button" class="${u.accept === 'no' ? 'on' : ''}" data-set="uplift.${item.k}.accept" data-value="no">${esc(t('s2.no0'))}</button>
+                  </div>
+                  <div class="uplift-foot">
+                    <div class="input-wrap" style="width:94px">
+                      <input type="number" class="has-unit" min="0" step="0.5" data-bind="uplift.${item.k}.pct" value="${esc(u.pct)}">
+                      <span class="unit">%</span>
+                    </div>
+                    <div class="uplift-impact" data-out="${item.out}">+$0/mo</div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+          <div class="derived-bar">
+            <div class="derived-item"><span>${esc(t('s2.projSales'))}</span><strong data-out="projSales">—</strong></div>
+            <div class="derived-item"><span>${esc(t('s2.revUplift'))}</span><strong class="pos" data-out="revUplift">—</strong></div>
+            <div class="derived-item"><span>${esc(t('s2.projDaily'))}</span><strong data-out="projDaily">—</strong></div>
+          </div>
+        </div>
+
+        <!-- CARD C: Machine Recommendation, Investment & Financing -->
+        <div class="panel">
+          <div class="panel-head">
+            <div><h3>${esc(t('s2.secC'))}</h3><p>${esc(t('s2.secCd'))}</p></div>
+            <span class="step-tag">C</span>
+          </div>
+          <div class="model-grid">
+            ${MODELS.map(mod => `
+              <button type="button" class="model-card" data-model-card="${mod.id}" data-set="invest.modelId" data-value="${mod.id}">
+                <span class="rec-badge hidden" data-rec-badge="${mod.id}">${esc(t('s2.recBadge'))}</span>
+                <div class="mn">${esc(mod.name)}</div>
+                <div class="mp">${money(mod.msrp, 0)}</div>
+                <div class="mt">${esc(t('tag.' + mod.tag))}</div>
+              </button>
+            `).join('')}
+          </div>
+
+          <div class="form-grid-4" style="align-items:start">
+            <div class="field">
+              <label>&nbsp;</label>
+              <label style="display:flex;align-items:center;gap:8px;height:40px;font-size:13px;font-weight:700;cursor:pointer">
+                <input type="checkbox" data-bind="invest.freight" ${p.invest.freight ? 'checked' : ''}> ${esc(t('s2.freight'))}
+              </label>
+            </div>
+            <div class="field">
+              <label>${esc(t('s2.install'))}</label>
+              <div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" data-bind="invest.install" value="${esc(p.invest.install)}"></div>
+            </div>
+            <div class="field">
+              <label>${esc(t('s2.removal'))}</label>
+              <div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" data-bind="invest.removal" value="${esc(p.invest.removal)}"></div>
+            </div>
+            <div class="field">
+              <label>${esc(t('s2.tradeIn'))}</label>
+              <div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" data-bind="invest.tradeIn" value="${esc(p.invest.tradeIn)}"></div>
+              <span class="field-hint">${esc(t('s2.tradeInHint'))}</span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+            <strong style="font-size:13.5px">${esc(t('s2.payMethod'))}</strong>
+            <div class="seg" data-seg-group="invest.finance.enabled">
+              <button type="button" class="${!f.enabled ? 'on' : ''}" data-set="invest.finance.enabled" data-value="false">${esc(t('s2.cash'))}</button>
+              <button type="button" class="${f.enabled ? 'on' : ''}" data-set="invest.finance.enabled" data-value="true">${esc(t('s2.finance'))}</button>
+            </div>
+          </div>
+
+          <div data-show="finDisabled">
+            <div class="derived-bar" style="grid-template-columns:1fr 1fr">
+              <div class="derived-item"><span>${esc(t('s2.cashSigning'))}</span><strong data-out="cashSigning">—</strong></div>
+              <div class="derived-item"><span>${esc(t('s2.kpiStandalone'))}</span><strong data-out="kpiStandalone">—</strong></div>
+            </div>
+          </div>
+
+          <div data-show="finEnabled">
+            <div class="form-grid-4">
+              <div class="field"><label>${esc(t('s2.down'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="0" max="100" step="1" data-bind="invest.finance.downPct" value="${esc(f.downPct)}"><span class="unit">%</span></div></div>
+              <div class="field"><label>${esc(t('s2.term'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="1" max="72" step="1" data-bind="invest.finance.term" value="${esc(f.term)}"><span class="unit">mo</span></div></div>
+              <div class="field"><label>${esc(t('s2.apr'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="0" step="0.1" data-bind="invest.finance.apr" value="${esc(f.apr)}"><span class="unit">%</span></div></div>
+              <div class="field"><label>${esc(t('s2.docFee'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" step="25" data-bind="invest.finance.docFee" value="${esc(f.docFee)}"></div></div>
+            </div>
+            <div class="derived-bar" style="grid-template-columns:repeat(4,1fr)">
+              <div class="derived-item"><span>${esc(t('s2.cashSigning'))}</span><strong data-out="cashSigning">—</strong></div>
+              <div class="derived-item"><span>${esc(t('s2.monthlyPmt'))}</span><strong data-out="finPayment">—</strong></div>
+              <div class="derived-item"><span>${esc(t('s2.coverage'))}</span><strong data-out="finCoverage" data-tone="finCovTone">—</strong></div>
+              <div class="derived-item"><span>${esc(t('s2.cashAfter'))}</span><strong data-out="finCashAfter">—</strong></div>
+            </div>
+            <div class="callout good" data-show="selfFunding">
+              <div class="big">✓</div>
+              <div class="txt" data-out="selfFundText"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD D: HAHA Operating Costs (Collapsible, Closed by Default) -->
+        <div class="panel">
+          <div class="collapse-header" data-action="toggleCost">
+            <div>
+              <h3 style="margin:0;font-size:16px;font-weight:800">${esc(t('s2.secD'))}</h3>
+              <p style="margin:3px 0 0;font-size:12px;color:var(--muted)">${esc(t('s2.secDd'))}</p>
+            </div>
+            <div class="collapse-summary">
+              <strong data-out="hahaTotalCost">—</strong>
+              <span class="step-tag" id="costArrow">${app.costExpanded ? '▲' : '▼'}</span>
+            </div>
+          </div>
+          <div id="costBody" class="${app.costExpanded ? '' : 'hidden'}">
+            <div class="divider"></div>
+            <div class="form-grid-3">
+              <div class="field"><label>${esc(t('s2.cogs'))}</label><div class="input-wrap"><input type="number" class="has-unit" step="0.5" data-bind="haha.cogsRate" value="${esc(h.cogsRate)}"><span class="unit">%</span></div><span class="field-hint">${esc(t('s2.cogsHint'))}</span></div>
+              <div class="field"><label>${esc(t('s2.proc'))}</label><div class="input-wrap"><input type="number" class="has-unit" step="0.05" data-bind="haha.processing" value="${esc(h.processing)}"><span class="unit">%</span></div></div>
+              <div class="field"><label>${esc(t('s2.shrink'))}</label><div class="input-wrap"><input type="number" class="has-unit" min="0" step="0.1" data-bind="haha.shrinkage" value="${esc(h.shrinkage)}"><span class="unit">%</span></div><span class="field-hint">${esc(t('s2.shrinkHint'))}</span></div>
+              <div class="field"><label>${esc(t('s2.aiFee'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" step="0.01" data-bind="haha.aiPerOrder" value="${esc(h.aiPerOrder)}"></div></div>
+              <div class="field"><label>${esc(t('s2.saas'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" step="1" data-bind="haha.saas" value="${esc(h.saas)}"></div></div>
+              <div class="field"><label>${esc(t('s2.sim'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" step="1" data-bind="haha.sim" value="${esc(h.sim)}"></div></div>
+              <div class="field"><label>${esc(t('s2.pos'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" step="1" data-bind="haha.pos" value="${esc(h.pos)}"></div></div>
+              <div class="field"><label>${esc(t('s2.maint'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" step="1" data-bind="haha.maintenance" value="${esc(h.maintenance)}"></div></div>
+              <div class="field"><label>${esc(t('s2.other'))}</label><div class="input-wrap"><span class="prefix">$</span><input type="number" class="has-prefix" min="0" step="1" data-bind="haha.other" value="${esc(h.other)}"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD E: Before vs After, 36-Month Cash Flow & Stress Test -->
+        <div class="panel">
+          <div class="panel-head">
+            <div><h3>${esc(t('s2.secE'))}</h3></div>
+            <span class="step-tag">E</span>
+          </div>
+
+          <div class="kpi-row-4">
+            <div class="kpi-box dark">
+              <span>${esc(t('s2.kpiGain'))}</span>
+              <strong data-out="kpiGain">—</strong>
+              <small data-out="kpiAnnual">—</small>
+            </div>
+            <div class="kpi-box">
+              <span>${esc(t('s2.kpiStandalone'))}</span>
+              <strong data-out="kpiStandalone">—</strong>
+              <small>${esc(t('s2.kpiStandaloneSub'))}</small>
+            </div>
+            <div class="kpi-box">
+              <span>${esc(t('s2.kpiInc'))}</span>
+              <strong data-out="kpiInc">—</strong>
+              <small>${esc(t('s2.kpiIncSub'))}</small>
+            </div>
+            <div class="kpi-box">
+              <span>${esc(t('s2.kpi3yr'))}</span>
+              <strong data-out="kpi3yr">—</strong>
+              <small>${esc(t('s2.kpi3yrSub'))}</small>
+            </div>
+          </div>
+
+          <div class="table-wrap" data-out-html="cmpTable"></div>
+
+          <div style="margin-top:22px">
+            <strong style="font-size:14.5px;display:block;margin-bottom:6px">${esc(t('s2.chartTitle'))}</strong>
+            <div class="chart-legend">
+              <span><i style="background:#8f8f8b"></i>${esc(t('s2.legOld'))}</span>
+              <span><i style="background:#1e7e4e"></i>${esc(t('s2.legNew'))}</span>
+            </div>
+            <div id="cumChartHost"></div>
+            <div class="chart-explain">${esc(t('s2.chartExplain'))}</div>
+          </div>
+
+          <div class="callout" id="zeroCallout">
+            <div class="big" data-out="zeroProfit">$0</div>
+            <div class="txt"><strong>${esc(t('s2.zeroTitle'))}</strong><br><span data-out="zeroText"></span></div>
+          </div>
+
+          <div class="callout warn" data-show="hiddenRepairRisk">
+            <div class="big">⚠</div>
+            <div class="txt"><strong>${esc(t('s2.hiddenRiskTitle'))}</strong><br>${esc(t('s2.hiddenRiskText'))}</div>
+          </div>
+
+          <div class="form-grid" style="margin-top:18px">
+            <div>
+              <strong style="font-size:13.5px;display:block;margin-bottom:8px">${esc(t('s2.stressTitle'))}</strong>
+              <div class="table-wrap" data-out-html="stressTable"></div>
+            </div>
+            <div>
+              <strong style="font-size:13.5px;display:block;margin-bottom:8px">${esc(t('s2.propTitle'))}</strong>
+              <div class="derived-bar" style="margin-top:0;grid-template-columns:1fr 1fr">
+                <div class="derived-item"><span>Monthly</span><strong data-out="propMo">—</strong></div>
+                <div class="derived-item"><span>Annual</span><strong data-out="propYr">—</strong></div>
+              </div>
+              <p style="font-size:12px;color:var(--muted);margin-top:8px">${esc(t('s2.propSub'))}</p>
+            </div>
+          </div>
+
+          <div class="verdict-box" data-out-html="verdictBox"></div>
+          <div class="warn-list" data-out-html="warningsHost"></div>
+        </div>
+      </div>
+
+      <!-- Sticky Right Financial Snapshot -->
+      <aside class="side-col" id="railHost"></aside>
+    </div>
+  `;
+}
+
+/* =====================================================================
+   13. VIEW: STEP 03 — COMPACT 2–3 PAGE CLIENT REPORT (NO SIGN-OFF BLOCK)
+   ===================================================================== */
+function reportDocumentHtml(p, m) {
+  const locName = p.meta.locationName || t('top.untitled');
+  const cityState = [p.meta.city, p.meta.state].filter(Boolean).join(', ');
+  const f = p.invest.finance;
+  const bullets = buildDecisionBullets(m);
+  const nextSteps = buildConsultativeNextSteps(m);
+  const headline = t('repHead.' + m.verdict, { model: m.invest.model.name });
+
+  const upRows = [
+    { k: 'variety', label: t('s2.up1t'), rev: m.growth.varietyRev },
+    { k: 'basket',  label: t('s2.up2t'), rev: m.growth.basketRev },
+    { k: 'stock',   label: t('s2.up3t'), rev: m.growth.stockRev },
+    { k: 'payment', label: t('s2.up4t'), rev: m.growth.paymentRev }
+  ].map(r => {
+    const u = p.uplift[r.k];
+    const lbl = u.accept === 'yes' ? t('common.yes') : u.accept === 'partial' ? t('common.partly') : t('common.no');
+    return `<tr><td>${esc(r.label)}</td><td>${esc(lbl)}</td><td class="r">${nf(u.pct, 1)}%</td><td class="r">+${money(r.rev, 0)}</td></tr>`;
+  }).join('');
+
+  return `
+    <div class="proposal-paper">
+      <div class="rep-header">
+        <div class="rep-logo">HAHA VENDING</div>
+        <div class="rep-doc-type">${esc(t('s3.docType'))}</div>
+      </div>
+      <h1 class="rep-title">${esc(locName)}</h1>
+      <div class="rep-meta-bar">
+        <div><span>${esc(t('s1.venue'))}:</span><strong>${esc(t('venue.' + p.meta.venue))}${cityState ? ' · ' + esc(cityState) : ''}</strong></div>
+        <div><span>Date:</span><strong>${esc(p.meta.date)}</strong></div>
+        <div><span>Recommended Model:</span><strong>${esc(m.invest.model.name)} (${esc(t('tag.' + m.invest.model.tag))})</strong></div>
+      </div>
+
+      <!-- Executive Summary (No duplicate Key Figures table) -->
+      <div class="rep-sec" style="margin-top:0">
+        <h3>${esc(t('s3.exec'))}</h3>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px">
+          <span class="status-badge ${m.verdict}">${esc(t('verdict.' + m.verdict))}</span>
+          <strong style="font-size:15px">${esc(headline)}</strong>
+        </div>
+        <div style="font-size:12.5px;color:var(--muted);margin-bottom:10px">
+          ${esc(m.invest.model.name)} (${money(m.invest.model.msrp, 0)}) · ${esc(t('r2.netInv'))}: <strong>${money(m.invest.total, 0)}</strong>
+        </div>
+        <div class="rep-stat-row">
+          <div class="rep-stat"><span>${esc(t('s2.kpiGain'))}</span><strong>${signedMoney(m.invest.delta, 0)}/mo</strong></div>
+          <div class="rep-stat"><span>${esc(t('s2.kpiStandalone'))}</span><strong>${esc(monthsFmt(m.invest.standalonePayback))}</strong></div>
+          <div class="rep-stat"><span>${esc(t('s2.kpiInc'))}</span><strong>${esc(monthsFmt(m.invest.payback))}</strong></div>
+          <div class="rep-stat"><span>${esc(t('s2.kpi3yr'))}</span><strong>${signedMoney(m.invest.threeYearNet, 0)}</strong></div>
+        </div>
+        <ul class="rep-list">${bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>
+      </div>
+
+      <!-- 01 · Site & Diagnostic Overview -->
+      <div class="rep-sec">
+        <h3>${esc(t('s3.sec1'))}</h3>
+        <div class="rep-two">
+          <table class="table">
+            <tr><td>${esc(t('s1.mType'))}</td><td class="r"><strong>${esc(t('mtype.' + p.machine.type))}</strong></td></tr>
+            <tr><td>${esc(t('s1.mAge'))} / ${esc(t('s1.mCond'))}</td><td class="r">${p.machine.age !== '' ? p.machine.age + ' yrs' : '—'} · ${esc(t('cond.' + p.machine.condition))}</td></tr>
+            <tr><td>${esc(t('s1.mMon'))}</td><td class="r">${esc(t('common.' + p.machine.monitoring))}</td></tr>
+            <tr><td>${esc(t('s1.railHw'))} / ${esc(t('s1.railComm'))}</td><td class="r">${m.urgency.hwPts}/40 · ${m.urgency.commercialPts}/60</td></tr>
+            <tr class="total"><td>${esc(t('s1.railTitle'))}</td><td class="r">${m.urgency.total} / 100</td></tr>
+          </table>
+          <div>
+            <ul class="rep-list" style="margin-top:0">
+              ${m.rationale.map(r => `<li>${esc(t('why.' + r.code, r.vars))}</li>`).join('')}
+            </ul>
+          </div>
+        </div>
+        ${m.hiddenRepairRisk ? `<div class="rep-alert"><strong>${esc(t('s2.hiddenRiskTitle'))}:</strong> ${esc(t('s2.hiddenRiskText'))}</div>` : ''}
+      </div>
+
+      <!-- 02 · Before vs. After Economics & Cash Flow -->
+      <div class="rep-sec">
+        <h3>${esc(t('s3.sec2'))}</h3>
+        <table class="table" style="margin-bottom:14px">
+          <thead><tr><th>Growth Driver</th><th>Client View</th><th class="r">Applied %</th><th class="r">Monthly Impact</th></tr></thead>
+          <tbody>
+            ${upRows}
+            <tr class="total"><td colspan="2">${esc(t('s2.revUplift'))}</td><td class="r">+${pct(m.growth.totalRevenueGrowthPct, 1)}</td><td class="r">+${money(m.growth.totalRevenueGrowth, 0)}</td></tr>
+          </tbody>
+        </table>
+        <table class="table">
+          <thead><tr><th>${esc(t('s2.metric'))}</th><th class="r">${esc(t('s2.cur'))}</th><th class="r">${esc(t('s2.haha'))}</th><th class="r">${esc(t('s2.chg'))}</th></tr></thead>
+          <tbody>
+            <tr><td>${esc(t('s2.rOrders'))}</td><td class="r">${nf(m.old.monthlyOrders, 0)}</td><td class="r">${nf(m.haha.monthlyOrders, 0)}</td><td class="r">+${pct(m.growth.orderPct, 1)}</td></tr>
+            <tr><td>${esc(t('s2.rAov'))}</td><td class="r">${money(m.old.aov, 2)}</td><td class="r">${money(m.haha.aov, 2)}</td><td class="r">${signedMoney(m.haha.aov - m.old.aov, 2)}</td></tr>
+            <tr><td>${esc(t('s2.rSales'))}</td><td class="r">${money(m.old.sales, 0)}</td><td class="r">${money(m.haha.sales, 0)}</td><td class="r">${signedMoney(m.growth.totalRevenueGrowth, 0)}</td></tr>
+            <tr class="total"><td>${esc(t('s2.rCost'))}</td><td class="r">${money(m.old.cost, 0)}</td><td class="r">${money(m.haha.cost, 0)}</td><td class="r">${signedMoney(m.haha.cost - m.old.cost, 0)}</td></tr>
+            <tr class="primary"><td>${esc(t('s2.rProfit'))}</td><td class="r">${money(m.old.profit, 0)}</td><td class="r">${money(m.haha.profit, 0)}</td><td class="r">${signedMoney(m.invest.delta, 0)}</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:14px">${cumulativeSvg(m, 680, 175)}</div>
+        <div class="rep-note">${esc(t('s2.chartExplain'))}</div>
+      </div>
+
+      <!-- 03 · Investment, Financing & Stress Test -->
+      <div class="rep-sec">
+        <h3>${esc(t('s3.sec3'))}</h3>
+        <div class="rep-two">
+          <table class="table">
+            <tr><td>${esc(m.invest.model.name)} MSRP</td><td class="r">${money(m.invest.equipment, 0)}</td></tr>
+            <tr><td>Freight / Install / Removal</td><td class="r">${money(m.invest.freight + m.invest.install + m.invest.removal, 0)}</td></tr>
+            <tr><td>${esc(t('s2.tradeIn'))}</td><td class="r">-${money(m.invest.tradeIn, 0)}</td></tr>
+            <tr class="total"><td>${esc(t('r2.netInv'))}</td><td class="r">${money(m.invest.total, 0)}</td></tr>
+            <tr><td>${esc(t('s2.payMethod'))}</td><td class="r">${f.enabled ? `${m.finance.months}m @ ${m.finance.apr}% (${money(m.finance.payment, 2)}/mo · ${nf(m.finance.coverage, 2)}×)` : esc(t('s2.cash'))}</td></tr>
+            <tr><td>${esc(t('s2.propTitle'))}</td><td class="r">${money(m.siteEarnings.monthly, 0)}/mo (${money(m.siteEarnings.annual, 0)}/yr)</td></tr>
+          </table>
+          <table class="table">
+            <thead><tr><th>Stress</th><th class="r">Profit</th><th class="r">Delta</th><th class="r">Payback</th></tr></thead>
+            <tbody>
+              ${m.stress.map(st => `<tr><td>${nf(st.scale * 100, 0)}%</td><td class="r">${money(st.profit, 0)}</td><td class="r">${signedMoney(st.delta, 0)}</td><td class="r">${esc(monthsFmt(st.payback))}</td></tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 04 · Next Steps & Assessment Notes (NO Sign-Off lines) -->
+      <div class="rep-sec">
+        <h3>${esc(t('s3.sec4'))}</h3>
+        <div class="rep-subh">${esc(t('s3.nextSub'))}</div>
+        <ol class="rep-list">
+          ${nextSteps.map(n => `<li>${esc(n)}</li>`).join('')}
+        </ol>
+        <div class="rep-deploy-bar">${esc(t('s3.deployNote'))}</div>
+        <div class="rep-subh">${esc(t('s3.basisSub'))}</div>
+        <div class="rep-note">${esc(t('s3.method'))}</div>
+        <div class="rep-note">${esc(t('s3.disclaimer'))}</div>
+      </div>
+
+      <div class="rep-foot-bar">
+        <span>HAHA Vending · ${esc(t('s3.docType'))}</span>
+        <span>${esc(locName)} · ${esc(p.meta.date)}</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderStep3(p, m) {
+  return `
+    <div class="report-toolbar no-print">
+      <button type="button" class="button button-outline" data-nav="step2">${esc(t('s3.back'))}</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" class="button button-dark" data-action="printReport">${esc(t('s3.print'))}</button>
+        <button type="button" class="button button-outline" data-action="downloadReport">${esc(t('s3.download'))}</button>
+      </div>
+    </div>
+    ${reportDocumentHtml(p, m)}
+  `;
+}
+
+/* =====================================================================
+   14. REACTIVE OUTPUT SYNC (NEVER RE-RENDERS INPUT ELEMENTS)
+   ===================================================================== */
+function syncOutputs() {
+  const p = getActiveProject();
+  if (!p) return;
+  const m = compute(p);
+
+  const topName = $('[data-out="topProjName"]');
+  if (topName) topName.textContent = p.meta.locationName || t('top.untitled');
+
+  /* STEP 01 RAIL */
+  if (app.view === 'step1') {
+    const rail = $('#railHost');
+    if (rail) {
+      const u = m.urgency;
+      const tierCls = u.tier === 'strong' ? 'strong' : u.tier === 'model' ? 'conditional' : 'defer';
+      const tierLbl = u.tier === 'strong' ? t('s1.tierStrong') : u.tier === 'model' ? t('s1.tierModel') : t('s1.tierLow');
+      rail.innerHTML = `
+        <div class="rail-panel">
+          <div class="rail-label">${esc(t('s1.railTitle'))}</div>
+          <div class="rail-big">${u.total}<span style="font-size:18px;color:#888;font-weight:700"> / 100</span></div>
+          <div style="margin-top:8px"><span class="status-badge ${tierCls}">${esc(tierLbl)}</span></div>
+          <div class="score-bar-track" style="margin-top:12px"><div class="score-bar-fill" style="width:${u.total}%"></div></div>
+          <div class="rail-div"></div>
+          <div class="breakdown-bar">
+            <div class="breakdown-head"><span>${esc(t('s1.railHw'))}</span><strong>${u.hwPts} / 40</strong></div>
+            <div class="score-bar-track"><div class="score-bar-fill" style="width:${(u.hwPts / 40) * 100}%"></div></div>
+          </div>
+          <div class="breakdown-bar">
+            <div class="breakdown-head"><span>${esc(t('s1.railComm'))}</span><strong>${u.commercialPts} / 60</strong></div>
+            <div class="score-bar-track"><div class="score-bar-fill" style="width:${(u.commercialPts / 60) * 100}%"></div></div>
+          </div>
+          <div class="rail-div"></div>
+          <button type="button" class="button button-white button-wide" data-nav="step2">${esc(t('s1.railNext'))}</button>
+        </div>
+      `;
+    }
+    return;
+  }
+
+  /* STEP 02 LIVE OUTPUTS */
+  if (app.view === 'step2') {
+    const out = {
+      dAov: m.old.aov > 0 ? money(m.old.aov, 2) : '—',
+      dDaily: m.old.monthlyOrders > 0 ? nf(m.old.dailyOrders, 1) + ' / day' : '—',
+      dMargin: m.old.sales > 0 ? pct(m.old.margin, 1) : '—',
+      oldSiteFee: money(m.old.siteFee, 2) + '/mo',
+      siteFormulaCur: t('s2.formulaCur', {
+        sales: money(m.old.sales, 0),
+        share: nf(m.siteTerms.share, 1),
+        rent: money(m.siteTerms.rent, 0),
+        total: money(m.old.siteFee, 2)
+      }),
+      siteFormulaNew: t('s2.formulaNew', {
+        sales: money(m.haha.sales, 0),
+        share: nf(m.hahaTerms.share, 1),
+        rent: money(m.hahaTerms.rent, 0),
+        total: money(m.haha.siteFee, 2)
+      }),
+      upRevVariety: '+' + money(m.growth.varietyRev, 0) + '/mo',
+      upRevBasket:  '+' + money(m.growth.basketRev, 0) + '/mo',
+      upRevStock:   '+' + money(m.growth.stockRev, 0) + '/mo',
+      upRevPayment: '+' + money(m.growth.paymentRev, 0) + '/mo',
+      projSales: m.hasData ? money(m.haha.sales, 0) + '/mo' : '—',
+      revUplift: m.hasData ? '+' + pct(m.growth.totalRevenueGrowthPct, 1) + ' (+' + money(m.growth.totalRevenueGrowth, 0) + ')' : '—',
+      projDaily: m.hasData ? nf(m.haha.dailyOrders, 1) + ' / day' : '—',
+      cashSigning: money(m.finance.cashDueAtSigning, 0),
+      finPayment: money(m.finance.payment, 2) + '/mo',
+      finCoverage: isFinite(m.finance.coverage) ? nf(m.finance.coverage, 2) + '×' : '—',
+      finCashAfter: money(m.finance.cashAfter, 0) + '/mo',
+      selfFundText: t('s2.selfFund', {
+        cov: nf(m.finance.coverage, 2),
+        cash: money(m.finance.cashAfter, 0),
+        term: m.finance.months
+      }),
+      hahaTotalCost: money(m.haha.cost, 0) + '/mo',
+      kpiGain: m.hasData ? signedMoney(m.invest.delta, 0) : '—',
+      kpiAnnual: m.hasData ? signedMoney(m.invest.annualDelta, 0) + ' / yr' : '—',
+      kpiStandalone: m.hasData ? monthsFmt(m.invest.standalonePayback) : '—',
+      kpiInc: m.hasData ? monthsFmt(m.invest.payback) : '—',
+      kpi3yr: m.hasData ? signedMoney(m.invest.threeYearNet, 0) : '—',
+      zeroProfit: money(m.haha.zeroGrowthProfit, 0),
+      zeroText: t('s2.zeroText', {
+        v: money(m.haha.zeroGrowthProfit, 0),
+        gap: signedMoney(m.haha.zeroGrowthProfit - m.old.profit, 0)
+      }),
+      propMo: money(m.siteEarnings.monthly, 0),
+      propYr: money(m.siteEarnings.annual, 0)
+    };
+
+    $$('[data-out]').forEach(el => {
+      const k = el.dataset.out;
+      if (out[k] !== undefined) el.textContent = out[k];
+    });
+
+    /* Mutually exclusive visibility flags */
+    const flags = {
+      pmActual: p.baseline.profitMode === 'actual',
+      pmMargin: p.baseline.profitMode === 'margin',
+      pmDetail: p.baseline.profitMode === 'detail',
+      dealHasTerms: p.site.deal !== 'none',
+      dealHasShare: p.site.deal === 'share' || p.site.deal === 'combo',
+      dealHasRent: p.site.deal === 'rent' || p.site.deal === 'combo',
+      overrideDeal: !!p.site.overrideDeal,
+      orderCapped: m.growth.orderCapped,
+      aovCapped: m.growth.aovCapped,
+      finEnabled: !!p.invest.finance.enabled,
+      finDisabled: !p.invest.finance.enabled,
+      selfFunding: m.finance.selfFunding,
+      hiddenRepairRisk: m.hiddenRepairRisk
+    };
+    $$('[data-show]').forEach(el => {
+      const k = el.dataset.show;
+      if (flags[k] !== undefined) el.classList.toggle('hidden', !flags[k]);
+    });
+
+    const covEl = $('[data-tone="finCovTone"]');
+    if (covEl) {
+      covEl.classList.toggle('pos', m.finance.coverage >= 1.25);
+      covEl.classList.toggle('neg', m.finance.coverage < 1.25);
+    }
+
+    const zc = $('#zeroCallout');
+    if (zc) {
+      zc.classList.toggle('good', m.haha.zeroGrowthProfit >= m.old.profit);
+      zc.classList.toggle('warn', m.haha.zeroGrowthProfit < m.old.profit);
+    }
+
+    /* Update model active & recommended badges */
+    $$('[data-model-card]').forEach(btn => {
+      const id = btn.dataset.modelCard;
+      btn.classList.toggle('on', id === m.invest.effectiveModelId);
+      const rec = btn.querySelector(`[data-rec-badge="${id}"]`);
+      if (rec) rec.classList.toggle('hidden', id !== m.invest.recModelId);
+    });
+
+    /* Comparison table */
+    const cmpHost = $('[data-out-html="cmpTable"]');
+    if (cmpHost) {
+      cmpHost.innerHTML = `
+        <table class="table">
+          <thead><tr><th>${esc(t('s2.metric'))}</th><th class="r">${esc(t('s2.cur'))}</th><th class="r">${esc(t('s2.haha'))}</th><th class="r">${esc(t('s2.chg'))}</th></tr></thead>
+          <tbody>
+            <tr><td>${esc(t('s2.rOrders'))}</td><td class="r">${nf(m.old.monthlyOrders, 0)}</td><td class="r">${nf(m.haha.monthlyOrders, 0)}</td><td class="r">+${pct(m.growth.orderPct, 1)}</td></tr>
+            <tr><td>${esc(t('s2.rAov'))}</td><td class="r">${money(m.old.aov, 2)}</td><td class="r">${money(m.haha.aov, 2)}</td><td class="r">${signedMoney(m.haha.aov - m.old.aov, 2)}</td></tr>
+            <tr><td>${esc(t('s2.rSales'))}</td><td class="r">${money(m.old.sales, 0)}</td><td class="r">${money(m.haha.sales, 0)}</td><td class="r pos">${signedMoney(m.growth.totalRevenueGrowth, 0)}</td></tr>
+            <tr class="total"><td>${esc(t('s2.rCost'))}</td><td class="r">${money(m.old.cost, 0)}</td><td class="r">${money(m.haha.cost, 0)}</td><td class="r">${signedMoney(m.haha.cost - m.old.cost, 0)}</td></tr>
+            <tr class="primary"><td>${esc(t('s2.rProfit'))}</td><td class="r">${money(m.old.profit, 0)}</td><td class="r">${money(m.haha.profit, 0)}</td><td class="r ${m.invest.delta >= 0 ? 'pos' : 'neg'}">${signedMoney(m.invest.delta, 0)}</td></tr>
+            <tr><td>${esc(t('s2.rMargin'))}</td><td class="r">${pct(m.old.margin, 1)}</td><td class="r">${pct(m.haha.margin, 1)}</td><td class="r">${(m.haha.margin - m.old.margin >= 0 ? '+' : '') + nf(m.haha.margin - m.old.margin, 1)} pts</td></tr>
+          </tbody>
+        </table>
+      `;
+    }
+
+    /* Stress test table */
+    const stHost = $('[data-out-html="stressTable"]');
+    if (stHost) {
+      stHost.innerHTML = `
+        <table class="table">
+          <thead><tr><th>%</th><th class="r">Profit</th><th class="r">Delta</th><th class="r">Payback</th>${m.finance.enabled ? '<th class="r">Cov</th>' : ''}</tr></thead>
+          <tbody>
+            ${m.stress.map(st => `
+              <tr>
+                <td>${nf(st.scale * 100, 0)}%</td>
+                <td class="r">${money(st.profit, 0)}</td>
+                <td class="r ${st.delta >= 0 ? 'pos' : 'neg'}">${signedMoney(st.delta, 0)}</td>
+                <td class="r">${esc(monthsFmt(st.payback))}</td>
+                ${m.finance.enabled ? `<td class="r">${isFinite(st.coverage) ? nf(st.coverage, 2) + '×' : '—'}</td>` : ''}
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    /* 36-Month SVG Chart */
+    const chartHost = $('#cumChartHost');
+    if (chartHost) chartHost.innerHTML = cumulativeSvg(m, 680, 215);
+
+    /* Decision Verdict Box */
+    const vHost = $('[data-out-html="verdictBox"]');
+    if (vHost) {
+      const bullets = buildDecisionBullets(m);
+      const nexts = buildConsultativeNextSteps(m);
+      vHost.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <span class="status-badge ${m.verdict}">${esc(t('verdict.' + m.verdict))}</span>
+          <strong style="font-size:13.5px;color:#ddd">${esc(m.invest.model.name)} · ${money(m.invest.total, 0)}</strong>
+        </div>
+        <ul>${bullets.map(r => `<li>${esc(r)}</li>`).join('')}</ul>
+        <ol style="margin-top:10px;border-top:1px solid rgba(255,255,255,.14);padding-top:10px">${nexts.map(n => `<li>${esc(n)}</li>`).join('')}</ol>
+      `;
+    }
+
+    /* Warnings */
+    const wHost = $('[data-out-html="warningsHost"]');
+    if (wHost) {
+      wHost.innerHTML = m.warnings.map(w => `
+        <div class="warn-item ${w.level === 'info' ? 'info' : ''}">
+          <strong>${w.level === 'info' ? 'i' : '!'}</strong>
+          <span>${esc(t('warn.' + w.code, w.vars))}</span>
+        </div>
+      `).join('');
+    }
+
+    /* Right Sticky Snapshot Rail */
+    const rail = $('#railHost');
+    if (rail) {
+      rail.innerHTML = `
+        <div class="rail-panel">
+          <div class="rail-label">${esc(t('r2.title'))}</div>
+          <div style="margin-bottom:10px"><span class="status-badge ${m.verdict}">${esc(t('verdict.' + m.verdict))}</span></div>
+          <div class="rail-label" style="margin-top:12px;margin-bottom:2px">${esc(t('r2.gain'))}</div>
+          <div class="rail-big ${m.invest.delta >= 0 ? 'pos' : 'neg'}">${m.hasData ? signedMoney(m.invest.delta, 0) : '—'}</div>
+          <div class="rail-sub">${m.hasData ? signedMoney(m.invest.annualDelta, 0) + ' / yr' : ''}</div>
+          <div class="rail-div"></div>
+          <div class="rail-row"><span>${esc(t('r2.standalone'))}</span><strong>${m.hasData ? esc(monthsFmt(m.invest.standalonePayback)) : '—'}</strong></div>
+          <div class="rail-row"><span>${esc(t('r2.inc'))}</span><strong>${m.hasData ? esc(monthsFmt(m.invest.payback)) : '—'}</strong></div>
+          <div class="rail-row"><span>${esc(t('r2.threeYr'))}</span><strong>${m.hasData ? signedMoney(m.invest.threeYearNet, 0) : '—'}</strong></div>
+          <div class="rail-row"><span>${esc(t('r2.netInv'))}</span><strong>${money(m.invest.total, 0)}</strong></div>
+          <div class="rail-row"><span>${esc(t('r2.model'))}</span><strong>${esc(m.invest.model.name)}</strong></div>
+          <div class="rail-div"></div>
+          <button type="button" class="button button-white button-wide" data-nav="step3">${esc(t('r2.toReport'))}</button>
+        </div>
+      `;
+    }
+  }
+}
+
+/* =====================================================================
+   15. FULL VIEW MOUNT (CALLED ONLY ON ROUTE OR LANGUAGE SWITCH)
+   ===================================================================== */
+function mountView() {
+  document.documentElement.lang = app.lang === 'zh' ? 'zh-CN' : 'en';
+  const p = getActiveProject();
+  if (['step1', 'step2', 'step3'].includes(app.view) && !p) {
+    app.view = 'dashboard';
+  }
+  renderSidebar();
+  renderTopbar();
+
+  const host = $('#pageContent');
+  if (!host) return;
+
+  if (app.view === 'dashboard') {
+    host.innerHTML = renderDashboard();
+  } else if (app.view === 'projects') {
+    host.innerHTML = renderProjects();
+  } else if (app.view === 'step1') {
+    host.innerHTML = renderStep1(p);
+    syncOutputs();
+  } else if (app.view === 'step2') {
+    syncUpliftBase(p, false);
+    host.innerHTML = renderStep2(p);
+    syncOutputs();
+  } else if (app.view === 'step3') {
+    syncUpliftBase(p, false);
+    host.innerHTML = renderStep3(p, compute(p));
+  }
+}
+
+/* =====================================================================
+   16. CUSTOM MODALS (NEW PROJECT MANDATORY NAME + DELETE CONFIRM)
+   ===================================================================== */
+function showModal(html) {
+  const root = $('#modalRoot');
+  if (root) root.innerHTML = `<div class="modal-backdrop" id="modalBack"><div class="modal">${html}</div></div>`;
+}
+function closeModal() {
+  const root = $('#modalRoot');
+  if (root) root.innerHTML = '';
+}
+
+function openNewProjectModal() {
+  showModal(`
+    <h3>${esc(t('modal.newTitle'))}</h3>
+    <p>${esc(t('modal.newDesc'))}</p>
+    <form id="newProjForm" novalidate>
+      <div class="field">
+        <label for="newProjNameInput">${esc(t('modal.locLabel'))}</label>
+        <input type="text" id="newProjNameInput" placeholder="${esc(t('modal.locPh'))}" autocomplete="off">
+        <div class="error-text hidden" id="newProjError">${esc(t('modal.locErr'))}</div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="button button-outline" data-action="closeModal">${esc(t('common.cancel'))}</button>
+        <button type="submit" class="button button-dark">${esc(t('modal.createBtn'))}</button>
+      </div>
+    </form>
+  `);
+  const inp = $('#newProjNameInput');
+  const err = $('#newProjError');
+  const form = $('#newProjForm');
+  if (inp) {
+    setTimeout(() => inp.focus(), 20);
+    inp.addEventListener('input', () => {
+      if (inp.value.trim()) {
+        inp.classList.remove('input-error');
+        if (err) err.classList.add('hidden');
+      }
+    });
+  }
+  if (form) {
+    form.addEventListener('submit', ev => {
+      ev.preventDefault();
+      const name = inp ? inp.value.trim() : '';
+      if (!name) {
+        if (inp) { inp.classList.add('input-error'); inp.focus(); }
+        if (err) err.classList.remove('hidden');
+        return;
+      }
+      const p = createBlankProject(name);
+      app.projects.unshift(p);
+      app.activeId = p.id;
+      app.view = 'step1';
+      saveState();
+      closeModal();
+      mountView();
+      toast(t('common.created'));
+    });
+  }
+}
+
+function askDeleteModal(id) {
+  const p = app.projects.find(x => x.id === id);
+  if (!p) return;
+  showModal(`
+    <h3>${esc(t('proj.delTitle'))}</h3>
+    <p>${esc(t('proj.delMsg', { name: p.meta.locationName || t('top.untitled') }))}</p>
+    <div class="modal-actions">
+      <button type="button" class="button button-outline" data-action="closeModal">${esc(t('common.cancel'))}</button>
+      <button type="button" class="button button-danger" data-action="confirmDelete" data-id="${id}">${esc(t('common.delete'))}</button>
+    </div>
+  `);
+}
+
+/* =====================================================================
+   17. SAFE DOWNLOADS & EVENT DELEGATION (ZERO RE-RENDER ON TYPING)
+   ===================================================================== */
+function downloadFile(filename, content, mime) {
+  try {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      try { URL.revokeObjectURL(url); } catch (e) {}
+      a.remove();
+    }, 500);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+document.addEventListener('click', e => {
+  /* Navigation links */
+  const nav = e.target.closest('[data-nav]');
+  if (nav && !nav.disabled) {
+    e.preventDefault();
+    app.view = nav.dataset.nav;
+    const sb = $('#sidebar'); if (sb) sb.classList.remove('open');
+    const ov = $('#sidebarOverlay'); if (ov) ov.classList.remove('show');
+    mountView();
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (err) {}
+    return;
+  }
+
+  if (e.target.id === 'sidebarOverlay') {
+    $('#sidebar').classList.remove('open');
+    $('#sidebarOverlay').classList.remove('show');
+    return;
+  }
+  if (e.target.id === 'modalBack') { closeModal(); return; }
+
+  /* Delete button inside project card stops card click propagation */
+  const delBtn = e.target.closest('[data-action="askDelete"]');
+  if (delBtn) {
+    e.stopPropagation();
+    askDeleteModal(delBtn.dataset.id);
+    return;
+  }
+
+  /* Single-value setters (Chips / Segmented Controls / Diagnostic 10-5-0) */
+  const setBtn = e.target.closest('[data-set]');
+  if (setBtn) {
+    const p = getActiveProject();
+    if (!p) return;
+    const path = setBtn.dataset.set;
+    let val = setBtn.dataset.value;
+    if (val === 'true') val = true;
+    else if (val === 'false') val = false;
+    else if (/^\d+(\.\d+)?$/.test(val)) val = Number(val);
+
+    setPath(p, path, val);
+    if (path === 'invest.modelId') p.invest.modelManual = true;
+
+    const chipGrp = setBtn.closest('[data-chip-group]');
+    if (chipGrp) $$('button', chipGrp).forEach(b => b.classList.toggle('on', b === setBtn));
+
+    const segGrp = setBtn.closest('[data-seg-group]');
+    if (segGrp) $$('button', segGrp).forEach(b => b.classList.toggle('on', b === setBtn));
+
+    const diagGrp = setBtn.closest('[data-diag-group]');
+    if (diagGrp) {
+      $$('button', diagGrp).forEach(b => {
+        b.classList.remove('on-10', 'on-5', 'on-0');
+        if (b === setBtn) b.classList.add('on-' + val);
+      });
+    }
+
+    /* Update uplift % input directly when acceptance changes */
+    if (/^uplift\.[a-z]+\.accept$/.test(path)) {
+      const k = path.split('.')[1];
+      const q = compute(p).quadrantId;
+      const f = val === 'yes' ? 1 : val === 'partial' ? 0.5 : 0;
+      const newPct = round1(QUADRANT_BASE[q][k] * f);
+      p.uplift[k].pct = newPct;
+      p.uplift[k].custom = false;
+      const pctInp = $(`[data-bind="uplift.${k}.pct"]`);
+      if (pctInp) pctInp.value = newPct;
+    }
+
+    p.updatedAt = new Date().toISOString();
+    saveState();
+    syncOutputs();
+    return;
+  }
+
+  /* Multi-select toggles (Payments Accepted) */
+  const togBtn = e.target.closest('[data-toggle]');
+  if (togBtn) {
+    const p = getActiveProject();
+    if (!p) return;
+    const arr = getPath(p, togBtn.dataset.toggle);
+    if (Array.isArray(arr)) {
+      const v = togBtn.dataset.value;
+      const i = arr.indexOf(v);
+      if (i >= 0) arr.splice(i, 1); else arr.push(v);
+      togBtn.classList.toggle('on', arr.includes(v));
+      p.updatedAt = new Date().toISOString();
+      saveState();
+      syncOutputs();
+    }
+    return;
+  }
+
+  /* General Actions */
+  const act = e.target.closest('[data-action]');
+  if (!act || act.disabled) return;
+  const a = act.dataset.action;
+
+  if (a === 'toggleMenu') {
+    $('#sidebar').classList.toggle('open');
+    $('#sidebarOverlay').classList.toggle('show');
+  } else if (a === 'lang') {
+    app.lang = act.dataset.value;
+    saveState();
+    mountView();
+  } else if (a === 'openNewModal') {
+    openNewProjectModal();
+  } else if (a === 'closeModal') {
+    closeModal();
+  } else if (a === 'loadSample') {
+    const p = createSampleProject();
+    app.projects.unshift(p);
+    app.activeId = p.id;
+    app.view = 'step1';
+    saveState();
+    mountView();
+    toast(t('common.sampleCreated'));
+  } else if (a === 'openProj') {
+    app.activeId = act.dataset.id;
+    app.view = 'step1';
+    saveState();
+    mountView();
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (err) {}
+  } else if (a === 'confirmDelete') {
+    const id = act.dataset.id;
+    app.projects = app.projects.filter(x => x.id !== id);
+    if (app.activeId === id) app.activeId = app.projects[0] ? app.projects[0].id : null;
+    saveState();
+    closeModal();
+    mountView();
+    toast(t('common.deleted'));
+  } else if (a === 'goStep1') { app.view = 'step1'; mountView(); }
+  else if (a === 'goStep2') { app.view = 'step2'; mountView(); }
+  else if (a === 'goStep3') { app.view = 'step3'; mountView(); }
+  else if (a === 'estOrders') {
+    const p = getActiveProject();
+    if (p) {
+      const sales = num(p.baseline.monthlySales);
+      if (sales > 0) {
+        const est = Math.round(sales / 2.5);
+        p.baseline.monthlyOrders = est;
+        const inp = $('[data-bind="baseline.monthlyOrders"]');
+        if (inp) inp.value = est;
+        saveState();
+        syncOutputs();
+      }
+    }
+  } else if (a === 'resetUplift') {
+    const p = getActiveProject();
+    if (p) {
+      syncUpliftBase(p, true);
+      ['variety', 'basket', 'stock', 'payment'].forEach(k => {
+        const inp = $(`[data-bind="uplift.${k}.pct"]`);
+        if (inp) inp.value = p.uplift[k].pct;
+      });
+      saveState();
+      syncOutputs();
+    }
+  } else if (a === 'toggleCost') {
+    app.costExpanded = !app.costExpanded;
+    const body = $('#costBody');
+    const arrow = $('#costArrow');
+    if (body) body.classList.toggle('hidden', !app.costExpanded);
+    if (arrow) arrow.textContent = app.costExpanded ? '▲' : '▼';
+  } else if (a === 'backupAll') {
+    if (downloadFile('HAHA-Replacement-Backup.json', JSON.stringify(app.projects, null, 2), 'application/json')) {
+      toast(t('common.backedUp'));
+    }
+  } else if (a === 'restoreAll') {
+    const imp = $('#importFile');
+    if (imp) imp.click();
+  } else if (a === 'printReport') {
+    try { window.print(); } catch (err) {}
+  } else if (a === 'downloadReport') {
+    const p = getActiveProject();
+    if (!p) return;
+    const m = compute(p);
+    const styleEl = document.querySelector('style');
+    const css = styleEl ? styleEl.textContent : '';
+    const html = `<!DOCTYPE html><html lang="${app.lang === 'zh' ? 'zh-CN' : 'en'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.meta.locationName || 'HAHA Assessment Report')}</title><style>${css} body{background:#fff;padding:24px}</style></head><body>${reportDocumentHtml(p, m)}</body></html>`;
+    const fname = (p.meta.locationName || 'HAHA-Report').replace(/[^\w\-]+/g, '-') + '-Report.html';
+    if (downloadFile(fname, html, 'text/html;charset=utf-8')) {
+      toast(t('common.backedUp'));
+    }
+  }
+});
+
+/* STRICT ZERO-RE-RENDER INPUT HANDLER */
+document.addEventListener('input', e => {
+  /* Search bar updates ONLY #projCardsHost so search input never loses focus */
+  if (e.target.id === 'projSearch') {
+    app.search = e.target.value;
+    const host = $('#projCardsHost');
+    if (host) host.innerHTML = projectCardsHtml();
+    return;
+  }
+
+  const el = e.target.closest('[data-bind]');
+  if (!el) return;
+  const p = getActiveProject();
+  if (!p) return;
+
+  const path = el.dataset.bind;
+  const val = el.type === 'checkbox' ? el.checked : el.value;
+  setPath(p, path, val);
+  if (/^uplift\.[a-z]+\.pct$/.test(path)) {
+    p.uplift[path.split('.')[1]].custom = true;
+  }
+  p.updatedAt = new Date().toISOString();
+  saveState();
+  syncOutputs();
+});
+
+document.addEventListener('change', e => {
+  const el = e.target.closest('[data-bind]');
+  if (!el) return;
+  if (el.type === 'checkbox' || el.tagName === 'SELECT') {
+    const p = getActiveProject();
+    if (!p) return;
+    setPath(p, el.dataset.bind, el.type === 'checkbox' ? el.checked : el.value);
+    p.updatedAt = new Date().toISOString();
+    saveState();
+    syncOutputs();
+  }
+});
+
+/* Escape key closes modal */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+/* Restore Backup JSON */
+const impInput = $('#importFile');
+if (impInput) {
+  impInput.addEventListener('change', e => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        const items = Array.isArray(data) ? data : [data];
+        let added = 0;
+        items.forEach(item => {
+          if (item && item.meta) {
+            item.id = 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+            app.projects.unshift(item);
+            added++;
+          }
+        });
+        if (added > 0) {
+          saveState();
+          mountView();
+          toast(t('common.restored'));
+        } else {
+          toast(t('common.invalidFile'));
+        }
+      } catch (err) {
+        toast(t('common.invalidFile'));
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+}
+
+/* Boot immediately */
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', mountView);
+} else {
+  mountView();
+}
+</script>
+</body>
+</html>
